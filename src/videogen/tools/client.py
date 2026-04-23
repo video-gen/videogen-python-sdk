@@ -36,7 +36,7 @@ class ToolsClient:
         prompt: str,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -50,7 +50,7 @@ class ToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -76,7 +76,7 @@ class ToolsClient:
             prompt=prompt,
             aspect_ratio=aspect_ratio,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -88,7 +88,7 @@ class ToolsClient:
         generate_audio: bool,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -104,7 +104,7 @@ class ToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -132,7 +132,7 @@ class ToolsClient:
             generate_audio=generate_audio,
             aspect_ratio=aspect_ratio,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -145,7 +145,7 @@ class ToolsClient:
         image: StorageFileRef,
         source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -163,7 +163,7 @@ class ToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -196,7 +196,7 @@ class ToolsClient:
             image=image,
             source_prompt_to_image_prompt=source_prompt_to_image_prompt,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -214,7 +214,7 @@ class ToolsClient:
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -223,14 +223,14 @@ class ToolsClient:
         tts_text : str
 
         voice_id : typing.Optional[str]
-            Opaque voice id from `GET /v1/resources/tts-voices`. Server defaults apply when null.
+            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null.
 
         previous_tts_text : typing.Optional[str]
 
         next_tts_text : typing.Optional[str]
 
         speech_language_code : typing.Optional[str]
-            Optional ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`). The server validates the value at runtime against the supported set.
+            ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
 
         hide_captions : typing.Optional[bool]
             Defaults to false when omitted.
@@ -241,12 +241,12 @@ class ToolsClient:
             Defaults to false when omitted.
 
         voice_speed : typing.Optional[float]
-            Defaults to server voice default when omitted.
+            Speech rate multiplier. Defaults to the voice's default speed.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -279,7 +279,7 @@ class ToolsClient:
             auto_expand_pronunciation_replacements=auto_expand_pronunciation_replacements,
             voice_speed=voice_speed,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -291,7 +291,7 @@ class ToolsClient:
         duration_seconds: typing.Optional[float] = OMIT,
         prompt_influence: typing.Optional[float] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -306,7 +306,7 @@ class ToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -333,7 +333,7 @@ class ToolsClient:
             duration_seconds=duration_seconds,
             prompt_influence=prompt_influence,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -344,22 +344,22 @@ class ToolsClient:
         avatar_presenter_id: str,
         audio: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
         Parameters
         ----------
         avatar_presenter_id : str
-            Opaque presenter id from `GET /v1/resources/avatar-presenters`.
+            Presenter id from `GET /v1/resources/avatar-presenters`.
 
         audio : StorageFileRef
-            Reference to an `AUDIO` file in your workspace. Typically obtained from a prior `text-to-speech` execution's `result.storageFileId`.
+            Reference to an `AUDIO` file, typically from a prior text-to-speech result.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -389,7 +389,7 @@ class ToolsClient:
             avatar_presenter_id=avatar_presenter_id,
             audio=audio,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -399,7 +399,7 @@ class ToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -410,7 +410,7 @@ class ToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -438,7 +438,7 @@ class ToolsClient:
         _response = self._raw_client.vectorize_image(
             image=image,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -448,7 +448,7 @@ class ToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -459,7 +459,7 @@ class ToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -487,7 +487,7 @@ class ToolsClient:
         _response = self._raw_client.remove_image_background(
             image=image,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -497,7 +497,7 @@ class ToolsClient:
         *,
         video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -508,7 +508,7 @@ class ToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -536,7 +536,7 @@ class ToolsClient:
         _response = self._raw_client.remove_video_background(
             video=video,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -546,7 +546,7 @@ class ToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -557,7 +557,7 @@ class ToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -585,7 +585,7 @@ class ToolsClient:
         _response = self._raw_client.upscale_image(
             image=image,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -595,7 +595,7 @@ class ToolsClient:
         *,
         video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -606,7 +606,7 @@ class ToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -634,7 +634,7 @@ class ToolsClient:
         _response = self._raw_client.upscale_video(
             video=video,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -721,7 +721,7 @@ class AsyncToolsClient:
         prompt: str,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -735,7 +735,7 @@ class AsyncToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -769,7 +769,7 @@ class AsyncToolsClient:
             prompt=prompt,
             aspect_ratio=aspect_ratio,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -781,7 +781,7 @@ class AsyncToolsClient:
         generate_audio: bool,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -797,7 +797,7 @@ class AsyncToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -833,7 +833,7 @@ class AsyncToolsClient:
             generate_audio=generate_audio,
             aspect_ratio=aspect_ratio,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -846,7 +846,7 @@ class AsyncToolsClient:
         image: StorageFileRef,
         source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -864,7 +864,7 @@ class AsyncToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -905,7 +905,7 @@ class AsyncToolsClient:
             image=image,
             source_prompt_to_image_prompt=source_prompt_to_image_prompt,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -923,7 +923,7 @@ class AsyncToolsClient:
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -932,14 +932,14 @@ class AsyncToolsClient:
         tts_text : str
 
         voice_id : typing.Optional[str]
-            Opaque voice id from `GET /v1/resources/tts-voices`. Server defaults apply when null.
+            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null.
 
         previous_tts_text : typing.Optional[str]
 
         next_tts_text : typing.Optional[str]
 
         speech_language_code : typing.Optional[str]
-            Optional ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`). The server validates the value at runtime against the supported set.
+            ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
 
         hide_captions : typing.Optional[bool]
             Defaults to false when omitted.
@@ -950,12 +950,12 @@ class AsyncToolsClient:
             Defaults to false when omitted.
 
         voice_speed : typing.Optional[float]
-            Defaults to server voice default when omitted.
+            Speech rate multiplier. Defaults to the voice's default speed.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -996,7 +996,7 @@ class AsyncToolsClient:
             auto_expand_pronunciation_replacements=auto_expand_pronunciation_replacements,
             voice_speed=voice_speed,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -1008,7 +1008,7 @@ class AsyncToolsClient:
         duration_seconds: typing.Optional[float] = OMIT,
         prompt_influence: typing.Optional[float] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -1023,7 +1023,7 @@ class AsyncToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1058,7 +1058,7 @@ class AsyncToolsClient:
             duration_seconds=duration_seconds,
             prompt_influence=prompt_influence,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -1069,22 +1069,22 @@ class AsyncToolsClient:
         avatar_presenter_id: str,
         audio: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
         Parameters
         ----------
         avatar_presenter_id : str
-            Opaque presenter id from `GET /v1/resources/avatar-presenters`.
+            Presenter id from `GET /v1/resources/avatar-presenters`.
 
         audio : StorageFileRef
-            Reference to an `AUDIO` file in your workspace. Typically obtained from a prior `text-to-speech` execution's `result.storageFileId`.
+            Reference to an `AUDIO` file, typically from a prior text-to-speech result.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1122,7 +1122,7 @@ class AsyncToolsClient:
             avatar_presenter_id=avatar_presenter_id,
             audio=audio,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -1132,7 +1132,7 @@ class AsyncToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -1143,7 +1143,7 @@ class AsyncToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1179,7 +1179,7 @@ class AsyncToolsClient:
         _response = await self._raw_client.vectorize_image(
             image=image,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -1189,7 +1189,7 @@ class AsyncToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -1200,7 +1200,7 @@ class AsyncToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1236,7 +1236,7 @@ class AsyncToolsClient:
         _response = await self._raw_client.remove_image_background(
             image=image,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -1246,7 +1246,7 @@ class AsyncToolsClient:
         *,
         video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -1257,7 +1257,7 @@ class AsyncToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1293,7 +1293,7 @@ class AsyncToolsClient:
         _response = await self._raw_client.remove_video_background(
             video=video,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -1303,7 +1303,7 @@ class AsyncToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -1314,7 +1314,7 @@ class AsyncToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1350,7 +1350,7 @@ class AsyncToolsClient:
         _response = await self._raw_client.upscale_image(
             image=image,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data
@@ -1360,7 +1360,7 @@ class AsyncToolsClient:
         *,
         video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
@@ -1371,7 +1371,7 @@ class AsyncToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1407,7 +1407,7 @@ class AsyncToolsClient:
         _response = await self._raw_client.upscale_video(
             video=video,
             num_candidates=num_candidates,
-            is_output_file_temporary=is_output_file_temporary,
+            is_output_temporary=is_output_temporary,
             request_options=request_options,
         )
         return _response.data

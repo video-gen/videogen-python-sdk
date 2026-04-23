@@ -16,11 +16,11 @@ class ImageAssetRequest(UniversalBaseModel):
         FieldMetadata(alias="numCandidates"),
         pydantic.Field(alias="numCandidates", description="Number of output candidates to generate. Defaults to 1."),
     ] = None
-    is_output_file_temporary: typing_extensions.Annotated[
+    is_output_temporary: typing_extensions.Annotated[
         typing.Optional[bool],
-        FieldMetadata(alias="isOutputFileTemporary"),
+        FieldMetadata(alias="isOutputTemporary"),
         pydantic.Field(
-            alias="isOutputFileTemporary",
+            alias="isOutputTemporary",
             description="When true, generated files are scoped as temporary. Defaults to false.",
         ),
     ] = None

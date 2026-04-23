@@ -12,31 +12,28 @@ from .storage_file_type import StorageFileType
 
 class StorageFile(UniversalBaseModel):
     """
-    Metadata for a file in your workspace. Obtain ids from tool results or `GET /v1/files`.
+    Metadata for a generated file. Obtain ids from tool results or `GET /v1/files`.
     """
 
     storage_file_id: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="storageFileId"),
-        pydantic.Field(
-            alias="storageFileId",
-            description="Opaque file id (e.g. `vg_file_...`). Pass it back in `StorageFileRef` fields and `GET /v1/files/{storageFileId}` requests.",
-        ),
+        pydantic.Field(alias="storageFileId", description="File id (e.g. `vg_file_...`)."),
     ]
     type: StorageFileType = pydantic.Field()
     """
-    Asset kind.
+    File type.
     """
 
     scope: StorageFileScope = pydantic.Field()
     """
-    Storage scope of the file. `GLOBAL` files persist in the workspace, `TEMPORARY` files are auto-cleaned.
+    `GLOBAL` files persist; `TEMPORARY` files are auto-cleaned.
     """
 
     display_name: typing_extensions.Annotated[
         typing.Optional[str],
         FieldMetadata(alias="displayName"),
-        pydantic.Field(alias="displayName", description="Optional; server may default when omitted."),
+        pydantic.Field(alias="displayName", description="Display name for the file."),
     ] = None
     description: typing.Optional[str] = None
 

@@ -11,20 +11,19 @@ from .storage_file_ref_type import StorageFileRefType
 
 class StorageFileRef(UniversalBaseModel):
     """
-    Reference to an existing workspace file by its opaque id and asset kind. Use this in tool requests instead of inlining the full `StorageFile` payload.
+    Reference to an existing file by id and type. Pass this in tool request bodies.
     """
 
     storage_file_id: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="storageFileId"),
         pydantic.Field(
-            alias="storageFileId",
-            description="Opaque file id (e.g. `vg_file_...`) returned from a previous tool result or `GET /v1/files`.",
+            alias="storageFileId", description="File id (e.g. `vg_file_...`) from a tool result or `GET /v1/files`."
         ),
     ]
     type: StorageFileRefType = pydantic.Field()
     """
-    Asset kind. Must match the file the id refers to.
+    Must match the file's type.
     """
 
     if IS_PYDANTIC_V2:

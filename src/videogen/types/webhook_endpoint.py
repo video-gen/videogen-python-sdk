@@ -23,15 +23,14 @@ class WebhookEndpoint(UniversalBaseModel):
         FieldMetadata(alias="signingSecret"),
         pydantic.Field(
             alias="signingSecret",
-            description="HMAC secret used to verify Standard Webhooks signatures. **Returned only on the create response**; subsequent list/get calls omit it. Store it securely — it cannot be retrieved again.",
+            description="HMAC secret for verifying [Standard Webhooks](https://www.standardwebhooks.com/) signatures. **Only returned once** on create — store it securely.",
         ),
     ] = None
     signing_secret_last4: typing_extensions.Annotated[
         typing.Optional[str],
         FieldMetadata(alias="signingSecretLast4"),
         pydantic.Field(
-            alias="signingSecretLast4",
-            description="Last four characters of the signing secret (for display in the developer dashboard); omitted if not yet provisioned.",
+            alias="signingSecretLast4", description="Last four characters of the signing secret, for display purposes."
         ),
     ] = None
 

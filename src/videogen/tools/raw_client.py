@@ -32,7 +32,7 @@ class RawToolsClient:
         prompt: str,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
@@ -46,7 +46,7 @@ class RawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -66,7 +66,7 @@ class RawToolsClient:
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -100,7 +100,7 @@ class RawToolsClient:
         generate_audio: bool,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
@@ -116,7 +116,7 @@ class RawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -137,7 +137,7 @@ class RawToolsClient:
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -172,7 +172,7 @@ class RawToolsClient:
         image: StorageFileRef,
         source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
@@ -190,7 +190,7 @@ class RawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -212,7 +212,7 @@ class RawToolsClient:
                 ),
                 "sourcePromptToImagePrompt": source_prompt_to_image_prompt,
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -252,7 +252,7 @@ class RawToolsClient:
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
@@ -261,14 +261,14 @@ class RawToolsClient:
         tts_text : str
 
         voice_id : typing.Optional[str]
-            Opaque voice id from `GET /v1/resources/tts-voices`. Server defaults apply when null.
+            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null.
 
         previous_tts_text : typing.Optional[str]
 
         next_tts_text : typing.Optional[str]
 
         speech_language_code : typing.Optional[str]
-            Optional ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`). The server validates the value at runtime against the supported set.
+            ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
 
         hide_captions : typing.Optional[bool]
             Defaults to false when omitted.
@@ -279,12 +279,12 @@ class RawToolsClient:
             Defaults to false when omitted.
 
         voice_speed : typing.Optional[float]
-            Defaults to server voice default when omitted.
+            Speech rate multiplier. Defaults to the voice's default speed.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -313,7 +313,7 @@ class RawToolsClient:
                 "autoExpandPronunciationReplacements": auto_expand_pronunciation_replacements,
                 "voiceSpeed": voice_speed,
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -347,7 +347,7 @@ class RawToolsClient:
         duration_seconds: typing.Optional[float] = OMIT,
         prompt_influence: typing.Optional[float] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
@@ -362,7 +362,7 @@ class RawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -381,7 +381,7 @@ class RawToolsClient:
                 "durationSeconds": duration_seconds,
                 "promptInfluence": prompt_influence,
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -414,22 +414,22 @@ class RawToolsClient:
         avatar_presenter_id: str,
         audio: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
         Parameters
         ----------
         avatar_presenter_id : str
-            Opaque presenter id from `GET /v1/resources/avatar-presenters`.
+            Presenter id from `GET /v1/resources/avatar-presenters`.
 
         audio : StorageFileRef
-            Reference to an `AUDIO` file in your workspace. Typically obtained from a prior `text-to-speech` execution's `result.storageFileId`.
+            Reference to an `AUDIO` file, typically from a prior text-to-speech result.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -449,7 +449,7 @@ class RawToolsClient:
                     object_=audio, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -481,7 +481,7 @@ class RawToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
@@ -492,7 +492,7 @@ class RawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -511,7 +511,7 @@ class RawToolsClient:
                     object_=image, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -543,7 +543,7 @@ class RawToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
@@ -554,7 +554,7 @@ class RawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -573,7 +573,7 @@ class RawToolsClient:
                     object_=image, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -605,7 +605,7 @@ class RawToolsClient:
         *,
         video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
@@ -616,7 +616,7 @@ class RawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -635,7 +635,7 @@ class RawToolsClient:
                     object_=video, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -667,7 +667,7 @@ class RawToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
@@ -678,7 +678,7 @@ class RawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -697,7 +697,7 @@ class RawToolsClient:
                     object_=image, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -729,7 +729,7 @@ class RawToolsClient:
         *,
         video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
@@ -740,7 +740,7 @@ class RawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -759,7 +759,7 @@ class RawToolsClient:
                     object_=video, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -877,7 +877,7 @@ class AsyncRawToolsClient:
         prompt: str,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
@@ -891,7 +891,7 @@ class AsyncRawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -911,7 +911,7 @@ class AsyncRawToolsClient:
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -945,7 +945,7 @@ class AsyncRawToolsClient:
         generate_audio: bool,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
@@ -961,7 +961,7 @@ class AsyncRawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -982,7 +982,7 @@ class AsyncRawToolsClient:
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -1017,7 +1017,7 @@ class AsyncRawToolsClient:
         image: StorageFileRef,
         source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
@@ -1035,7 +1035,7 @@ class AsyncRawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1057,7 +1057,7 @@ class AsyncRawToolsClient:
                 ),
                 "sourcePromptToImagePrompt": source_prompt_to_image_prompt,
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -1097,7 +1097,7 @@ class AsyncRawToolsClient:
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
@@ -1106,14 +1106,14 @@ class AsyncRawToolsClient:
         tts_text : str
 
         voice_id : typing.Optional[str]
-            Opaque voice id from `GET /v1/resources/tts-voices`. Server defaults apply when null.
+            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null.
 
         previous_tts_text : typing.Optional[str]
 
         next_tts_text : typing.Optional[str]
 
         speech_language_code : typing.Optional[str]
-            Optional ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`). The server validates the value at runtime against the supported set.
+            ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
 
         hide_captions : typing.Optional[bool]
             Defaults to false when omitted.
@@ -1124,12 +1124,12 @@ class AsyncRawToolsClient:
             Defaults to false when omitted.
 
         voice_speed : typing.Optional[float]
-            Defaults to server voice default when omitted.
+            Speech rate multiplier. Defaults to the voice's default speed.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1158,7 +1158,7 @@ class AsyncRawToolsClient:
                 "autoExpandPronunciationReplacements": auto_expand_pronunciation_replacements,
                 "voiceSpeed": voice_speed,
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -1192,7 +1192,7 @@ class AsyncRawToolsClient:
         duration_seconds: typing.Optional[float] = OMIT,
         prompt_influence: typing.Optional[float] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
@@ -1207,7 +1207,7 @@ class AsyncRawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1226,7 +1226,7 @@ class AsyncRawToolsClient:
                 "durationSeconds": duration_seconds,
                 "promptInfluence": prompt_influence,
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -1259,22 +1259,22 @@ class AsyncRawToolsClient:
         avatar_presenter_id: str,
         audio: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
         Parameters
         ----------
         avatar_presenter_id : str
-            Opaque presenter id from `GET /v1/resources/avatar-presenters`.
+            Presenter id from `GET /v1/resources/avatar-presenters`.
 
         audio : StorageFileRef
-            Reference to an `AUDIO` file in your workspace. Typically obtained from a prior `text-to-speech` execution's `result.storageFileId`.
+            Reference to an `AUDIO` file, typically from a prior text-to-speech result.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1294,7 +1294,7 @@ class AsyncRawToolsClient:
                     object_=audio, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -1326,7 +1326,7 @@ class AsyncRawToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
@@ -1337,7 +1337,7 @@ class AsyncRawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1356,7 +1356,7 @@ class AsyncRawToolsClient:
                     object_=image, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -1388,7 +1388,7 @@ class AsyncRawToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
@@ -1399,7 +1399,7 @@ class AsyncRawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1418,7 +1418,7 @@ class AsyncRawToolsClient:
                     object_=image, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -1450,7 +1450,7 @@ class AsyncRawToolsClient:
         *,
         video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
@@ -1461,7 +1461,7 @@ class AsyncRawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1480,7 +1480,7 @@ class AsyncRawToolsClient:
                     object_=video, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -1512,7 +1512,7 @@ class AsyncRawToolsClient:
         *,
         image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
@@ -1523,7 +1523,7 @@ class AsyncRawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1542,7 +1542,7 @@ class AsyncRawToolsClient:
                     object_=image, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",
@@ -1574,7 +1574,7 @@ class AsyncRawToolsClient:
         *,
         video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
-        is_output_file_temporary: typing.Optional[bool] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
@@ -1585,7 +1585,7 @@ class AsyncRawToolsClient:
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
-        is_output_file_temporary : typing.Optional[bool]
+        is_output_temporary : typing.Optional[bool]
             When true, generated files are scoped as temporary. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
@@ -1604,7 +1604,7 @@ class AsyncRawToolsClient:
                     object_=video, annotation=StorageFileRef, direction="write"
                 ),
                 "numCandidates": num_candidates,
-                "isOutputFileTemporary": is_output_file_temporary,
+                "isOutputTemporary": is_output_temporary,
             },
             headers={
                 "content-type": "application/json",

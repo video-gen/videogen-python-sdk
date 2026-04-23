@@ -30,7 +30,7 @@ class RawResourcesClient:
         Returns
         -------
         HttpResponse[AvatarPresenterListResponse]
-            All avatar presenters. Pass an `avatarPresenterId` from this list to `POST /v1/tools/generate-avatar`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
         """
         _response = self._client_wrapper.httpx_client.request(
             "v1/resources/avatar-presenters",
@@ -68,7 +68,7 @@ class RawResourcesClient:
         Returns
         -------
         HttpResponse[TtsVoiceListResponse]
-            All TTS voices. Pass a `voiceId` from this list to `POST /v1/tools/text-to-speech`.
+            List of TTS voices. Pass a `voiceId` to `POST /v1/tools/text-to-speech`.
         """
         _response = self._client_wrapper.httpx_client.request(
             "v1/resources/tts-voices",
@@ -111,7 +111,7 @@ class AsyncRawResourcesClient:
         Returns
         -------
         AsyncHttpResponse[AvatarPresenterListResponse]
-            All avatar presenters. Pass an `avatarPresenterId` from this list to `POST /v1/tools/generate-avatar`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
         """
         _response = await self._client_wrapper.httpx_client.request(
             "v1/resources/avatar-presenters",
@@ -149,7 +149,7 @@ class AsyncRawResourcesClient:
         Returns
         -------
         AsyncHttpResponse[TtsVoiceListResponse]
-            All TTS voices. Pass a `voiceId` from this list to `POST /v1/tools/text-to-speech`.
+            List of TTS voices. Pass a `voiceId` to `POST /v1/tools/text-to-speech`.
         """
         _response = await self._client_wrapper.httpx_client.request(
             "v1/resources/tts-voices",

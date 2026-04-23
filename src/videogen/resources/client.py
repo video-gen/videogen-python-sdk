@@ -36,7 +36,7 @@ class ResourcesClient:
         Returns
         -------
         AvatarPresenterListResponse
-            All avatar presenters. Pass an `avatarPresenterId` from this list to `POST /v1/tools/generate-avatar`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
 
         Examples
         --------
@@ -60,7 +60,7 @@ class ResourcesClient:
         Returns
         -------
         TtsVoiceListResponse
-            All TTS voices. Pass a `voiceId` from this list to `POST /v1/tools/text-to-speech`.
+            List of TTS voices. Pass a `voiceId` to `POST /v1/tools/text-to-speech`.
 
         Examples
         --------
@@ -102,7 +102,7 @@ class AsyncResourcesClient:
         Returns
         -------
         AvatarPresenterListResponse
-            All avatar presenters. Pass an `avatarPresenterId` from this list to `POST /v1/tools/generate-avatar`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
 
         Examples
         --------
@@ -134,7 +134,7 @@ class AsyncResourcesClient:
         Returns
         -------
         TtsVoiceListResponse
-            All TTS voices. Pass a `voiceId` from this list to `POST /v1/tools/text-to-speech`.
+            List of TTS voices. Pass a `voiceId` to `POST /v1/tools/text-to-speech`.
 
         Examples
         --------

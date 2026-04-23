@@ -11,7 +11,7 @@ from .tts_voice_display_gender import TtsVoiceDisplayGender
 
 class TtsVoice(UniversalBaseModel):
     """
-    A TTS voice you can pass to `POST /v1/tools/text-to-speech` via `voiceId`.
+    A text-to-speech voice.
     """
 
     voice_id: typing_extensions.Annotated[
@@ -19,16 +19,13 @@ class TtsVoice(UniversalBaseModel):
         FieldMetadata(alias="voiceId"),
         pydantic.Field(
             alias="voiceId",
-            description="Opaque voice id (e.g. `vg_voic_...`). Pass this value as `voiceId` to `POST /v1/tools/text-to-speech`.",
+            description="Voice id (e.g. `vg_voic_...`). Pass as `voiceId` to `POST /v1/tools/text-to-speech`.",
         ),
     ]
     provider_name: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="providerName"),
-        pydantic.Field(
-            alias="providerName",
-            description="Underlying TTS provider that powers this voice (e.g. `ELEVEN_LABS`, `GOOGLE`).",
-        ),
+        pydantic.Field(alias="providerName", description="TTS provider (e.g. `ELEVEN_LABS`, `GOOGLE`)."),
     ]
     language_code: typing_extensions.Annotated[
         str,
@@ -43,16 +40,16 @@ class TtsVoice(UniversalBaseModel):
     display_gender: typing_extensions.Annotated[
         TtsVoiceDisplayGender,
         FieldMetadata(alias="displayGender"),
-        pydantic.Field(alias="displayGender", description="Voice gender as it should be displayed."),
+        pydantic.Field(alias="displayGender", description="Voice gender."),
     ]
     accent: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Optional accent label (e.g. `american`, `british`).
+    Accent (e.g. `american`, `british`).
     """
 
     description: typing.Optional[str] = pydantic.Field(default=None)
     """
-    Free-form description of the voice's character.
+    Description of the voice.
     """
 
     if IS_PYDANTIC_V2:

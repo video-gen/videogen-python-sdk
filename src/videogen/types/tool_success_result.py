@@ -11,19 +11,17 @@ from .tool_success_result_type import ToolSuccessResultType
 
 class ToolSuccessResult(UniversalBaseModel):
     """
-    Payload when `status` is `succeeded`. For most tools the API returns `storageFileId` and `type` (`IMAGE`, `VIDEO`, or `AUDIO`) for the generated asset. Other keys may appear for non-storage outputs.
+    Present when `status` is `succeeded`. Contains `storageFileId` and `type` for the generated file.
     """
 
     storage_file_id: typing_extensions.Annotated[
         typing.Optional[str],
         FieldMetadata(alias="storageFileId"),
-        pydantic.Field(
-            alias="storageFileId", description="Workspace storage file id for the generated asset (when applicable)."
-        ),
+        pydantic.Field(alias="storageFileId", description="File id for the generated asset."),
     ] = None
     type: typing.Optional[ToolSuccessResultType] = pydantic.Field(default=None)
     """
-    Storage file kind when `storageFileId` is set.
+    File type.
     """
 
     if IS_PYDANTIC_V2:

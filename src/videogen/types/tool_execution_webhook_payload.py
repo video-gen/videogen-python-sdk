@@ -13,32 +13,30 @@ from .tool_success_result import ToolSuccessResult
 
 class ToolExecutionWebhookPayload(UniversalBaseModel):
     """
-    Body POSTed to a registered webhook endpoint when a tool execution reaches a terminal state. Use `apiTaskExecutionId` to correlate with the response from `POST /v1/tools/...`. The `result` and `error` fields are only populated on `tool_execution.succeeded`; for failure or cancellation reasons, fetch `GET /v1/tools/executions/{apiTaskExecutionId}` to retrieve the full `ExecutedTool` (including `error.message` for failures).
+    Delivered to your webhook endpoint when a tool execution completes. Use `apiTaskExecutionId` to correlate with the original request.
     """
 
     event: ToolExecutionWebhookEventName
     api_task_execution_id: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="apiTaskExecutionId"),
-        pydantic.Field(
-            alias="apiTaskExecutionId", description="Same opaque execution id returned from `POST /v1/tools/...`."
-        ),
+        pydantic.Field(alias="apiTaskExecutionId", description="Execution id matching the original request."),
     ]
     occurred_at: typing_extensions.Annotated[
         dt.datetime,
         FieldMetadata(alias="occurredAt"),
         pydantic.Field(
-            alias="occurredAt", description="ISO-8601 timestamp at which VideoGen observed the terminal state."
+            alias="occurredAt", description="ISO-8601 timestamp when the execution reached a terminal state."
         ),
     ]
     tool_type: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="toolType"),
-        pydantic.Field(alias="toolType", description="Logical tool name (e.g. PROMPT_TO_IMAGE, PROMPT_TO_VIDEO_CLIP)."),
+        pydantic.Field(alias="toolType", description="Tool name (e.g. `PROMPT_TO_IMAGE`, `TEXT_TO_SPEECH`)."),
     ]
     result: typing.Optional[ToolSuccessResult] = pydantic.Field(default=None)
     """
-    Present only on `tool_execution.succeeded`. Same shape as `ExecutedTool.result`. For `tool_execution.failed` and `tool_execution.cancelled`, fetch `GET /v1/tools/executions/{apiTaskExecutionId}` for details.
+    Present only on `tool_execution.succeeded`.
     """
 
     if IS_PYDANTIC_V2:

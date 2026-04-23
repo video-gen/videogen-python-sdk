@@ -11,7 +11,7 @@ from .avatar_presenter_displayable_gender import AvatarPresenterDisplayableGende
 
 class AvatarPresenter(UniversalBaseModel):
     """
-    A pre-built avatar presenter you can pass to `POST /v1/tools/generate-avatar` via `avatarPresenterId`.
+    An avatar presenter available for video generation.
     """
 
     avatar_presenter_id: typing_extensions.Annotated[
@@ -19,13 +19,13 @@ class AvatarPresenter(UniversalBaseModel):
         FieldMetadata(alias="avatarPresenterId"),
         pydantic.Field(
             alias="avatarPresenterId",
-            description="Opaque presenter id (e.g. `vg_pres_...`). Pass this value as `avatarPresenterId` to `POST /v1/tools/generate-avatar`.",
+            description="Presenter id (e.g. `vg_pres_...`). Pass as `avatarPresenterId` to `POST /v1/tools/generate-avatar`.",
         ),
     ]
     displayable_gender: typing_extensions.Annotated[
         AvatarPresenterDisplayableGender,
         FieldMetadata(alias="displayableGender"),
-        pydantic.Field(alias="displayableGender", description="Visual gender presentation of the presenter."),
+        pydantic.Field(alias="displayableGender", description="Presenter gender."),
     ]
     image_url: typing_extensions.Annotated[
         str,
@@ -35,9 +35,7 @@ class AvatarPresenter(UniversalBaseModel):
     thumbnail_url: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="thumbnailUrl"),
-        pydantic.Field(
-            alias="thumbnailUrl", description="Smaller image of the presenter, suitable for thumbnails or list rows."
-        ),
+        pydantic.Field(alias="thumbnailUrl", description="Thumbnail image of the presenter."),
     ]
     preview_video_url: typing_extensions.Annotated[
         str,

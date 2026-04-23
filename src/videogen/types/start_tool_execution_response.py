@@ -10,16 +10,13 @@ from ..core.serialization import FieldMetadata
 
 class StartToolExecutionResponse(UniversalBaseModel):
     """
-    Identifier for the in-flight tool execution. Pass `apiTaskExecutionId` back when polling, cancelling, or correlating webhook events.
+    Returned when a tool execution is started. Use `apiTaskExecutionId` to poll for results or cancel.
     """
 
     api_task_execution_id: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="apiTaskExecutionId"),
-        pydantic.Field(
-            alias="apiTaskExecutionId",
-            description="Opaque execution id (e.g. `vg_exec_...`). Treat as a single string — do not split it client-side.",
-        ),
+        pydantic.Field(alias="apiTaskExecutionId", description="Execution id (e.g. `vg_exec_...`)."),
     ]
 
     if IS_PYDANTIC_V2:

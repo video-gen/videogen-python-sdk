@@ -63,7 +63,7 @@ client.tools.prompt_to_image(
 <dl>
 <dd>
 
-**is_output_file_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
     
 </dd>
 </dl>
@@ -155,7 +155,7 @@ client.tools.prompt_to_video_clip(
 <dl>
 <dd>
 
-**is_output_file_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
     
 </dd>
 </dl>
@@ -259,7 +259,7 @@ client.tools.image_to_video(
 <dl>
 <dd>
 
-**is_output_file_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
     
 </dd>
 </dl>
@@ -326,7 +326,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**voice_id:** `typing.Optional[str]` — Opaque voice id from `GET /v1/resources/tts-voices`. Server defaults apply when null.
+**voice_id:** `typing.Optional[str]` — Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null.
     
 </dd>
 </dl>
@@ -350,7 +350,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**speech_language_code:** `typing.Optional[str]` — Optional ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`). The server validates the value at runtime against the supported set.
+**speech_language_code:** `typing.Optional[str]` — ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
     
 </dd>
 </dl>
@@ -382,7 +382,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**voice_speed:** `typing.Optional[float]` — Defaults to server voice default when omitted.
+**voice_speed:** `typing.Optional[float]` — Speech rate multiplier. Defaults to the voice's default speed.
     
 </dd>
 </dl>
@@ -398,7 +398,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**is_output_file_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
     
 </dd>
 </dl>
@@ -489,7 +489,7 @@ client.tools.prompt_to_sound_effect(
 <dl>
 <dd>
 
-**is_output_file_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
     
 </dd>
 </dl>
@@ -552,7 +552,7 @@ client.tools.generate_avatar(
 <dl>
 <dd>
 
-**avatar_presenter_id:** `str` — Opaque presenter id from `GET /v1/resources/avatar-presenters`.
+**avatar_presenter_id:** `str` — Presenter id from `GET /v1/resources/avatar-presenters`.
     
 </dd>
 </dl>
@@ -560,7 +560,7 @@ client.tools.generate_avatar(
 <dl>
 <dd>
 
-**audio:** `StorageFileRef` — Reference to an `AUDIO` file in your workspace. Typically obtained from a prior `text-to-speech` execution's `result.storageFileId`.
+**audio:** `StorageFileRef` — Reference to an `AUDIO` file, typically from a prior text-to-speech result.
     
 </dd>
 </dl>
@@ -576,7 +576,7 @@ client.tools.generate_avatar(
 <dl>
 <dd>
 
-**is_output_file_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
     
 </dd>
 </dl>
@@ -1324,7 +1324,7 @@ client.webhooks.create_webhook_endpoint(
 <dl>
 <dd>
 
-**url:** `str` — HTTPS URL VideoGen will POST to; must be reachable from our servers.
+**url:** `str` — HTTPS URL that will receive webhook POST requests.
     
 </dd>
 </dl>

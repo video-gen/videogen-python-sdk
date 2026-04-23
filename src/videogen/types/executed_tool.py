@@ -15,15 +15,13 @@ class ExecutedTool(UniversalBaseModel):
     api_task_execution_id: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="apiTaskExecutionId"),
-        pydantic.Field(
-            alias="apiTaskExecutionId", description="Same opaque execution id returned from `POST /v1/tools/...`."
-        ),
+        pydantic.Field(alias="apiTaskExecutionId", description="Execution id matching the original request."),
     ]
     status: ExecutedToolStatus
     tool_type: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="toolType"),
-        pydantic.Field(alias="toolType", description="Logical tool name (e.g. PROMPT_TO_IMAGE, PROMPT_TO_VIDEO_CLIP)."),
+        pydantic.Field(alias="toolType", description="Tool name (e.g. `PROMPT_TO_IMAGE`, `TEXT_TO_SPEECH`)."),
     ]
     result: typing.Optional[ToolSuccessResult] = None
     error: typing.Optional[ApiError] = None

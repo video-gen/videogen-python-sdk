@@ -66,7 +66,7 @@ class WebhooksClient:
         Parameters
         ----------
         url : str
-            HTTPS URL VideoGen will POST to; must be reachable from our servers.
+            HTTPS URL that will receive webhook POST requests.
 
         events : typing.Sequence[ToolExecutionWebhookEventName]
 
@@ -188,7 +188,7 @@ class AsyncWebhooksClient:
         Parameters
         ----------
         url : str
-            HTTPS URL VideoGen will POST to; must be reachable from our servers.
+            HTTPS URL that will receive webhook POST requests.
 
         events : typing.Sequence[ToolExecutionWebhookEventName]
 
