@@ -1,0 +1,23 @@
+{
+  "cliVersion": "4.91.1",
+  "generatorName": "fernapi/fern-python-sdk",
+  "generatorVersion": "5.5.11",
+  "generatorConfig": {
+    "client_class_name": "VideoGenApi",
+    "package_name": "videogen",
+    "additional_init_exports": [
+      {
+        "from": "poll_executed_tool",
+        "imports": [
+          "poll_executed_tool"
+        ]
+      }
+    ]
+  },
+  "originGitCommit": "72712ecd48b6b0f65dd645bc686c0abf55231373",
+  "originGitCommitIsDirty": true,
+  "invokedBy": "manual",
+  "requestedVersion": null,
+  "ciProvider": null,
+  "sdkVersion": "0.0.34"
+}
