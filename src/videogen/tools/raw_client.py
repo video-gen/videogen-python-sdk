@@ -164,7 +164,7 @@ class RawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def image_to_video(
+    def image_to_video_clip(
         self,
         *,
         prompt: str,
@@ -202,7 +202,7 @@ class RawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = self._client_wrapper.httpx_client.request(
-            "v1/tools/image-to-video",
+            "v1/tools/image-to-video-clip",
             method="POST",
             json={
                 "prompt": prompt,
@@ -211,6 +211,140 @@ class RawToolsClient:
                     object_=image, annotation=StorageFileRef, direction="write"
                 ),
                 "sourcePromptToImagePrompt": source_prompt_to_image_prompt,
+                "numCandidates": num_candidates,
+                "isOutputTemporary": is_output_temporary,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StartToolExecutionResponse,
+                    parse_obj_as(
+                        type_=StartToolExecutionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def image_to_image(
+        self,
+        *,
+        prompt: str,
+        image: StorageFileRef,
+        num_candidates: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[StartToolExecutionResponse]:
+        """
+        Parameters
+        ----------
+        prompt : str
+            Prompt describing how to transform the input image.
+
+        image : StorageFileRef
+
+        num_candidates : typing.Optional[int]
+            Number of output candidates to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are scoped as temporary. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[StartToolExecutionResponse]
+            Execution accepted; poll until complete.
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/tools/image-to-image",
+            method="POST",
+            json={
+                "prompt": prompt,
+                "image": convert_and_respect_annotation_metadata(
+                    object_=image, annotation=StorageFileRef, direction="write"
+                ),
+                "numCandidates": num_candidates,
+                "isOutputTemporary": is_output_temporary,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StartToolExecutionResponse,
+                    parse_obj_as(
+                        type_=StartToolExecutionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def video_to_video_clip(
+        self,
+        *,
+        prompt: str,
+        video: StorageFileRef,
+        num_candidates: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[StartToolExecutionResponse]:
+        """
+        Parameters
+        ----------
+        prompt : str
+            Prompt describing how to transform the input video.
+
+        video : StorageFileRef
+
+        num_candidates : typing.Optional[int]
+            Number of output candidates to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are scoped as temporary. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[StartToolExecutionResponse]
+            Execution accepted; poll until complete.
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/tools/video-to-video-clip",
+            method="POST",
+            json={
+                "prompt": prompt,
+                "video": convert_and_respect_annotation_metadata(
+                    object_=video, annotation=StorageFileRef, direction="write"
+                ),
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1009,7 +1143,7 @@ class AsyncRawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def image_to_video(
+    async def image_to_video_clip(
         self,
         *,
         prompt: str,
@@ -1047,7 +1181,7 @@ class AsyncRawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "v1/tools/image-to-video",
+            "v1/tools/image-to-video-clip",
             method="POST",
             json={
                 "prompt": prompt,
@@ -1056,6 +1190,140 @@ class AsyncRawToolsClient:
                     object_=image, annotation=StorageFileRef, direction="write"
                 ),
                 "sourcePromptToImagePrompt": source_prompt_to_image_prompt,
+                "numCandidates": num_candidates,
+                "isOutputTemporary": is_output_temporary,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StartToolExecutionResponse,
+                    parse_obj_as(
+                        type_=StartToolExecutionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def image_to_image(
+        self,
+        *,
+        prompt: str,
+        image: StorageFileRef,
+        num_candidates: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[StartToolExecutionResponse]:
+        """
+        Parameters
+        ----------
+        prompt : str
+            Prompt describing how to transform the input image.
+
+        image : StorageFileRef
+
+        num_candidates : typing.Optional[int]
+            Number of output candidates to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are scoped as temporary. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[StartToolExecutionResponse]
+            Execution accepted; poll until complete.
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/tools/image-to-image",
+            method="POST",
+            json={
+                "prompt": prompt,
+                "image": convert_and_respect_annotation_metadata(
+                    object_=image, annotation=StorageFileRef, direction="write"
+                ),
+                "numCandidates": num_candidates,
+                "isOutputTemporary": is_output_temporary,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StartToolExecutionResponse,
+                    parse_obj_as(
+                        type_=StartToolExecutionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def video_to_video_clip(
+        self,
+        *,
+        prompt: str,
+        video: StorageFileRef,
+        num_candidates: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[StartToolExecutionResponse]:
+        """
+        Parameters
+        ----------
+        prompt : str
+            Prompt describing how to transform the input video.
+
+        video : StorageFileRef
+
+        num_candidates : typing.Optional[int]
+            Number of output candidates to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are scoped as temporary. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[StartToolExecutionResponse]
+            Execution accepted; poll until complete.
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/tools/video-to-video-clip",
+            method="POST",
+            json={
+                "prompt": prompt,
+                "video": convert_and_respect_annotation_metadata(
+                    object_=video, annotation=StorageFileRef, direction="write"
+                ),
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },

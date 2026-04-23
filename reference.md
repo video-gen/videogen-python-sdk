@@ -1,5 +1,5 @@
 # Reference
-## tools
+## Tools
 <details><summary><code>client.tools.<a href="src/videogen/tools/client.py">prompt_to_image</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
 <dd>
@@ -175,7 +175,7 @@ client.tools.prompt_to_video_clip(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">image_to_video</a>(...) -> StartToolExecutionResponse</code></summary>
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">image_to_video_clip</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
 <dd>
 
@@ -196,7 +196,7 @@ client = VideoGenApi(
     environment=VideoGenApiEnvironment.PRODUCTION,
 )
 
-client.tools.image_to_video(
+client.tools.image_to_video_clip(
     prompt="prompt",
     generate_audio=True,
     image=StorageFileRef(
@@ -244,6 +244,180 @@ client.tools.image_to_video(
 <dd>
 
 **source_prompt_to_image_prompt:** `typing.Optional[str]` — Optional prompt used when the source image was generated.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**num_candidates:** `typing.Optional[int]` — Number of output candidates to generate. Defaults to 1.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">image_to_image</a>(...) -> StartToolExecutionResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi, StorageFileRef
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.tools.image_to_image(
+    prompt="prompt",
+    image=StorageFileRef(
+        storage_file_id="storageFileId",
+        type="IMAGE",
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**prompt:** `str` — Prompt describing how to transform the input image.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**image:** `StorageFileRef` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**num_candidates:** `typing.Optional[int]` — Number of output candidates to generate. Defaults to 1.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">video_to_video_clip</a>(...) -> StartToolExecutionResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi, StorageFileRef
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.tools.video_to_video_clip(
+    prompt="prompt",
+    video=StorageFileRef(
+        storage_file_id="storageFileId",
+        type="IMAGE",
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**prompt:** `str` — Prompt describing how to transform the input video.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**video:** `StorageFileRef` 
     
 </dd>
 </dl>
@@ -1024,7 +1198,7 @@ client.tools.get_executed_tool(
 </dl>
 </details>
 
-## files
+## Files
 <details><summary><code>client.files.<a href="src/videogen/files/client.py">get_files</a>() -> GetFilesResponse</code></summary>
 <dl>
 <dd>
@@ -1133,7 +1307,7 @@ client.files.get_file(
 </dl>
 </details>
 
-## resources
+## Resources
 <details><summary><code>client.resources.<a href="src/videogen/resources/client.py">list_avatar_presenters</a>() -> AvatarPresenterListResponse</code></summary>
 <dl>
 <dd>
@@ -1232,7 +1406,7 @@ client.resources.list_tts_voices()
 </dl>
 </details>
 
-## webhooks
+## Webhooks
 <details><summary><code>client.webhooks.<a href="src/videogen/webhooks/client.py">list_webhook_endpoints</a>() -> WebhookEndpointListResponse</code></summary>
 <dl>
 <dd>

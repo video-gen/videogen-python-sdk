@@ -137,7 +137,7 @@ class ToolsClient:
         )
         return _response.data
 
-    def image_to_video(
+    def image_to_video_clip(
         self,
         *,
         prompt: str,
@@ -181,7 +181,7 @@ class ToolsClient:
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
-        client.tools.image_to_video(
+        client.tools.image_to_video_clip(
             prompt="prompt",
             generate_audio=True,
             image=StorageFileRef(
@@ -190,11 +190,121 @@ class ToolsClient:
             ),
         )
         """
-        _response = self._raw_client.image_to_video(
+        _response = self._raw_client.image_to_video_clip(
             prompt=prompt,
             generate_audio=generate_audio,
             image=image,
             source_prompt_to_image_prompt=source_prompt_to_image_prompt,
+            num_candidates=num_candidates,
+            is_output_temporary=is_output_temporary,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def image_to_image(
+        self,
+        *,
+        prompt: str,
+        image: StorageFileRef,
+        num_candidates: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartToolExecutionResponse:
+        """
+        Parameters
+        ----------
+        prompt : str
+            Prompt describing how to transform the input image.
+
+        image : StorageFileRef
+
+        num_candidates : typing.Optional[int]
+            Number of output candidates to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are scoped as temporary. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartToolExecutionResponse
+            Execution accepted; poll until complete.
+
+        Examples
+        --------
+        from videogen import StorageFileRef, VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.tools.image_to_image(
+            prompt="prompt",
+            image=StorageFileRef(
+                storage_file_id="storageFileId",
+                type="IMAGE",
+            ),
+        )
+        """
+        _response = self._raw_client.image_to_image(
+            prompt=prompt,
+            image=image,
+            num_candidates=num_candidates,
+            is_output_temporary=is_output_temporary,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def video_to_video_clip(
+        self,
+        *,
+        prompt: str,
+        video: StorageFileRef,
+        num_candidates: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartToolExecutionResponse:
+        """
+        Parameters
+        ----------
+        prompt : str
+            Prompt describing how to transform the input video.
+
+        video : StorageFileRef
+
+        num_candidates : typing.Optional[int]
+            Number of output candidates to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are scoped as temporary. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartToolExecutionResponse
+            Execution accepted; poll until complete.
+
+        Examples
+        --------
+        from videogen import StorageFileRef, VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.tools.video_to_video_clip(
+            prompt="prompt",
+            video=StorageFileRef(
+                storage_file_id="storageFileId",
+                type="IMAGE",
+            ),
+        )
+        """
+        _response = self._raw_client.video_to_video_clip(
+            prompt=prompt,
+            video=video,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -838,7 +948,7 @@ class AsyncToolsClient:
         )
         return _response.data
 
-    async def image_to_video(
+    async def image_to_video_clip(
         self,
         *,
         prompt: str,
@@ -887,7 +997,7 @@ class AsyncToolsClient:
 
 
         async def main() -> None:
-            await client.tools.image_to_video(
+            await client.tools.image_to_video_clip(
                 prompt="prompt",
                 generate_audio=True,
                 image=StorageFileRef(
@@ -899,11 +1009,137 @@ class AsyncToolsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.image_to_video(
+        _response = await self._raw_client.image_to_video_clip(
             prompt=prompt,
             generate_audio=generate_audio,
             image=image,
             source_prompt_to_image_prompt=source_prompt_to_image_prompt,
+            num_candidates=num_candidates,
+            is_output_temporary=is_output_temporary,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def image_to_image(
+        self,
+        *,
+        prompt: str,
+        image: StorageFileRef,
+        num_candidates: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartToolExecutionResponse:
+        """
+        Parameters
+        ----------
+        prompt : str
+            Prompt describing how to transform the input image.
+
+        image : StorageFileRef
+
+        num_candidates : typing.Optional[int]
+            Number of output candidates to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are scoped as temporary. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartToolExecutionResponse
+            Execution accepted; poll until complete.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi, StorageFileRef
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.tools.image_to_image(
+                prompt="prompt",
+                image=StorageFileRef(
+                    storage_file_id="storageFileId",
+                    type="IMAGE",
+                ),
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.image_to_image(
+            prompt=prompt,
+            image=image,
+            num_candidates=num_candidates,
+            is_output_temporary=is_output_temporary,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def video_to_video_clip(
+        self,
+        *,
+        prompt: str,
+        video: StorageFileRef,
+        num_candidates: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartToolExecutionResponse:
+        """
+        Parameters
+        ----------
+        prompt : str
+            Prompt describing how to transform the input video.
+
+        video : StorageFileRef
+
+        num_candidates : typing.Optional[int]
+            Number of output candidates to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are scoped as temporary. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartToolExecutionResponse
+            Execution accepted; poll until complete.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi, StorageFileRef
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.tools.video_to_video_clip(
+                prompt="prompt",
+                video=StorageFileRef(
+                    storage_file_id="storageFileId",
+                    type="IMAGE",
+                ),
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.video_to_video_clip(
+            prompt=prompt,
+            video=video,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
