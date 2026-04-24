@@ -47,7 +47,7 @@ client = VideoGenApi(
     token="<token>",
 )
 
-client.tools.prompt_to_image(
+client.tools.prompt_to_video_clip(
     prompt="prompt",
 )
 ```
@@ -80,7 +80,7 @@ client = AsyncVideoGenApi(
 
 
 async def main() -> None:
-    await client.tools.prompt_to_image(
+    await client.tools.prompt_to_video_clip(
         prompt="prompt",
     )
 
@@ -97,7 +97,7 @@ will be thrown.
 from videogen.core.api_error import ApiError
 
 try:
-    client.tools.prompt_to_image(...)
+    client.tools.prompt_to_video_clip(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -114,7 +114,7 @@ The `.with_raw_response` property returns a "raw" client that can be used to acc
 from videogen import VideoGenApi
 
 client = VideoGenApi(...)
-response = client.tools.with_raw_response.prompt_to_image(...)
+response = client.tools.with_raw_response.prompt_to_video_clip(...)
 print(response.headers)  # access the response headers
 print(response.status_code)  # access the response status code
 print(response.data)  # access the underlying object
@@ -135,7 +135,7 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.tools.prompt_to_image(..., request_options={
+client.tools.prompt_to_video_clip(..., request_options={
     "max_retries": 1
 })
 ```
@@ -150,7 +150,7 @@ from videogen import VideoGenApi
 client = VideoGenApi(..., timeout=20.0)
 
 # Override timeout for a specific method
-client.tools.prompt_to_image(..., request_options={
+client.tools.prompt_to_video_clip(..., request_options={
     "timeout_in_seconds": 1
 })
 ```

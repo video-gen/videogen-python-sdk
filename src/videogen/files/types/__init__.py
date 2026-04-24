@@ -6,8 +6,8 @@ import typing
 from importlib import import_module
 
 if typing.TYPE_CHECKING:
-    from .types import CreateFileUploadRequestType
-_dynamic_imports: typing.Dict[str, str] = {"CreateFileUploadRequestType": ".types"}
+    from .create_file_upload_request_type import CreateFileUploadRequestType
+_dynamic_imports: typing.Dict[str, str] = {"CreateFileUploadRequestType": ".create_file_upload_request_type"}
 
 
 def __getattr__(attr_name: str) -> typing.Any:

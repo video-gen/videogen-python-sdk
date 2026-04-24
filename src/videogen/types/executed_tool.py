@@ -12,10 +12,10 @@ from .tool_success_result import ToolSuccessResult
 
 
 class ExecutedTool(UniversalBaseModel):
-    api_task_execution_id: typing_extensions.Annotated[
+    tool_execution_id: typing_extensions.Annotated[
         str,
-        FieldMetadata(alias="apiTaskExecutionId"),
-        pydantic.Field(alias="apiTaskExecutionId", description="Execution id matching the original request."),
+        FieldMetadata(alias="toolExecutionId"),
+        pydantic.Field(alias="toolExecutionId", description="Execution id matching the original request."),
     ]
     status: ExecutedToolStatus
     tool_type: typing_extensions.Annotated[
@@ -23,7 +23,11 @@ class ExecutedTool(UniversalBaseModel):
         FieldMetadata(alias="toolType"),
         pydantic.Field(alias="toolType", description="Tool name (e.g. `PROMPT_TO_IMAGE`, `TEXT_TO_SPEECH`)."),
     ]
-    result: typing.Optional[ToolSuccessResult] = None
+    results: typing.Optional[typing.List[ToolSuccessResult]] = pydantic.Field(default=None)
+    """
+    One entry per generated candidate. Present when `status` is `succeeded`.
+    """
+
     error: typing.Optional[ApiError] = None
 
     if IS_PYDANTIC_V2:

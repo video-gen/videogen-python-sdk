@@ -28,6 +28,8 @@ class ResourcesClient:
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AvatarPresenterListResponse:
         """
+        List all available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -36,7 +38,7 @@ class ResourcesClient:
         Returns
         -------
         AvatarPresenterListResponse
-            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/audio-to-avatar-clip`.
 
         Examples
         --------
@@ -50,10 +52,20 @@ class ResourcesClient:
         _response = self._raw_client.list_avatar_presenters(request_options=request_options)
         return _response.data
 
-    def list_tts_voices(self, *, request_options: typing.Optional[RequestOptions] = None) -> TtsVoiceListResponse:
+    def list_tts_voices(
+        self,
+        *,
+        include_deprecated_voices: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> TtsVoiceListResponse:
         """
+        List all available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint.
+
         Parameters
         ----------
+        include_deprecated_voices : typing.Optional[bool]
+            When true, includes deprecated voices in the response. Defaults to false.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -71,7 +83,9 @@ class ResourcesClient:
         )
         client.resources.list_tts_voices()
         """
-        _response = self._raw_client.list_tts_voices(request_options=request_options)
+        _response = self._raw_client.list_tts_voices(
+            include_deprecated_voices=include_deprecated_voices, request_options=request_options
+        )
         return _response.data
 
 
@@ -94,6 +108,8 @@ class AsyncResourcesClient:
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AvatarPresenterListResponse:
         """
+        List all available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -102,7 +118,7 @@ class AsyncResourcesClient:
         Returns
         -------
         AvatarPresenterListResponse
-            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/audio-to-avatar-clip`.
 
         Examples
         --------
@@ -124,10 +140,20 @@ class AsyncResourcesClient:
         _response = await self._raw_client.list_avatar_presenters(request_options=request_options)
         return _response.data
 
-    async def list_tts_voices(self, *, request_options: typing.Optional[RequestOptions] = None) -> TtsVoiceListResponse:
+    async def list_tts_voices(
+        self,
+        *,
+        include_deprecated_voices: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> TtsVoiceListResponse:
         """
+        List all available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint.
+
         Parameters
         ----------
+        include_deprecated_voices : typing.Optional[bool]
+            When true, includes deprecated voices in the response. Defaults to false.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -153,5 +179,7 @@ class AsyncResourcesClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.list_tts_voices(request_options=request_options)
+        _response = await self._raw_client.list_tts_voices(
+            include_deprecated_voices=include_deprecated_voices, request_options=request_options
+        )
         return _response.data

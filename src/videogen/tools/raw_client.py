@@ -15,7 +15,6 @@ from ..types.aspect_ratio import AspectRatio
 from ..types.executed_tool import ExecutedTool
 from ..types.pronunciation_replacement import PronunciationReplacement
 from ..types.start_tool_execution_response import StartToolExecutionResponse
-from ..types.storage_file_ref import StorageFileRef
 from pydantic import ValidationError
 
 # this is used as the default value for optional parameters
@@ -36,6 +35,8 @@ class RawToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Generate an image from a text prompt. Optionally specify an aspect ratio and number of candidates.
+
         Parameters
         ----------
         prompt : str
@@ -47,7 +48,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -97,18 +98,21 @@ class RawToolsClient:
         self,
         *,
         prompt: str,
-        generate_audio: bool,
+        generate_audio: typing.Optional[bool] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Generate a video clip from a text prompt, with optional audio. Optionally specify an aspect ratio and number of candidates.
+
         Parameters
         ----------
         prompt : str
 
-        generate_audio : bool
+        generate_audio : typing.Optional[bool]
+            Whether to generate audio alongside the video. Defaults to false.
 
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
@@ -117,7 +121,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -167,22 +171,27 @@ class RawToolsClient:
     def image_to_video_clip(
         self,
         *,
-        prompt: str,
-        generate_audio: bool,
-        image: StorageFileRef,
+        image_storage_file_id: str,
+        prompt: typing.Optional[str] = OMIT,
+        generate_audio: typing.Optional[bool] = OMIT,
         source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Animate a still image into a video clip using a text prompt. Optionally generate audio alongside the video.
+
         Parameters
         ----------
-        prompt : str
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        generate_audio : bool
+        prompt : typing.Optional[str]
+            Optional text prompt to guide the animation. When omitted the model infers motion from the image.
 
-        image : StorageFileRef
+        generate_audio : typing.Optional[bool]
+            Whether to generate audio alongside the video. Defaults to false.
 
         source_prompt_to_image_prompt : typing.Optional[str]
             Optional prompt used when the source image was generated.
@@ -191,7 +200,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -205,11 +214,9 @@ class RawToolsClient:
             "v1/tools/image-to-video-clip",
             method="POST",
             json={
+                "imageStorageFileId": image_storage_file_id,
                 "prompt": prompt,
                 "generateAudio": generate_audio,
-                "image": convert_and_respect_annotation_metadata(
-                    object_=image, annotation=StorageFileRef, direction="write"
-                ),
                 "sourcePromptToImagePrompt": source_prompt_to_image_prompt,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
@@ -242,25 +249,28 @@ class RawToolsClient:
     def image_to_image(
         self,
         *,
+        image_storage_file_id: str,
         prompt: str,
-        image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Transform an existing image using a text prompt. The prompt describes the desired changes to apply.
+
         Parameters
         ----------
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
         prompt : str
             Prompt describing how to transform the input image.
-
-        image : StorageFileRef
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -274,10 +284,8 @@ class RawToolsClient:
             "v1/tools/image-to-image",
             method="POST",
             json={
+                "imageStorageFileId": image_storage_file_id,
                 "prompt": prompt,
-                "image": convert_and_respect_annotation_metadata(
-                    object_=image, annotation=StorageFileRef, direction="write"
-                ),
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -309,25 +317,28 @@ class RawToolsClient:
     def video_to_video_clip(
         self,
         *,
+        video_storage_file_id: str,
         prompt: str,
-        video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Restyle an existing video using a text prompt. The prompt describes the visual transformation to apply.
+
         Parameters
         ----------
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
         prompt : str
             Prompt describing how to transform the input video.
-
-        video : StorageFileRef
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -341,10 +352,8 @@ class RawToolsClient:
             "v1/tools/video-to-video-clip",
             method="POST",
             json={
+                "videoStorageFileId": video_storage_file_id,
                 "prompt": prompt,
-                "video": convert_and_respect_annotation_metadata(
-                    object_=video, annotation=StorageFileRef, direction="write"
-                ),
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -378,10 +387,7 @@ class RawToolsClient:
         *,
         tts_text: str,
         voice_id: typing.Optional[str] = OMIT,
-        previous_tts_text: typing.Optional[str] = OMIT,
-        next_tts_text: typing.Optional[str] = OMIT,
         speech_language_code: typing.Optional[str] = OMIT,
-        hide_captions: typing.Optional[bool] = OMIT,
         pronunciation_replacements: typing.Optional[typing.Sequence[PronunciationReplacement]] = OMIT,
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -390,27 +396,22 @@ class RawToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Convert text into a spoken audio file. Only voices with `supportsDirectToolExecution` set to true can be used. Optionally choose a voice, language, speed, and pronunciation overrides.
+
         Parameters
         ----------
         tts_text : str
 
         voice_id : typing.Optional[str]
-            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null.
-
-        previous_tts_text : typing.Optional[str]
-
-        next_tts_text : typing.Optional[str]
+            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null. Only voices with `supportsDirectToolExecution` set to true are accepted.
 
         speech_language_code : typing.Optional[str]
             ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
 
-        hide_captions : typing.Optional[bool]
-            Defaults to false when omitted.
-
         pronunciation_replacements : typing.Optional[typing.Sequence[PronunciationReplacement]]
 
         auto_expand_pronunciation_replacements : typing.Optional[bool]
-            Defaults to false when omitted.
+            When true, automatically expands numbers, symbols, acronyms, and other non-word tokens into their spoken forms before synthesis so the voice pronounces them correctly (e.g. `$100` → `one hundred dollars`, `NASA` → `nasa`, `3rd` → `third`). Defaults to false when omitted.
 
         voice_speed : typing.Optional[float]
             Speech rate multiplier. Defaults to the voice's default speed.
@@ -419,7 +420,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -435,10 +436,7 @@ class RawToolsClient:
             json={
                 "ttsText": tts_text,
                 "voiceId": voice_id,
-                "previousTtsText": previous_tts_text,
-                "nextTtsText": next_tts_text,
                 "speechLanguageCode": speech_language_code,
-                "hideCaptions": hide_captions,
                 "pronunciationReplacements": convert_and_respect_annotation_metadata(
                     object_=pronunciation_replacements,
                     annotation=typing.Sequence[PronunciationReplacement],
@@ -485,6 +483,8 @@ class RawToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Generate a sound effect from a text description. Optionally control the duration and prompt influence.
+
         Parameters
         ----------
         prompt : str
@@ -497,7 +497,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -542,29 +542,31 @@ class RawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def generate_avatar(
+    def audio_to_avatar_clip(
         self,
         *,
         avatar_presenter_id: str,
-        audio: StorageFileRef,
+        audio_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Generate a talking-head avatar video by pairing a presenter with an audio file, typically from a prior text-to-speech result.
+
         Parameters
         ----------
         avatar_presenter_id : str
             Presenter id from `GET /v1/resources/avatar-presenters`.
 
-        audio : StorageFileRef
-            Reference to an `AUDIO` file, typically from a prior text-to-speech result.
+        audio_storage_file_id : str
+            File id of an AUDIO file (e.g. `vg_file_...`), typically from a prior text-to-speech result. Upload a file first via `POST /v1/files/upload` or generate one with `POST /v1/tools/text-to-speech`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -575,13 +577,11 @@ class RawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = self._client_wrapper.httpx_client.request(
-            "v1/tools/generate-avatar",
+            "v1/tools/audio-to-avatar-clip",
             method="POST",
             json={
                 "avatarPresenterId": avatar_presenter_id,
-                "audio": convert_and_respect_annotation_metadata(
-                    object_=audio, annotation=StorageFileRef, direction="write"
-                ),
+                "audioStorageFileId": audio_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -613,21 +613,24 @@ class RawToolsClient:
     def vectorize_image(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Convert any raster image into a scalable vector graphic (SVG). The output traces the shapes and colors of the input image.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -641,9 +644,7 @@ class RawToolsClient:
             "v1/tools/vectorize-image",
             method="POST",
             json={
-                "image": convert_and_respect_annotation_metadata(
-                    object_=image, annotation=StorageFileRef, direction="write"
-                ),
+                "imageStorageFileId": image_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -675,21 +676,24 @@ class RawToolsClient:
     def remove_image_background(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Remove the background from an image, returning a transparent-background PNG of the foreground subject.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -703,9 +707,7 @@ class RawToolsClient:
             "v1/tools/remove-image-background",
             method="POST",
             json={
-                "image": convert_and_respect_annotation_metadata(
-                    object_=image, annotation=StorageFileRef, direction="write"
-                ),
+                "imageStorageFileId": image_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -737,21 +739,24 @@ class RawToolsClient:
     def remove_video_background(
         self,
         *,
-        video: StorageFileRef,
+        video_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Remove the background from a video, producing a transparent-background video of the foreground subject.
+
         Parameters
         ----------
-        video : StorageFileRef
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -765,9 +770,7 @@ class RawToolsClient:
             "v1/tools/remove-video-background",
             method="POST",
             json={
-                "video": convert_and_respect_annotation_metadata(
-                    object_=video, annotation=StorageFileRef, direction="write"
-                ),
+                "videoStorageFileId": video_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -799,21 +802,24 @@ class RawToolsClient:
     def upscale_image(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Increase the resolution of an image while preserving detail and sharpness.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -827,9 +833,7 @@ class RawToolsClient:
             "v1/tools/upscale-image",
             method="POST",
             json={
-                "image": convert_and_respect_annotation_metadata(
-                    object_=image, annotation=StorageFileRef, direction="write"
-                ),
+                "imageStorageFileId": image_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -861,21 +865,24 @@ class RawToolsClient:
     def upscale_video(
         self,
         *,
-        video: StorageFileRef,
+        video_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Increase the resolution of a video while preserving detail and sharpness.
+
         Parameters
         ----------
-        video : StorageFileRef
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -889,9 +896,7 @@ class RawToolsClient:
             "v1/tools/upscale-video",
             method="POST",
             json={
-                "video": convert_and_respect_annotation_metadata(
-                    object_=video, annotation=StorageFileRef, direction="write"
-                ),
+                "videoStorageFileId": video_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -921,12 +926,14 @@ class RawToolsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def cancel_tool_execution(
-        self, api_task_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
+        Request cancellation of a running tool execution. The execution transitions to `cancelled` if it has not already completed.
+
         Parameters
         ----------
-        api_task_execution_id : str
+        tool_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -937,7 +944,7 @@ class RawToolsClient:
             Cancellation request accepted
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"v1/tools/executions/{encode_path_param(api_task_execution_id)}/cancel",
+            f"v1/tools/executions/{encode_path_param(tool_execution_id)}/cancel",
             method="POST",
             request_options=request_options,
         )
@@ -960,13 +967,15 @@ class RawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def get_executed_tool(
-        self, api_task_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    def get_tool_execution_info(
+        self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[ExecutedTool]:
         """
+        Retrieve the current status and result of a tool execution. Poll this endpoint until `status` is `succeeded`, `failed`, or `cancelled`.
+
         Parameters
         ----------
-        api_task_execution_id : str
+        tool_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -977,7 +986,7 @@ class RawToolsClient:
             Current execution state
         """
         _response = self._client_wrapper.httpx_client.request(
-            f"v1/tools/executions/{encode_path_param(api_task_execution_id)}",
+            f"v1/tools/executions/{encode_path_param(tool_execution_id)}",
             method="GET",
             request_options=request_options,
         )
@@ -1015,6 +1024,8 @@ class AsyncRawToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Generate an image from a text prompt. Optionally specify an aspect ratio and number of candidates.
+
         Parameters
         ----------
         prompt : str
@@ -1026,7 +1037,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1076,18 +1087,21 @@ class AsyncRawToolsClient:
         self,
         *,
         prompt: str,
-        generate_audio: bool,
+        generate_audio: typing.Optional[bool] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Generate a video clip from a text prompt, with optional audio. Optionally specify an aspect ratio and number of candidates.
+
         Parameters
         ----------
         prompt : str
 
-        generate_audio : bool
+        generate_audio : typing.Optional[bool]
+            Whether to generate audio alongside the video. Defaults to false.
 
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
@@ -1096,7 +1110,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1146,22 +1160,27 @@ class AsyncRawToolsClient:
     async def image_to_video_clip(
         self,
         *,
-        prompt: str,
-        generate_audio: bool,
-        image: StorageFileRef,
+        image_storage_file_id: str,
+        prompt: typing.Optional[str] = OMIT,
+        generate_audio: typing.Optional[bool] = OMIT,
         source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Animate a still image into a video clip using a text prompt. Optionally generate audio alongside the video.
+
         Parameters
         ----------
-        prompt : str
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        generate_audio : bool
+        prompt : typing.Optional[str]
+            Optional text prompt to guide the animation. When omitted the model infers motion from the image.
 
-        image : StorageFileRef
+        generate_audio : typing.Optional[bool]
+            Whether to generate audio alongside the video. Defaults to false.
 
         source_prompt_to_image_prompt : typing.Optional[str]
             Optional prompt used when the source image was generated.
@@ -1170,7 +1189,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1184,11 +1203,9 @@ class AsyncRawToolsClient:
             "v1/tools/image-to-video-clip",
             method="POST",
             json={
+                "imageStorageFileId": image_storage_file_id,
                 "prompt": prompt,
                 "generateAudio": generate_audio,
-                "image": convert_and_respect_annotation_metadata(
-                    object_=image, annotation=StorageFileRef, direction="write"
-                ),
                 "sourcePromptToImagePrompt": source_prompt_to_image_prompt,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
@@ -1221,25 +1238,28 @@ class AsyncRawToolsClient:
     async def image_to_image(
         self,
         *,
+        image_storage_file_id: str,
         prompt: str,
-        image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Transform an existing image using a text prompt. The prompt describes the desired changes to apply.
+
         Parameters
         ----------
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
         prompt : str
             Prompt describing how to transform the input image.
-
-        image : StorageFileRef
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1253,10 +1273,8 @@ class AsyncRawToolsClient:
             "v1/tools/image-to-image",
             method="POST",
             json={
+                "imageStorageFileId": image_storage_file_id,
                 "prompt": prompt,
-                "image": convert_and_respect_annotation_metadata(
-                    object_=image, annotation=StorageFileRef, direction="write"
-                ),
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1288,25 +1306,28 @@ class AsyncRawToolsClient:
     async def video_to_video_clip(
         self,
         *,
+        video_storage_file_id: str,
         prompt: str,
-        video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Restyle an existing video using a text prompt. The prompt describes the visual transformation to apply.
+
         Parameters
         ----------
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
         prompt : str
             Prompt describing how to transform the input video.
-
-        video : StorageFileRef
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1320,10 +1341,8 @@ class AsyncRawToolsClient:
             "v1/tools/video-to-video-clip",
             method="POST",
             json={
+                "videoStorageFileId": video_storage_file_id,
                 "prompt": prompt,
-                "video": convert_and_respect_annotation_metadata(
-                    object_=video, annotation=StorageFileRef, direction="write"
-                ),
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1357,10 +1376,7 @@ class AsyncRawToolsClient:
         *,
         tts_text: str,
         voice_id: typing.Optional[str] = OMIT,
-        previous_tts_text: typing.Optional[str] = OMIT,
-        next_tts_text: typing.Optional[str] = OMIT,
         speech_language_code: typing.Optional[str] = OMIT,
-        hide_captions: typing.Optional[bool] = OMIT,
         pronunciation_replacements: typing.Optional[typing.Sequence[PronunciationReplacement]] = OMIT,
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -1369,27 +1385,22 @@ class AsyncRawToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Convert text into a spoken audio file. Only voices with `supportsDirectToolExecution` set to true can be used. Optionally choose a voice, language, speed, and pronunciation overrides.
+
         Parameters
         ----------
         tts_text : str
 
         voice_id : typing.Optional[str]
-            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null.
-
-        previous_tts_text : typing.Optional[str]
-
-        next_tts_text : typing.Optional[str]
+            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null. Only voices with `supportsDirectToolExecution` set to true are accepted.
 
         speech_language_code : typing.Optional[str]
             ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
 
-        hide_captions : typing.Optional[bool]
-            Defaults to false when omitted.
-
         pronunciation_replacements : typing.Optional[typing.Sequence[PronunciationReplacement]]
 
         auto_expand_pronunciation_replacements : typing.Optional[bool]
-            Defaults to false when omitted.
+            When true, automatically expands numbers, symbols, acronyms, and other non-word tokens into their spoken forms before synthesis so the voice pronounces them correctly (e.g. `$100` → `one hundred dollars`, `NASA` → `nasa`, `3rd` → `third`). Defaults to false when omitted.
 
         voice_speed : typing.Optional[float]
             Speech rate multiplier. Defaults to the voice's default speed.
@@ -1398,7 +1409,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1414,10 +1425,7 @@ class AsyncRawToolsClient:
             json={
                 "ttsText": tts_text,
                 "voiceId": voice_id,
-                "previousTtsText": previous_tts_text,
-                "nextTtsText": next_tts_text,
                 "speechLanguageCode": speech_language_code,
-                "hideCaptions": hide_captions,
                 "pronunciationReplacements": convert_and_respect_annotation_metadata(
                     object_=pronunciation_replacements,
                     annotation=typing.Sequence[PronunciationReplacement],
@@ -1464,6 +1472,8 @@ class AsyncRawToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Generate a sound effect from a text description. Optionally control the duration and prompt influence.
+
         Parameters
         ----------
         prompt : str
@@ -1476,7 +1486,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1521,29 +1531,31 @@ class AsyncRawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def generate_avatar(
+    async def audio_to_avatar_clip(
         self,
         *,
         avatar_presenter_id: str,
-        audio: StorageFileRef,
+        audio_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Generate a talking-head avatar video by pairing a presenter with an audio file, typically from a prior text-to-speech result.
+
         Parameters
         ----------
         avatar_presenter_id : str
             Presenter id from `GET /v1/resources/avatar-presenters`.
 
-        audio : StorageFileRef
-            Reference to an `AUDIO` file, typically from a prior text-to-speech result.
+        audio_storage_file_id : str
+            File id of an AUDIO file (e.g. `vg_file_...`), typically from a prior text-to-speech result. Upload a file first via `POST /v1/files/upload` or generate one with `POST /v1/tools/text-to-speech`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1554,13 +1566,11 @@ class AsyncRawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "v1/tools/generate-avatar",
+            "v1/tools/audio-to-avatar-clip",
             method="POST",
             json={
                 "avatarPresenterId": avatar_presenter_id,
-                "audio": convert_and_respect_annotation_metadata(
-                    object_=audio, annotation=StorageFileRef, direction="write"
-                ),
+                "audioStorageFileId": audio_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1592,21 +1602,24 @@ class AsyncRawToolsClient:
     async def vectorize_image(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Convert any raster image into a scalable vector graphic (SVG). The output traces the shapes and colors of the input image.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1620,9 +1633,7 @@ class AsyncRawToolsClient:
             "v1/tools/vectorize-image",
             method="POST",
             json={
-                "image": convert_and_respect_annotation_metadata(
-                    object_=image, annotation=StorageFileRef, direction="write"
-                ),
+                "imageStorageFileId": image_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1654,21 +1665,24 @@ class AsyncRawToolsClient:
     async def remove_image_background(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Remove the background from an image, returning a transparent-background PNG of the foreground subject.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1682,9 +1696,7 @@ class AsyncRawToolsClient:
             "v1/tools/remove-image-background",
             method="POST",
             json={
-                "image": convert_and_respect_annotation_metadata(
-                    object_=image, annotation=StorageFileRef, direction="write"
-                ),
+                "imageStorageFileId": image_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1716,21 +1728,24 @@ class AsyncRawToolsClient:
     async def remove_video_background(
         self,
         *,
-        video: StorageFileRef,
+        video_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Remove the background from a video, producing a transparent-background video of the foreground subject.
+
         Parameters
         ----------
-        video : StorageFileRef
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1744,9 +1759,7 @@ class AsyncRawToolsClient:
             "v1/tools/remove-video-background",
             method="POST",
             json={
-                "video": convert_and_respect_annotation_metadata(
-                    object_=video, annotation=StorageFileRef, direction="write"
-                ),
+                "videoStorageFileId": video_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1778,21 +1791,24 @@ class AsyncRawToolsClient:
     async def upscale_image(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Increase the resolution of an image while preserving detail and sharpness.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1806,9 +1822,7 @@ class AsyncRawToolsClient:
             "v1/tools/upscale-image",
             method="POST",
             json={
-                "image": convert_and_respect_annotation_metadata(
-                    object_=image, annotation=StorageFileRef, direction="write"
-                ),
+                "imageStorageFileId": image_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1840,21 +1854,24 @@ class AsyncRawToolsClient:
     async def upscale_video(
         self,
         *,
-        video: StorageFileRef,
+        video_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Increase the resolution of a video while preserving detail and sharpness.
+
         Parameters
         ----------
-        video : StorageFileRef
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1868,9 +1885,7 @@ class AsyncRawToolsClient:
             "v1/tools/upscale-video",
             method="POST",
             json={
-                "video": convert_and_respect_annotation_metadata(
-                    object_=video, annotation=StorageFileRef, direction="write"
-                ),
+                "videoStorageFileId": video_storage_file_id,
                 "numCandidates": num_candidates,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1900,12 +1915,14 @@ class AsyncRawToolsClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def cancel_tool_execution(
-        self, api_task_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
+        Request cancellation of a running tool execution. The execution transitions to `cancelled` if it has not already completed.
+
         Parameters
         ----------
-        api_task_execution_id : str
+        tool_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1916,7 +1933,7 @@ class AsyncRawToolsClient:
             Cancellation request accepted
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"v1/tools/executions/{encode_path_param(api_task_execution_id)}/cancel",
+            f"v1/tools/executions/{encode_path_param(tool_execution_id)}/cancel",
             method="POST",
             request_options=request_options,
         )
@@ -1939,13 +1956,15 @@ class AsyncRawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def get_executed_tool(
-        self, api_task_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    async def get_tool_execution_info(
+        self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[ExecutedTool]:
         """
+        Retrieve the current status and result of a tool execution. Poll this endpoint until `status` is `succeeded`, `failed`, or `cancelled`.
+
         Parameters
         ----------
-        api_task_execution_id : str
+        tool_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1956,7 +1975,7 @@ class AsyncRawToolsClient:
             Current execution state
         """
         _response = await self._client_wrapper.httpx_client.request(
-            f"v1/tools/executions/{encode_path_param(api_task_execution_id)}",
+            f"v1/tools/executions/{encode_path_param(tool_execution_id)}",
             method="GET",
             request_options=request_options,
         )

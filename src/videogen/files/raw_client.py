@@ -10,9 +10,14 @@ from ..core.jsonable_encoder import encode_path_param
 from ..core.parse_error import ParsingError
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
+from ..types.file_upload_response import FileUploadResponse
 from ..types.get_files_response import GetFilesResponse
 from ..types.storage_file import StorageFile
+from .types.create_file_upload_request_type import CreateFileUploadRequestType
 from pydantic import ValidationError
+
+# this is used as the default value for optional parameters
+OMIT = typing.cast(typing.Any, ...)
 
 
 class RawFilesClient:
@@ -21,6 +26,8 @@ class RawFilesClient:
 
     def get_files(self, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[GetFilesResponse]:
         """
+        List all files in your account, including generated assets and uploads.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -59,6 +66,8 @@ class RawFilesClient:
         self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[StorageFile]:
         """
+        Retrieve metadata for a single file by its id.
+
         Parameters
         ----------
         storage_file_id : str
@@ -95,6 +104,111 @@ class RawFilesClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def create_file_upload(
+        self,
+        *,
+        type: CreateFileUploadRequestType,
+        display_name: str,
+        is_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[FileUploadResponse]:
+        """
+        Create a new file and receive a pre-signed upload URL. PUT the file bytes to the returned URL, then poll `GET /v1/files/{storageFileId}` until the file is ready.
+
+        Parameters
+        ----------
+        type : CreateFileUploadRequestType
+            The type of file to upload.
+
+        display_name : str
+            Display name for the uploaded file.
+
+        is_temporary : typing.Optional[bool]
+            When true, the file is temporary and automatically deleted after 24 hours. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[FileUploadResponse]
+            Upload instructions
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/files/upload",
+            method="POST",
+            json={
+                "type": type,
+                "displayName": display_name,
+                "isTemporary": is_temporary,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    FileUploadResponse,
+                    parse_obj_as(
+                        type_=FileUploadResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def hydrate_file(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[StorageFile]:
+        """
+        Generate fresh signed URLs for all available renditions of a file. Call this when source URLs are missing or expired. Returns the full file object with populated `thumbnailSource`, `previewSource`, and `downloadSource`.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[StorageFile]
+            File with hydrated sources
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/files/{encode_path_param(storage_file_id)}/hydrate",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StorageFile,
+                    parse_obj_as(
+                        type_=StorageFile,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawFilesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -104,6 +218,8 @@ class AsyncRawFilesClient:
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[GetFilesResponse]:
         """
+        List all files in your account, including generated assets and uploads.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -142,6 +258,8 @@ class AsyncRawFilesClient:
         self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[StorageFile]:
         """
+        Retrieve metadata for a single file by its id.
+
         Parameters
         ----------
         storage_file_id : str
@@ -157,6 +275,111 @@ class AsyncRawFilesClient:
         _response = await self._client_wrapper.httpx_client.request(
             f"v1/files/{encode_path_param(storage_file_id)}",
             method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StorageFile,
+                    parse_obj_as(
+                        type_=StorageFile,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def create_file_upload(
+        self,
+        *,
+        type: CreateFileUploadRequestType,
+        display_name: str,
+        is_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[FileUploadResponse]:
+        """
+        Create a new file and receive a pre-signed upload URL. PUT the file bytes to the returned URL, then poll `GET /v1/files/{storageFileId}` until the file is ready.
+
+        Parameters
+        ----------
+        type : CreateFileUploadRequestType
+            The type of file to upload.
+
+        display_name : str
+            Display name for the uploaded file.
+
+        is_temporary : typing.Optional[bool]
+            When true, the file is temporary and automatically deleted after 24 hours. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[FileUploadResponse]
+            Upload instructions
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/files/upload",
+            method="POST",
+            json={
+                "type": type,
+                "displayName": display_name,
+                "isTemporary": is_temporary,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    FileUploadResponse,
+                    parse_obj_as(
+                        type_=FileUploadResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def hydrate_file(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[StorageFile]:
+        """
+        Generate fresh signed URLs for all available renditions of a file. Call this when source URLs are missing or expired. Returns the full file object with populated `thumbnailSource`, `previewSource`, and `downloadSource`.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[StorageFile]
+            File with hydrated sources
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/files/{encode_path_param(storage_file_id)}/hydrate",
+            method="POST",
             request_options=request_options,
         )
         try:

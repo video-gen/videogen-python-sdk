@@ -4,6 +4,20 @@
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate an image from a text prompt. Optionally specify an aspect ratio and number of candidates.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -63,7 +77,7 @@ client.tools.prompt_to_image(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
     
 </dd>
 </dl>
@@ -87,6 +101,20 @@ client.tools.prompt_to_image(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate a video clip from a text prompt, with optional audio. Optionally specify an aspect ratio and number of candidates.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -106,7 +134,6 @@ client = VideoGenApi(
 
 client.tools.prompt_to_video_clip(
     prompt="prompt",
-    generate_audio=True,
 )
 
 ```
@@ -131,7 +158,7 @@ client.tools.prompt_to_video_clip(
 <dl>
 <dd>
 
-**generate_audio:** `bool` 
+**generate_audio:** `typing.Optional[bool]` — Whether to generate audio alongside the video. Defaults to false.
     
 </dd>
 </dl>
@@ -155,7 +182,7 @@ client.tools.prompt_to_video_clip(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
     
 </dd>
 </dl>
@@ -179,6 +206,20 @@ client.tools.prompt_to_video_clip(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Animate a still image into a video clip using a text prompt. Optionally generate audio alongside the video.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -188,7 +229,7 @@ client.tools.prompt_to_video_clip(
 <dd>
 
 ```python
-from videogen import VideoGenApi, StorageFileRef
+from videogen import VideoGenApi
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -197,12 +238,7 @@ client = VideoGenApi(
 )
 
 client.tools.image_to_video_clip(
-    prompt="prompt",
-    generate_audio=True,
-    image=StorageFileRef(
-        storage_file_id="storageFileId",
-        type="IMAGE",
-    ),
+    image_storage_file_id="imageStorageFileId",
 )
 
 ```
@@ -219,7 +255,7 @@ client.tools.image_to_video_clip(
 <dl>
 <dd>
 
-**prompt:** `str` 
+**image_storage_file_id:** `str` — File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
     
 </dd>
 </dl>
@@ -227,7 +263,7 @@ client.tools.image_to_video_clip(
 <dl>
 <dd>
 
-**generate_audio:** `bool` 
+**prompt:** `typing.Optional[str]` — Optional text prompt to guide the animation. When omitted the model infers motion from the image.
     
 </dd>
 </dl>
@@ -235,7 +271,7 @@ client.tools.image_to_video_clip(
 <dl>
 <dd>
 
-**image:** `StorageFileRef` 
+**generate_audio:** `typing.Optional[bool]` — Whether to generate audio alongside the video. Defaults to false.
     
 </dd>
 </dl>
@@ -259,7 +295,7 @@ client.tools.image_to_video_clip(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
     
 </dd>
 </dl>
@@ -283,6 +319,20 @@ client.tools.image_to_video_clip(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Transform an existing image using a text prompt. The prompt describes the desired changes to apply.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -292,7 +342,7 @@ client.tools.image_to_video_clip(
 <dd>
 
 ```python
-from videogen import VideoGenApi, StorageFileRef
+from videogen import VideoGenApi
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -301,11 +351,8 @@ client = VideoGenApi(
 )
 
 client.tools.image_to_image(
+    image_storage_file_id="imageStorageFileId",
     prompt="prompt",
-    image=StorageFileRef(
-        storage_file_id="storageFileId",
-        type="IMAGE",
-    ),
 )
 
 ```
@@ -322,7 +369,7 @@ client.tools.image_to_image(
 <dl>
 <dd>
 
-**prompt:** `str` — Prompt describing how to transform the input image.
+**image_storage_file_id:** `str` — File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
     
 </dd>
 </dl>
@@ -330,7 +377,7 @@ client.tools.image_to_image(
 <dl>
 <dd>
 
-**image:** `StorageFileRef` 
+**prompt:** `str` — Prompt describing how to transform the input image.
     
 </dd>
 </dl>
@@ -346,7 +393,7 @@ client.tools.image_to_image(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
     
 </dd>
 </dl>
@@ -370,6 +417,20 @@ client.tools.image_to_image(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Restyle an existing video using a text prompt. The prompt describes the visual transformation to apply.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -379,7 +440,7 @@ client.tools.image_to_image(
 <dd>
 
 ```python
-from videogen import VideoGenApi, StorageFileRef
+from videogen import VideoGenApi
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -388,11 +449,8 @@ client = VideoGenApi(
 )
 
 client.tools.video_to_video_clip(
+    video_storage_file_id="videoStorageFileId",
     prompt="prompt",
-    video=StorageFileRef(
-        storage_file_id="storageFileId",
-        type="IMAGE",
-    ),
 )
 
 ```
@@ -409,7 +467,7 @@ client.tools.video_to_video_clip(
 <dl>
 <dd>
 
-**prompt:** `str` — Prompt describing how to transform the input video.
+**video_storage_file_id:** `str` — File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
     
 </dd>
 </dl>
@@ -417,7 +475,7 @@ client.tools.video_to_video_clip(
 <dl>
 <dd>
 
-**video:** `StorageFileRef` 
+**prompt:** `str` — Prompt describing how to transform the input video.
     
 </dd>
 </dl>
@@ -433,7 +491,7 @@ client.tools.video_to_video_clip(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
     
 </dd>
 </dl>
@@ -456,6 +514,20 @@ client.tools.video_to_video_clip(
 <details><summary><code>client.tools.<a href="src/videogen/tools/client.py">text_to_speech</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Convert text into a spoken audio file. Only voices with `supportsDirectToolExecution` set to true can be used. Optionally choose a voice, language, speed, and pronunciation overrides.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -500,23 +572,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**voice_id:** `typing.Optional[str]` — Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**previous_tts_text:** `typing.Optional[str]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**next_tts_text:** `typing.Optional[str]` 
+**voice_id:** `typing.Optional[str]` — Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null. Only voices with `supportsDirectToolExecution` set to true are accepted.
     
 </dd>
 </dl>
@@ -532,14 +588,6 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**hide_captions:** `typing.Optional[bool]` — Defaults to false when omitted.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **pronunciation_replacements:** `typing.Optional[typing.List[PronunciationReplacement]]` 
     
 </dd>
@@ -548,7 +596,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**auto_expand_pronunciation_replacements:** `typing.Optional[bool]` — Defaults to false when omitted.
+**auto_expand_pronunciation_replacements:** `typing.Optional[bool]` — When true, automatically expands numbers, symbols, acronyms, and other non-word tokens into their spoken forms before synthesis so the voice pronounces them correctly (e.g. `$100` → `one hundred dollars`, `NASA` → `nasa`, `3rd` → `third`). Defaults to false when omitted.
     
 </dd>
 </dl>
@@ -572,7 +620,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
     
 </dd>
 </dl>
@@ -595,6 +643,20 @@ client.tools.text_to_speech(
 <details><summary><code>client.tools.<a href="src/videogen/tools/client.py">prompt_to_sound_effect</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate a sound effect from a text description. Optionally control the duration and prompt influence.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -663,7 +725,7 @@ client.tools.prompt_to_sound_effect(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
     
 </dd>
 </dl>
@@ -683,9 +745,23 @@ client.tools.prompt_to_sound_effect(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">generate_avatar</a>(...) -> StartToolExecutionResponse</code></summary>
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">audio_to_avatar_clip</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate a talking-head avatar video by pairing a presenter with an audio file, typically from a prior text-to-speech result.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -696,7 +772,7 @@ client.tools.prompt_to_sound_effect(
 <dd>
 
 ```python
-from videogen import VideoGenApi, StorageFileRef
+from videogen import VideoGenApi
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -704,12 +780,9 @@ client = VideoGenApi(
     environment=VideoGenApiEnvironment.PRODUCTION,
 )
 
-client.tools.generate_avatar(
+client.tools.audio_to_avatar_clip(
     avatar_presenter_id="avatarPresenterId",
-    audio=StorageFileRef(
-        storage_file_id="storageFileId",
-        type="IMAGE",
-    ),
+    audio_storage_file_id="audioStorageFileId",
 )
 
 ```
@@ -734,7 +807,7 @@ client.tools.generate_avatar(
 <dl>
 <dd>
 
-**audio:** `StorageFileRef` — Reference to an `AUDIO` file, typically from a prior text-to-speech result.
+**audio_storage_file_id:** `str` — File id of an AUDIO file (e.g. `vg_file_...`), typically from a prior text-to-speech result. Upload a file first via `POST /v1/files/upload` or generate one with `POST /v1/tools/text-to-speech`, then pass the returned id here.
     
 </dd>
 </dl>
@@ -750,7 +823,7 @@ client.tools.generate_avatar(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are scoped as temporary. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
     
 </dd>
 </dl>
@@ -774,6 +847,20 @@ client.tools.generate_avatar(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Convert any raster image into a scalable vector graphic (SVG). The output traces the shapes and colors of the input image.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -783,7 +870,7 @@ client.tools.generate_avatar(
 <dd>
 
 ```python
-from videogen import VideoGenApi, StorageFileRef
+from videogen import VideoGenApi
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -792,10 +879,7 @@ client = VideoGenApi(
 )
 
 client.tools.vectorize_image(
-    image=StorageFileRef(
-        storage_file_id="storageFileId",
-        type="IMAGE",
-    ),
+    image_storage_file_id="imageStorageFileId",
 )
 
 ```
@@ -836,6 +920,20 @@ client.tools.vectorize_image(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Remove the background from an image, returning a transparent-background PNG of the foreground subject.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -845,7 +943,7 @@ client.tools.vectorize_image(
 <dd>
 
 ```python
-from videogen import VideoGenApi, StorageFileRef
+from videogen import VideoGenApi
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -854,10 +952,7 @@ client = VideoGenApi(
 )
 
 client.tools.remove_image_background(
-    image=StorageFileRef(
-        storage_file_id="storageFileId",
-        type="IMAGE",
-    ),
+    image_storage_file_id="imageStorageFileId",
 )
 
 ```
@@ -898,6 +993,20 @@ client.tools.remove_image_background(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Remove the background from a video, producing a transparent-background video of the foreground subject.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -907,7 +1016,7 @@ client.tools.remove_image_background(
 <dd>
 
 ```python
-from videogen import VideoGenApi, StorageFileRef
+from videogen import VideoGenApi
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -916,10 +1025,7 @@ client = VideoGenApi(
 )
 
 client.tools.remove_video_background(
-    video=StorageFileRef(
-        storage_file_id="storageFileId",
-        type="IMAGE",
-    ),
+    video_storage_file_id="videoStorageFileId",
 )
 
 ```
@@ -960,6 +1066,20 @@ client.tools.remove_video_background(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Increase the resolution of an image while preserving detail and sharpness.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -969,7 +1089,7 @@ client.tools.remove_video_background(
 <dd>
 
 ```python
-from videogen import VideoGenApi, StorageFileRef
+from videogen import VideoGenApi
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -978,10 +1098,7 @@ client = VideoGenApi(
 )
 
 client.tools.upscale_image(
-    image=StorageFileRef(
-        storage_file_id="storageFileId",
-        type="IMAGE",
-    ),
+    image_storage_file_id="imageStorageFileId",
 )
 
 ```
@@ -1022,6 +1139,20 @@ client.tools.upscale_image(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Increase the resolution of a video while preserving detail and sharpness.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -1031,7 +1162,7 @@ client.tools.upscale_image(
 <dd>
 
 ```python
-from videogen import VideoGenApi, StorageFileRef
+from videogen import VideoGenApi
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -1040,10 +1171,7 @@ client = VideoGenApi(
 )
 
 client.tools.upscale_video(
-    video=StorageFileRef(
-        storage_file_id="storageFileId",
-        type="IMAGE",
-    ),
+    video_storage_file_id="videoStorageFileId",
 )
 
 ```
@@ -1084,6 +1212,20 @@ client.tools.upscale_video(
 <dl>
 <dd>
 
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Request cancellation of a running tool execution. The execution transitions to `cancelled` if it has not already completed.
+</dd>
+</dl>
+</dd>
+</dl>
+
 #### 🔌 Usage
 
 <dl>
@@ -1102,7 +1244,7 @@ client = VideoGenApi(
 )
 
 client.tools.cancel_tool_execution(
-    api_task_execution_id="apiTaskExecutionId",
+    tool_execution_id="toolExecutionId",
 )
 
 ```
@@ -1119,7 +1261,7 @@ client.tools.cancel_tool_execution(
 <dl>
 <dd>
 
-**api_task_execution_id:** `str` 
+**tool_execution_id:** `str` 
     
 </dd>
 </dl>
@@ -1139,9 +1281,23 @@ client.tools.cancel_tool_execution(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">get_executed_tool</a>(...) -> ExecutedTool</code></summary>
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">get_tool_execution_info</a>(...) -> ExecutedTool</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve the current status and result of a tool execution. Poll this endpoint until `status` is `succeeded`, `failed`, or `cancelled`.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -1160,8 +1316,8 @@ client = VideoGenApi(
     environment=VideoGenApiEnvironment.PRODUCTION,
 )
 
-client.tools.get_executed_tool(
-    api_task_execution_id="apiTaskExecutionId",
+client.tools.get_tool_execution_info(
+    tool_execution_id="toolExecutionId",
 )
 
 ```
@@ -1178,7 +1334,7 @@ client.tools.get_executed_tool(
 <dl>
 <dd>
 
-**api_task_execution_id:** `str` 
+**tool_execution_id:** `str` 
     
 </dd>
 </dl>
@@ -1202,6 +1358,20 @@ client.tools.get_executed_tool(
 <details><summary><code>client.files.<a href="src/videogen/files/client.py">get_files</a>() -> GetFilesResponse</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all files in your account, including generated assets and uploads.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -1251,6 +1421,20 @@ client.files.get_files()
 <details><summary><code>client.files.<a href="src/videogen/files/client.py">get_file</a>(...) -> StorageFile</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve metadata for a single file by its id.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -1307,10 +1491,187 @@ client.files.get_file(
 </dl>
 </details>
 
+<details><summary><code>client.files.<a href="src/videogen/files/client.py">create_file_upload</a>(...) -> FileUploadResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new file and receive a pre-signed upload URL. PUT the file bytes to the returned URL, then poll `GET /v1/files/{storageFileId}` until the file is ready.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.files.create_file_upload(
+    type="IMAGE",
+    display_name="displayName",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**type:** `CreateFileUploadRequestType` — The type of file to upload.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**display_name:** `str` — Display name for the uploaded file.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**is_temporary:** `typing.Optional[bool]` — When true, the file is temporary and automatically deleted after 24 hours. Defaults to false.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.files.<a href="src/videogen/files/client.py">hydrate_file</a>(...) -> StorageFile</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate fresh signed URLs for all available renditions of a file. Call this when source URLs are missing or expired. Returns the full file object with populated `thumbnailSource`, `previewSource`, and `downloadSource`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.files.hydrate_file(
+    storage_file_id="storageFileId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**storage_file_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Resources
 <details><summary><code>client.resources.<a href="src/videogen/resources/client.py">list_avatar_presenters</a>() -> AvatarPresenterListResponse</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -1357,9 +1718,23 @@ client.resources.list_avatar_presenters()
 </dl>
 </details>
 
-<details><summary><code>client.resources.<a href="src/videogen/resources/client.py">list_tts_voices</a>() -> TtsVoiceListResponse</code></summary>
+<details><summary><code>client.resources.<a href="src/videogen/resources/client.py">list_tts_voices</a>(...) -> TtsVoiceListResponse</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -1394,6 +1769,14 @@ client.resources.list_tts_voices()
 <dl>
 <dd>
 
+**include_deprecated_voices:** `typing.Optional[bool]` — When true, includes deprecated voices in the response. Defaults to false.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -1410,6 +1793,20 @@ client.resources.list_tts_voices()
 <details><summary><code>client.webhooks.<a href="src/videogen/webhooks/client.py">list_webhook_endpoints</a>() -> WebhookEndpointListResponse</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all configured webhook endpoints for your account.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -1459,6 +1856,20 @@ client.webhooks.list_webhook_endpoints()
 <details><summary><code>client.webhooks.<a href="src/videogen/webhooks/client.py">create_webhook_endpoint</a>(...) -> WebhookEndpoint</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response — store it securely.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 
@@ -1537,6 +1948,20 @@ client.webhooks.create_webhook_endpoint(
 <details><summary><code>client.webhooks.<a href="src/videogen/webhooks/client.py">delete_webhook_endpoint</a>(...)</code></summary>
 <dl>
 <dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Remove a webhook endpoint. It will stop receiving events immediately.
+</dd>
+</dl>
+</dd>
+</dl>
 
 #### 🔌 Usage
 

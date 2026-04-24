@@ -14,13 +14,14 @@ if typing.TYPE_CHECKING:
         AvatarPresenterListResponse,
         ExecutedTool,
         ExecutedToolStatus,
+        FileSource,
+        FileSourceStatus,
+        FileUploadResponse,
         GetFilesResponse,
         ImageAssetRequest,
         PronunciationReplacement,
         StartToolExecutionResponse,
         StorageFile,
-        StorageFileRef,
-        StorageFileRefType,
         StorageFileScope,
         StorageFileType,
         ToolExecutionWebhookEventName,
@@ -37,8 +38,13 @@ if typing.TYPE_CHECKING:
     from . import files, resources, tools, webhooks
     from ._default_clients import DefaultAioHttpClient, DefaultAsyncHttpxClient
     from .client import AsyncVideoGenApi, VideoGenApi
+    from .download_file import download_file
     from .environment import VideoGenApiEnvironment
+    from .files import CreateFileUploadRequestType
+    from .get_hydrated_file import get_hydrated_file
     from .poll_executed_tool import poll_executed_tool
+    from .upload_file import upload_file
+    from .verify_webhook_signature import verify_webhook_signature
     from .version import __version__
 _dynamic_imports: typing.Dict[str, str] = {
     "ApiError": ".types",
@@ -47,17 +53,19 @@ _dynamic_imports: typing.Dict[str, str] = {
     "AvatarPresenter": ".types",
     "AvatarPresenterDisplayableGender": ".types",
     "AvatarPresenterListResponse": ".types",
+    "CreateFileUploadRequestType": ".files",
     "DefaultAioHttpClient": "._default_clients",
     "DefaultAsyncHttpxClient": "._default_clients",
     "ExecutedTool": ".types",
     "ExecutedToolStatus": ".types",
+    "FileSource": ".types",
+    "FileSourceStatus": ".types",
+    "FileUploadResponse": ".types",
     "GetFilesResponse": ".types",
     "ImageAssetRequest": ".types",
     "PronunciationReplacement": ".types",
     "StartToolExecutionResponse": ".types",
     "StorageFile": ".types",
-    "StorageFileRef": ".types",
-    "StorageFileRefType": ".types",
     "StorageFileScope": ".types",
     "StorageFileType": ".types",
     "ToolExecutionWebhookEventName": ".types",
@@ -73,10 +81,14 @@ _dynamic_imports: typing.Dict[str, str] = {
     "WebhookEndpoint": ".types",
     "WebhookEndpointListResponse": ".types",
     "__version__": ".version",
+    "download_file": ".download_file",
     "files": ".files",
+    "get_hydrated_file": ".get_hydrated_file",
     "poll_executed_tool": ".poll_executed_tool",
     "resources": ".resources",
     "tools": ".tools",
+    "upload_file": ".upload_file",
+    "verify_webhook_signature": ".verify_webhook_signature",
     "webhooks": ".webhooks",
 }
 
@@ -109,17 +121,19 @@ __all__ = [
     "AvatarPresenter",
     "AvatarPresenterDisplayableGender",
     "AvatarPresenterListResponse",
+    "CreateFileUploadRequestType",
     "DefaultAioHttpClient",
     "DefaultAsyncHttpxClient",
     "ExecutedTool",
     "ExecutedToolStatus",
+    "FileSource",
+    "FileSourceStatus",
+    "FileUploadResponse",
     "GetFilesResponse",
     "ImageAssetRequest",
     "PronunciationReplacement",
     "StartToolExecutionResponse",
     "StorageFile",
-    "StorageFileRef",
-    "StorageFileRefType",
     "StorageFileScope",
     "StorageFileType",
     "ToolExecutionWebhookEventName",
@@ -135,9 +149,13 @@ __all__ = [
     "WebhookEndpoint",
     "WebhookEndpointListResponse",
     "__version__",
+    "download_file",
     "files",
+    "get_hydrated_file",
     "poll_executed_tool",
     "resources",
     "tools",
+    "upload_file",
+    "verify_webhook_signature",
     "webhooks",
 ]

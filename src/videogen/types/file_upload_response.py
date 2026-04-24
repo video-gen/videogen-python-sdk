@@ -6,25 +6,23 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
-from .storage_file_ref_type import StorageFileRefType
 
 
-class StorageFileRef(UniversalBaseModel):
-    """
-    Reference to an existing file by id and type. Pass this in tool request bodies.
-    """
-
+class FileUploadResponse(UniversalBaseModel):
     storage_file_id: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="storageFileId"),
         pydantic.Field(
-            alias="storageFileId", description="File id (e.g. `vg_file_...`) from a tool result or `GET /v1/files`."
+            alias="storageFileId", description="The file id to use in subsequent API calls (e.g. `vg_file_...`)."
         ),
     ]
-    type: StorageFileRefType = pydantic.Field()
-    """
-    Must match the file's type.
-    """
+    upload_url: typing_extensions.Annotated[
+        str,
+        FieldMetadata(alias="uploadUrl"),
+        pydantic.Field(
+            alias="uploadUrl", description="Pre-signed URL. PUT the raw file bytes to this URL to complete the upload."
+        ),
+    ]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

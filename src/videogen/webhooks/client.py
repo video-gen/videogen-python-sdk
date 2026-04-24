@@ -32,6 +32,8 @@ class WebhooksClient:
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> WebhookEndpointListResponse:
         """
+        List all configured webhook endpoints for your account.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -63,6 +65,8 @@ class WebhooksClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> WebhookEndpoint:
         """
+        Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response — store it securely.
+
         Parameters
         ----------
         url : str
@@ -101,6 +105,8 @@ class WebhooksClient:
         self, endpoint_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> None:
         """
+        Remove a webhook endpoint. It will stop receiving events immediately.
+
         Parameters
         ----------
         endpoint_id : str
@@ -146,6 +152,8 @@ class AsyncWebhooksClient:
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> WebhookEndpointListResponse:
         """
+        List all configured webhook endpoints for your account.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -185,6 +193,8 @@ class AsyncWebhooksClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> WebhookEndpoint:
         """
+        Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response — store it securely.
+
         Parameters
         ----------
         url : str
@@ -231,6 +241,8 @@ class AsyncWebhooksClient:
         self, endpoint_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> None:
         """
+        Remove a webhook endpoint. It will stop receiving events immediately.
+
         Parameters
         ----------
         endpoint_id : str

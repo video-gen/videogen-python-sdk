@@ -11,13 +11,37 @@
         "imports": [
           "poll_executed_tool"
         ]
+      },
+      {
+        "from": "get_hydrated_file",
+        "imports": [
+          "get_hydrated_file"
+        ]
+      },
+      {
+        "from": "download_file",
+        "imports": [
+          "download_file"
+        ]
+      },
+      {
+        "from": "upload_file",
+        "imports": [
+          "upload_file"
+        ]
+      },
+      {
+        "from": "verify_webhook_signature",
+        "imports": [
+          "verify_webhook_signature"
+        ]
       }
     ]
   },
-  "originGitCommit": "15f6d5959b6cb5c0d4a028b4d20de35cab520bf9",
-  "originGitCommitIsDirty": false,
+  "originGitCommit": "c0e3156ec3c66159b3540740f83dccc2c57c03fa",
+  "originGitCommitIsDirty": true,
   "invokedBy": "manual",
   "requestedVersion": null,
   "ciProvider": null,
-  "sdkVersion": "0.0.37"
+  "sdkVersion": "0.0.38"
 }

@@ -6,11 +6,17 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
-from .storage_file_ref import StorageFileRef
 
 
 class VideoAssetRequest(UniversalBaseModel):
-    video: StorageFileRef
+    video_storage_file_id: typing_extensions.Annotated[
+        str,
+        FieldMetadata(alias="videoStorageFileId"),
+        pydantic.Field(
+            alias="videoStorageFileId",
+            description="File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.",
+        ),
+    ]
     num_candidates: typing_extensions.Annotated[
         typing.Optional[int],
         FieldMetadata(alias="numCandidates"),
@@ -21,7 +27,7 @@ class VideoAssetRequest(UniversalBaseModel):
         FieldMetadata(alias="isOutputTemporary"),
         pydantic.Field(
             alias="isOutputTemporary",
-            description="When true, generated files are scoped as temporary. Defaults to false.",
+            description="When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.",
         ),
     ] = None
 

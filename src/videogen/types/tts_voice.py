@@ -22,11 +22,6 @@ class TtsVoice(UniversalBaseModel):
             description="Voice id (e.g. `vg_voic_...`). Pass as `voiceId` to `POST /v1/tools/text-to-speech`.",
         ),
     ]
-    provider_name: typing_extensions.Annotated[
-        str,
-        FieldMetadata(alias="providerName"),
-        pydantic.Field(alias="providerName", description="TTS provider (e.g. `ELEVEN_LABS`, `GOOGLE`)."),
-    ]
     language_code: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="languageCode"),
@@ -51,6 +46,31 @@ class TtsVoice(UniversalBaseModel):
     """
     Description of the voice.
     """
+
+    supports_direct_tool_execution: typing_extensions.Annotated[
+        bool,
+        FieldMetadata(alias="supportsDirectToolExecution"),
+        pydantic.Field(
+            alias="supportsDirectToolExecution",
+            description="When true, this voice can be used directly with `POST /v1/tools/text-to-speech`. Voices where this is false are returned for discovery purposes but cannot be used through this API.",
+        ),
+    ]
+    supports_all_languages: typing_extensions.Annotated[
+        bool,
+        FieldMetadata(alias="supportsAllLanguages"),
+        pydantic.Field(
+            alias="supportsAllLanguages",
+            description="When true, this voice can synthesize text in any language regardless of its `languageCode`. When false, the voice only supports its listed language.",
+        ),
+    ]
+    is_deprecated: typing_extensions.Annotated[
+        bool,
+        FieldMetadata(alias="isDeprecated"),
+        pydantic.Field(
+            alias="isDeprecated",
+            description="When true, this voice is deprecated and may be removed in a future API version. Prefer non-deprecated voices for new integrations.",
+        ),
+    ]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

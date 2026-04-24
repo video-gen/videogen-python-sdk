@@ -13,13 +13,14 @@ if typing.TYPE_CHECKING:
     from .avatar_presenter_list_response import AvatarPresenterListResponse
     from .executed_tool import ExecutedTool
     from .executed_tool_status import ExecutedToolStatus
+    from .file_source import FileSource
+    from .file_source_status import FileSourceStatus
+    from .file_upload_response import FileUploadResponse
     from .get_files_response import GetFilesResponse
     from .image_asset_request import ImageAssetRequest
     from .pronunciation_replacement import PronunciationReplacement
     from .start_tool_execution_response import StartToolExecutionResponse
     from .storage_file import StorageFile
-    from .storage_file_ref import StorageFileRef
-    from .storage_file_ref_type import StorageFileRefType
     from .storage_file_scope import StorageFileScope
     from .storage_file_type import StorageFileType
     from .tool_execution_webhook_event_name import ToolExecutionWebhookEventName
@@ -40,13 +41,14 @@ _dynamic_imports: typing.Dict[str, str] = {
     "AvatarPresenterListResponse": ".avatar_presenter_list_response",
     "ExecutedTool": ".executed_tool",
     "ExecutedToolStatus": ".executed_tool_status",
+    "FileSource": ".file_source",
+    "FileSourceStatus": ".file_source_status",
+    "FileUploadResponse": ".file_upload_response",
     "GetFilesResponse": ".get_files_response",
     "ImageAssetRequest": ".image_asset_request",
     "PronunciationReplacement": ".pronunciation_replacement",
     "StartToolExecutionResponse": ".start_tool_execution_response",
     "StorageFile": ".storage_file",
-    "StorageFileRef": ".storage_file_ref",
-    "StorageFileRefType": ".storage_file_ref_type",
     "StorageFileScope": ".storage_file_scope",
     "StorageFileType": ".storage_file_type",
     "ToolExecutionWebhookEventName": ".tool_execution_webhook_event_name",
@@ -91,13 +93,14 @@ __all__ = [
     "AvatarPresenterListResponse",
     "ExecutedTool",
     "ExecutedToolStatus",
+    "FileSource",
+    "FileSourceStatus",
+    "FileUploadResponse",
     "GetFilesResponse",
     "ImageAssetRequest",
     "PronunciationReplacement",
     "StartToolExecutionResponse",
     "StorageFile",
-    "StorageFileRef",
-    "StorageFileRefType",
     "StorageFileScope",
     "StorageFileType",
     "ToolExecutionWebhookEventName",

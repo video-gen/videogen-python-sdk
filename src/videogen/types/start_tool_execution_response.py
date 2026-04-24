@@ -10,13 +10,13 @@ from ..core.serialization import FieldMetadata
 
 class StartToolExecutionResponse(UniversalBaseModel):
     """
-    Returned when a tool execution is started. Use `apiTaskExecutionId` to poll for results or cancel.
+    Returned when a tool execution is started. Use `toolExecutionId` to poll for results or cancel.
     """
 
-    api_task_execution_id: typing_extensions.Annotated[
+    tool_execution_id: typing_extensions.Annotated[
         str,
-        FieldMetadata(alias="apiTaskExecutionId"),
-        pydantic.Field(alias="apiTaskExecutionId", description="Execution id (e.g. `vg_exec_...`)."),
+        FieldMetadata(alias="toolExecutionId"),
+        pydantic.Field(alias="toolExecutionId", description="Execution id (e.g. `vg_exec_...`)."),
     ]
 
     if IS_PYDANTIC_V2:

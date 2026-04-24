@@ -22,6 +22,8 @@ class RawResourcesClient:
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[AvatarPresenterListResponse]:
         """
+        List all available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -30,7 +32,7 @@ class RawResourcesClient:
         Returns
         -------
         HttpResponse[AvatarPresenterListResponse]
-            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/audio-to-avatar-clip`.
         """
         _response = self._client_wrapper.httpx_client.request(
             "v1/resources/avatar-presenters",
@@ -57,11 +59,19 @@ class RawResourcesClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     def list_tts_voices(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        include_deprecated_voices: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[TtsVoiceListResponse]:
         """
+        List all available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint.
+
         Parameters
         ----------
+        include_deprecated_voices : typing.Optional[bool]
+            When true, includes deprecated voices in the response. Defaults to false.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -73,6 +83,9 @@ class RawResourcesClient:
         _response = self._client_wrapper.httpx_client.request(
             "v1/resources/tts-voices",
             method="GET",
+            params={
+                "includeDeprecatedVoices": include_deprecated_voices,
+            },
             request_options=request_options,
         )
         try:
@@ -103,6 +116,8 @@ class AsyncRawResourcesClient:
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[AvatarPresenterListResponse]:
         """
+        List all available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -111,7 +126,7 @@ class AsyncRawResourcesClient:
         Returns
         -------
         AsyncHttpResponse[AvatarPresenterListResponse]
-            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/audio-to-avatar-clip`.
         """
         _response = await self._client_wrapper.httpx_client.request(
             "v1/resources/avatar-presenters",
@@ -138,11 +153,19 @@ class AsyncRawResourcesClient:
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
     async def list_tts_voices(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        include_deprecated_voices: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[TtsVoiceListResponse]:
         """
+        List all available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint.
+
         Parameters
         ----------
+        include_deprecated_voices : typing.Optional[bool]
+            When true, includes deprecated voices in the response. Defaults to false.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -154,6 +177,9 @@ class AsyncRawResourcesClient:
         _response = await self._client_wrapper.httpx_client.request(
             "v1/resources/tts-voices",
             method="GET",
+            params={
+                "includeDeprecatedVoices": include_deprecated_voices,
+            },
             request_options=request_options,
         )
         try:

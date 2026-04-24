@@ -6,22 +6,28 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
+from .storage_file import StorageFile
 from .tool_success_result_type import ToolSuccessResultType
 
 
 class ToolSuccessResult(UniversalBaseModel):
     """
-    Present when `status` is `succeeded`. Contains `storageFileId` and `type` for the generated file.
+    Result for a single generated file. Present when `status` is `succeeded`.
     """
 
     storage_file_id: typing_extensions.Annotated[
-        typing.Optional[str],
+        str,
         FieldMetadata(alias="storageFileId"),
         pydantic.Field(alias="storageFileId", description="File id for the generated asset."),
-    ] = None
-    type: typing.Optional[ToolSuccessResultType] = pydantic.Field(default=None)
+    ]
+    type: ToolSuccessResultType = pydantic.Field()
     """
     File type.
+    """
+
+    file: typing.Optional[StorageFile] = pydantic.Field(default=None)
+    """
+    Hydrated file metadata with signed download URLs. Populated when returned from a webhook or after hydration.
     """
 
     if IS_PYDANTIC_V2:

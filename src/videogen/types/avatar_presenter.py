@@ -19,7 +19,7 @@ class AvatarPresenter(UniversalBaseModel):
         FieldMetadata(alias="avatarPresenterId"),
         pydantic.Field(
             alias="avatarPresenterId",
-            description="Presenter id (e.g. `vg_pres_...`). Pass as `avatarPresenterId` to `POST /v1/tools/generate-avatar`.",
+            description="Presenter id (e.g. `vg_pres_...`). Pass as `avatarPresenterId` to `POST /v1/tools/audio-to-avatar-clip`.",
         ),
     ]
     displayable_gender: typing_extensions.Annotated[

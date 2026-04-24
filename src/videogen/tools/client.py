@@ -8,7 +8,6 @@ from ..types.aspect_ratio import AspectRatio
 from ..types.executed_tool import ExecutedTool
 from ..types.pronunciation_replacement import PronunciationReplacement
 from ..types.start_tool_execution_response import StartToolExecutionResponse
-from ..types.storage_file_ref import StorageFileRef
 from .raw_client import AsyncRawToolsClient, RawToolsClient
 
 # this is used as the default value for optional parameters
@@ -40,6 +39,8 @@ class ToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Generate an image from a text prompt. Optionally specify an aspect ratio and number of candidates.
+
         Parameters
         ----------
         prompt : str
@@ -51,7 +52,7 @@ class ToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -85,18 +86,21 @@ class ToolsClient:
         self,
         *,
         prompt: str,
-        generate_audio: bool,
+        generate_audio: typing.Optional[bool] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Generate a video clip from a text prompt, with optional audio. Optionally specify an aspect ratio and number of candidates.
+
         Parameters
         ----------
         prompt : str
 
-        generate_audio : bool
+        generate_audio : typing.Optional[bool]
+            Whether to generate audio alongside the video. Defaults to false.
 
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
@@ -105,7 +109,7 @@ class ToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -124,7 +128,6 @@ class ToolsClient:
         )
         client.tools.prompt_to_video_clip(
             prompt="prompt",
-            generate_audio=True,
         )
         """
         _response = self._raw_client.prompt_to_video_clip(
@@ -140,22 +143,27 @@ class ToolsClient:
     def image_to_video_clip(
         self,
         *,
-        prompt: str,
-        generate_audio: bool,
-        image: StorageFileRef,
+        image_storage_file_id: str,
+        prompt: typing.Optional[str] = OMIT,
+        generate_audio: typing.Optional[bool] = OMIT,
         source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Animate a still image into a video clip using a text prompt. Optionally generate audio alongside the video.
+
         Parameters
         ----------
-        prompt : str
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        generate_audio : bool
+        prompt : typing.Optional[str]
+            Optional text prompt to guide the animation. When omitted the model infers motion from the image.
 
-        image : StorageFileRef
+        generate_audio : typing.Optional[bool]
+            Whether to generate audio alongside the video. Defaults to false.
 
         source_prompt_to_image_prompt : typing.Optional[str]
             Optional prompt used when the source image was generated.
@@ -164,7 +172,7 @@ class ToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -176,24 +184,19 @@ class ToolsClient:
 
         Examples
         --------
-        from videogen import StorageFileRef, VideoGenApi
+        from videogen import VideoGenApi
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.tools.image_to_video_clip(
-            prompt="prompt",
-            generate_audio=True,
-            image=StorageFileRef(
-                storage_file_id="storageFileId",
-                type="IMAGE",
-            ),
+            image_storage_file_id="imageStorageFileId",
         )
         """
         _response = self._raw_client.image_to_video_clip(
+            image_storage_file_id=image_storage_file_id,
             prompt=prompt,
             generate_audio=generate_audio,
-            image=image,
             source_prompt_to_image_prompt=source_prompt_to_image_prompt,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
@@ -204,25 +207,28 @@ class ToolsClient:
     def image_to_image(
         self,
         *,
+        image_storage_file_id: str,
         prompt: str,
-        image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Transform an existing image using a text prompt. The prompt describes the desired changes to apply.
+
         Parameters
         ----------
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
         prompt : str
             Prompt describing how to transform the input image.
-
-        image : StorageFileRef
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -234,22 +240,19 @@ class ToolsClient:
 
         Examples
         --------
-        from videogen import StorageFileRef, VideoGenApi
+        from videogen import VideoGenApi
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.tools.image_to_image(
+            image_storage_file_id="imageStorageFileId",
             prompt="prompt",
-            image=StorageFileRef(
-                storage_file_id="storageFileId",
-                type="IMAGE",
-            ),
         )
         """
         _response = self._raw_client.image_to_image(
+            image_storage_file_id=image_storage_file_id,
             prompt=prompt,
-            image=image,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -259,25 +262,28 @@ class ToolsClient:
     def video_to_video_clip(
         self,
         *,
+        video_storage_file_id: str,
         prompt: str,
-        video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Restyle an existing video using a text prompt. The prompt describes the visual transformation to apply.
+
         Parameters
         ----------
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
         prompt : str
             Prompt describing how to transform the input video.
-
-        video : StorageFileRef
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -289,22 +295,19 @@ class ToolsClient:
 
         Examples
         --------
-        from videogen import StorageFileRef, VideoGenApi
+        from videogen import VideoGenApi
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.tools.video_to_video_clip(
+            video_storage_file_id="videoStorageFileId",
             prompt="prompt",
-            video=StorageFileRef(
-                storage_file_id="storageFileId",
-                type="IMAGE",
-            ),
         )
         """
         _response = self._raw_client.video_to_video_clip(
+            video_storage_file_id=video_storage_file_id,
             prompt=prompt,
-            video=video,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -316,10 +319,7 @@ class ToolsClient:
         *,
         tts_text: str,
         voice_id: typing.Optional[str] = OMIT,
-        previous_tts_text: typing.Optional[str] = OMIT,
-        next_tts_text: typing.Optional[str] = OMIT,
         speech_language_code: typing.Optional[str] = OMIT,
-        hide_captions: typing.Optional[bool] = OMIT,
         pronunciation_replacements: typing.Optional[typing.Sequence[PronunciationReplacement]] = OMIT,
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -328,27 +328,22 @@ class ToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Convert text into a spoken audio file. Only voices with `supportsDirectToolExecution` set to true can be used. Optionally choose a voice, language, speed, and pronunciation overrides.
+
         Parameters
         ----------
         tts_text : str
 
         voice_id : typing.Optional[str]
-            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null.
-
-        previous_tts_text : typing.Optional[str]
-
-        next_tts_text : typing.Optional[str]
+            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null. Only voices with `supportsDirectToolExecution` set to true are accepted.
 
         speech_language_code : typing.Optional[str]
             ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
 
-        hide_captions : typing.Optional[bool]
-            Defaults to false when omitted.
-
         pronunciation_replacements : typing.Optional[typing.Sequence[PronunciationReplacement]]
 
         auto_expand_pronunciation_replacements : typing.Optional[bool]
-            Defaults to false when omitted.
+            When true, automatically expands numbers, symbols, acronyms, and other non-word tokens into their spoken forms before synthesis so the voice pronounces them correctly (e.g. `$100` → `one hundred dollars`, `NASA` → `nasa`, `3rd` → `third`). Defaults to false when omitted.
 
         voice_speed : typing.Optional[float]
             Speech rate multiplier. Defaults to the voice's default speed.
@@ -357,7 +352,7 @@ class ToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -381,10 +376,7 @@ class ToolsClient:
         _response = self._raw_client.text_to_speech(
             tts_text=tts_text,
             voice_id=voice_id,
-            previous_tts_text=previous_tts_text,
-            next_tts_text=next_tts_text,
             speech_language_code=speech_language_code,
-            hide_captions=hide_captions,
             pronunciation_replacements=pronunciation_replacements,
             auto_expand_pronunciation_replacements=auto_expand_pronunciation_replacements,
             voice_speed=voice_speed,
@@ -405,6 +397,8 @@ class ToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Generate a sound effect from a text description. Optionally control the duration and prompt influence.
+
         Parameters
         ----------
         prompt : str
@@ -417,7 +411,7 @@ class ToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -448,29 +442,31 @@ class ToolsClient:
         )
         return _response.data
 
-    def generate_avatar(
+    def audio_to_avatar_clip(
         self,
         *,
         avatar_presenter_id: str,
-        audio: StorageFileRef,
+        audio_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Generate a talking-head avatar video by pairing a presenter with an audio file, typically from a prior text-to-speech result.
+
         Parameters
         ----------
         avatar_presenter_id : str
             Presenter id from `GET /v1/resources/avatar-presenters`.
 
-        audio : StorageFileRef
-            Reference to an `AUDIO` file, typically from a prior text-to-speech result.
+        audio_storage_file_id : str
+            File id of an AUDIO file (e.g. `vg_file_...`), typically from a prior text-to-speech result. Upload a file first via `POST /v1/files/upload` or generate one with `POST /v1/tools/text-to-speech`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -482,22 +478,19 @@ class ToolsClient:
 
         Examples
         --------
-        from videogen import StorageFileRef, VideoGenApi
+        from videogen import VideoGenApi
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
-        client.tools.generate_avatar(
+        client.tools.audio_to_avatar_clip(
             avatar_presenter_id="avatarPresenterId",
-            audio=StorageFileRef(
-                storage_file_id="storageFileId",
-                type="IMAGE",
-            ),
+            audio_storage_file_id="audioStorageFileId",
         )
         """
-        _response = self._raw_client.generate_avatar(
+        _response = self._raw_client.audio_to_avatar_clip(
             avatar_presenter_id=avatar_presenter_id,
-            audio=audio,
+            audio_storage_file_id=audio_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -507,21 +500,24 @@ class ToolsClient:
     def vectorize_image(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Convert any raster image into a scalable vector graphic (SVG). The output traces the shapes and colors of the input image.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -533,20 +529,17 @@ class ToolsClient:
 
         Examples
         --------
-        from videogen import StorageFileRef, VideoGenApi
+        from videogen import VideoGenApi
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.tools.vectorize_image(
-            image=StorageFileRef(
-                storage_file_id="storageFileId",
-                type="IMAGE",
-            ),
+            image_storage_file_id="imageStorageFileId",
         )
         """
         _response = self._raw_client.vectorize_image(
-            image=image,
+            image_storage_file_id=image_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -556,21 +549,24 @@ class ToolsClient:
     def remove_image_background(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Remove the background from an image, returning a transparent-background PNG of the foreground subject.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -582,20 +578,17 @@ class ToolsClient:
 
         Examples
         --------
-        from videogen import StorageFileRef, VideoGenApi
+        from videogen import VideoGenApi
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.tools.remove_image_background(
-            image=StorageFileRef(
-                storage_file_id="storageFileId",
-                type="IMAGE",
-            ),
+            image_storage_file_id="imageStorageFileId",
         )
         """
         _response = self._raw_client.remove_image_background(
-            image=image,
+            image_storage_file_id=image_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -605,21 +598,24 @@ class ToolsClient:
     def remove_video_background(
         self,
         *,
-        video: StorageFileRef,
+        video_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Remove the background from a video, producing a transparent-background video of the foreground subject.
+
         Parameters
         ----------
-        video : StorageFileRef
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -631,20 +627,17 @@ class ToolsClient:
 
         Examples
         --------
-        from videogen import StorageFileRef, VideoGenApi
+        from videogen import VideoGenApi
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.tools.remove_video_background(
-            video=StorageFileRef(
-                storage_file_id="storageFileId",
-                type="IMAGE",
-            ),
+            video_storage_file_id="videoStorageFileId",
         )
         """
         _response = self._raw_client.remove_video_background(
-            video=video,
+            video_storage_file_id=video_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -654,21 +647,24 @@ class ToolsClient:
     def upscale_image(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Increase the resolution of an image while preserving detail and sharpness.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -680,20 +676,17 @@ class ToolsClient:
 
         Examples
         --------
-        from videogen import StorageFileRef, VideoGenApi
+        from videogen import VideoGenApi
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.tools.upscale_image(
-            image=StorageFileRef(
-                storage_file_id="storageFileId",
-                type="IMAGE",
-            ),
+            image_storage_file_id="imageStorageFileId",
         )
         """
         _response = self._raw_client.upscale_image(
-            image=image,
+            image_storage_file_id=image_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -703,21 +696,24 @@ class ToolsClient:
     def upscale_video(
         self,
         *,
-        video: StorageFileRef,
+        video_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Increase the resolution of a video while preserving detail and sharpness.
+
         Parameters
         ----------
-        video : StorageFileRef
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -729,20 +725,17 @@ class ToolsClient:
 
         Examples
         --------
-        from videogen import StorageFileRef, VideoGenApi
+        from videogen import VideoGenApi
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.tools.upscale_video(
-            video=StorageFileRef(
-                storage_file_id="storageFileId",
-                type="IMAGE",
-            ),
+            video_storage_file_id="videoStorageFileId",
         )
         """
         _response = self._raw_client.upscale_video(
-            video=video,
+            video_storage_file_id=video_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -750,12 +743,14 @@ class ToolsClient:
         return _response.data
 
     def cancel_tool_execution(
-        self, api_task_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StartToolExecutionResponse:
         """
+        Request cancellation of a running tool execution. The execution transitions to `cancelled` if it has not already completed.
+
         Parameters
         ----------
-        api_task_execution_id : str
+        tool_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -773,19 +768,21 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.cancel_tool_execution(
-            api_task_execution_id="apiTaskExecutionId",
+            tool_execution_id="toolExecutionId",
         )
         """
-        _response = self._raw_client.cancel_tool_execution(api_task_execution_id, request_options=request_options)
+        _response = self._raw_client.cancel_tool_execution(tool_execution_id, request_options=request_options)
         return _response.data
 
-    def get_executed_tool(
-        self, api_task_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    def get_tool_execution_info(
+        self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> ExecutedTool:
         """
+        Retrieve the current status and result of a tool execution. Poll this endpoint until `status` is `succeeded`, `failed`, or `cancelled`.
+
         Parameters
         ----------
-        api_task_execution_id : str
+        tool_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -802,11 +799,11 @@ class ToolsClient:
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
-        client.tools.get_executed_tool(
-            api_task_execution_id="apiTaskExecutionId",
+        client.tools.get_tool_execution_info(
+            tool_execution_id="toolExecutionId",
         )
         """
-        _response = self._raw_client.get_executed_tool(api_task_execution_id, request_options=request_options)
+        _response = self._raw_client.get_tool_execution_info(tool_execution_id, request_options=request_options)
         return _response.data
 
 
@@ -835,6 +832,8 @@ class AsyncToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Generate an image from a text prompt. Optionally specify an aspect ratio and number of candidates.
+
         Parameters
         ----------
         prompt : str
@@ -846,7 +845,7 @@ class AsyncToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -888,18 +887,21 @@ class AsyncToolsClient:
         self,
         *,
         prompt: str,
-        generate_audio: bool,
+        generate_audio: typing.Optional[bool] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Generate a video clip from a text prompt, with optional audio. Optionally specify an aspect ratio and number of candidates.
+
         Parameters
         ----------
         prompt : str
 
-        generate_audio : bool
+        generate_audio : typing.Optional[bool]
+            Whether to generate audio alongside the video. Defaults to false.
 
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
@@ -908,7 +910,7 @@ class AsyncToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -932,7 +934,6 @@ class AsyncToolsClient:
         async def main() -> None:
             await client.tools.prompt_to_video_clip(
                 prompt="prompt",
-                generate_audio=True,
             )
 
 
@@ -951,22 +952,27 @@ class AsyncToolsClient:
     async def image_to_video_clip(
         self,
         *,
-        prompt: str,
-        generate_audio: bool,
-        image: StorageFileRef,
+        image_storage_file_id: str,
+        prompt: typing.Optional[str] = OMIT,
+        generate_audio: typing.Optional[bool] = OMIT,
         source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Animate a still image into a video clip using a text prompt. Optionally generate audio alongside the video.
+
         Parameters
         ----------
-        prompt : str
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        generate_audio : bool
+        prompt : typing.Optional[str]
+            Optional text prompt to guide the animation. When omitted the model infers motion from the image.
 
-        image : StorageFileRef
+        generate_audio : typing.Optional[bool]
+            Whether to generate audio alongside the video. Defaults to false.
 
         source_prompt_to_image_prompt : typing.Optional[str]
             Optional prompt used when the source image was generated.
@@ -975,7 +981,7 @@ class AsyncToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -989,7 +995,7 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, StorageFileRef
+        from videogen import AsyncVideoGenApi
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -998,21 +1004,16 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.image_to_video_clip(
-                prompt="prompt",
-                generate_audio=True,
-                image=StorageFileRef(
-                    storage_file_id="storageFileId",
-                    type="IMAGE",
-                ),
+                image_storage_file_id="imageStorageFileId",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.image_to_video_clip(
+            image_storage_file_id=image_storage_file_id,
             prompt=prompt,
             generate_audio=generate_audio,
-            image=image,
             source_prompt_to_image_prompt=source_prompt_to_image_prompt,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
@@ -1023,25 +1024,28 @@ class AsyncToolsClient:
     async def image_to_image(
         self,
         *,
+        image_storage_file_id: str,
         prompt: str,
-        image: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Transform an existing image using a text prompt. The prompt describes the desired changes to apply.
+
         Parameters
         ----------
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
         prompt : str
             Prompt describing how to transform the input image.
-
-        image : StorageFileRef
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1055,7 +1059,7 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, StorageFileRef
+        from videogen import AsyncVideoGenApi
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -1064,19 +1068,16 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.image_to_image(
+                image_storage_file_id="imageStorageFileId",
                 prompt="prompt",
-                image=StorageFileRef(
-                    storage_file_id="storageFileId",
-                    type="IMAGE",
-                ),
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.image_to_image(
+            image_storage_file_id=image_storage_file_id,
             prompt=prompt,
-            image=image,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -1086,25 +1087,28 @@ class AsyncToolsClient:
     async def video_to_video_clip(
         self,
         *,
+        video_storage_file_id: str,
         prompt: str,
-        video: StorageFileRef,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Restyle an existing video using a text prompt. The prompt describes the visual transformation to apply.
+
         Parameters
         ----------
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
         prompt : str
             Prompt describing how to transform the input video.
-
-        video : StorageFileRef
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1118,7 +1122,7 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, StorageFileRef
+        from videogen import AsyncVideoGenApi
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -1127,19 +1131,16 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.video_to_video_clip(
+                video_storage_file_id="videoStorageFileId",
                 prompt="prompt",
-                video=StorageFileRef(
-                    storage_file_id="storageFileId",
-                    type="IMAGE",
-                ),
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.video_to_video_clip(
+            video_storage_file_id=video_storage_file_id,
             prompt=prompt,
-            video=video,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -1151,10 +1152,7 @@ class AsyncToolsClient:
         *,
         tts_text: str,
         voice_id: typing.Optional[str] = OMIT,
-        previous_tts_text: typing.Optional[str] = OMIT,
-        next_tts_text: typing.Optional[str] = OMIT,
         speech_language_code: typing.Optional[str] = OMIT,
-        hide_captions: typing.Optional[bool] = OMIT,
         pronunciation_replacements: typing.Optional[typing.Sequence[PronunciationReplacement]] = OMIT,
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -1163,27 +1161,22 @@ class AsyncToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Convert text into a spoken audio file. Only voices with `supportsDirectToolExecution` set to true can be used. Optionally choose a voice, language, speed, and pronunciation overrides.
+
         Parameters
         ----------
         tts_text : str
 
         voice_id : typing.Optional[str]
-            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null.
-
-        previous_tts_text : typing.Optional[str]
-
-        next_tts_text : typing.Optional[str]
+            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null. Only voices with `supportsDirectToolExecution` set to true are accepted.
 
         speech_language_code : typing.Optional[str]
             ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
 
-        hide_captions : typing.Optional[bool]
-            Defaults to false when omitted.
-
         pronunciation_replacements : typing.Optional[typing.Sequence[PronunciationReplacement]]
 
         auto_expand_pronunciation_replacements : typing.Optional[bool]
-            Defaults to false when omitted.
+            When true, automatically expands numbers, symbols, acronyms, and other non-word tokens into their spoken forms before synthesis so the voice pronounces them correctly (e.g. `$100` → `one hundred dollars`, `NASA` → `nasa`, `3rd` → `third`). Defaults to false when omitted.
 
         voice_speed : typing.Optional[float]
             Speech rate multiplier. Defaults to the voice's default speed.
@@ -1192,7 +1185,7 @@ class AsyncToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1224,10 +1217,7 @@ class AsyncToolsClient:
         _response = await self._raw_client.text_to_speech(
             tts_text=tts_text,
             voice_id=voice_id,
-            previous_tts_text=previous_tts_text,
-            next_tts_text=next_tts_text,
             speech_language_code=speech_language_code,
-            hide_captions=hide_captions,
             pronunciation_replacements=pronunciation_replacements,
             auto_expand_pronunciation_replacements=auto_expand_pronunciation_replacements,
             voice_speed=voice_speed,
@@ -1248,6 +1238,8 @@ class AsyncToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Generate a sound effect from a text description. Optionally control the duration and prompt influence.
+
         Parameters
         ----------
         prompt : str
@@ -1260,7 +1252,7 @@ class AsyncToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1299,29 +1291,31 @@ class AsyncToolsClient:
         )
         return _response.data
 
-    async def generate_avatar(
+    async def audio_to_avatar_clip(
         self,
         *,
         avatar_presenter_id: str,
-        audio: StorageFileRef,
+        audio_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Generate a talking-head avatar video by pairing a presenter with an audio file, typically from a prior text-to-speech result.
+
         Parameters
         ----------
         avatar_presenter_id : str
             Presenter id from `GET /v1/resources/avatar-presenters`.
 
-        audio : StorageFileRef
-            Reference to an `AUDIO` file, typically from a prior text-to-speech result.
+        audio_storage_file_id : str
+            File id of an AUDIO file (e.g. `vg_file_...`), typically from a prior text-to-speech result. Upload a file first via `POST /v1/files/upload` or generate one with `POST /v1/tools/text-to-speech`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1335,7 +1329,7 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, StorageFileRef
+        from videogen import AsyncVideoGenApi
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -1343,20 +1337,17 @@ class AsyncToolsClient:
 
 
         async def main() -> None:
-            await client.tools.generate_avatar(
+            await client.tools.audio_to_avatar_clip(
                 avatar_presenter_id="avatarPresenterId",
-                audio=StorageFileRef(
-                    storage_file_id="storageFileId",
-                    type="IMAGE",
-                ),
+                audio_storage_file_id="audioStorageFileId",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.generate_avatar(
+        _response = await self._raw_client.audio_to_avatar_clip(
             avatar_presenter_id=avatar_presenter_id,
-            audio=audio,
+            audio_storage_file_id=audio_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -1366,21 +1357,24 @@ class AsyncToolsClient:
     async def vectorize_image(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Convert any raster image into a scalable vector graphic (SVG). The output traces the shapes and colors of the input image.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1394,7 +1388,7 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, StorageFileRef
+        from videogen import AsyncVideoGenApi
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -1403,17 +1397,14 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.vectorize_image(
-                image=StorageFileRef(
-                    storage_file_id="storageFileId",
-                    type="IMAGE",
-                ),
+                image_storage_file_id="imageStorageFileId",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.vectorize_image(
-            image=image,
+            image_storage_file_id=image_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -1423,21 +1414,24 @@ class AsyncToolsClient:
     async def remove_image_background(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Remove the background from an image, returning a transparent-background PNG of the foreground subject.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1451,7 +1445,7 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, StorageFileRef
+        from videogen import AsyncVideoGenApi
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -1460,17 +1454,14 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.remove_image_background(
-                image=StorageFileRef(
-                    storage_file_id="storageFileId",
-                    type="IMAGE",
-                ),
+                image_storage_file_id="imageStorageFileId",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.remove_image_background(
-            image=image,
+            image_storage_file_id=image_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -1480,21 +1471,24 @@ class AsyncToolsClient:
     async def remove_video_background(
         self,
         *,
-        video: StorageFileRef,
+        video_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Remove the background from a video, producing a transparent-background video of the foreground subject.
+
         Parameters
         ----------
-        video : StorageFileRef
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1508,7 +1502,7 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, StorageFileRef
+        from videogen import AsyncVideoGenApi
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -1517,17 +1511,14 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.remove_video_background(
-                video=StorageFileRef(
-                    storage_file_id="storageFileId",
-                    type="IMAGE",
-                ),
+                video_storage_file_id="videoStorageFileId",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.remove_video_background(
-            video=video,
+            video_storage_file_id=video_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -1537,21 +1528,24 @@ class AsyncToolsClient:
     async def upscale_image(
         self,
         *,
-        image: StorageFileRef,
+        image_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Increase the resolution of an image while preserving detail and sharpness.
+
         Parameters
         ----------
-        image : StorageFileRef
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1565,7 +1559,7 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, StorageFileRef
+        from videogen import AsyncVideoGenApi
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -1574,17 +1568,14 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.upscale_image(
-                image=StorageFileRef(
-                    storage_file_id="storageFileId",
-                    type="IMAGE",
-                ),
+                image_storage_file_id="imageStorageFileId",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.upscale_image(
-            image=image,
+            image_storage_file_id=image_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -1594,21 +1585,24 @@ class AsyncToolsClient:
     async def upscale_video(
         self,
         *,
-        video: StorageFileRef,
+        video_storage_file_id: str,
         num_candidates: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
+        Increase the resolution of a video while preserving detail and sharpness.
+
         Parameters
         ----------
-        video : StorageFileRef
+        video_storage_file_id : str
+            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
         num_candidates : typing.Optional[int]
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are scoped as temporary. Defaults to false.
+            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1622,7 +1616,7 @@ class AsyncToolsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, StorageFileRef
+        from videogen import AsyncVideoGenApi
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -1631,17 +1625,14 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.upscale_video(
-                video=StorageFileRef(
-                    storage_file_id="storageFileId",
-                    type="IMAGE",
-                ),
+                video_storage_file_id="videoStorageFileId",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.upscale_video(
-            video=video,
+            video_storage_file_id=video_storage_file_id,
             num_candidates=num_candidates,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -1649,12 +1640,14 @@ class AsyncToolsClient:
         return _response.data
 
     async def cancel_tool_execution(
-        self, api_task_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StartToolExecutionResponse:
         """
+        Request cancellation of a running tool execution. The execution transitions to `cancelled` if it has not already completed.
+
         Parameters
         ----------
-        api_task_execution_id : str
+        tool_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1677,22 +1670,24 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.cancel_tool_execution(
-                api_task_execution_id="apiTaskExecutionId",
+                tool_execution_id="toolExecutionId",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.cancel_tool_execution(api_task_execution_id, request_options=request_options)
+        _response = await self._raw_client.cancel_tool_execution(tool_execution_id, request_options=request_options)
         return _response.data
 
-    async def get_executed_tool(
-        self, api_task_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    async def get_tool_execution_info(
+        self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> ExecutedTool:
         """
+        Retrieve the current status and result of a tool execution. Poll this endpoint until `status` is `succeeded`, `failed`, or `cancelled`.
+
         Parameters
         ----------
-        api_task_execution_id : str
+        tool_execution_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1714,12 +1709,12 @@ class AsyncToolsClient:
 
 
         async def main() -> None:
-            await client.tools.get_executed_tool(
-                api_task_execution_id="apiTaskExecutionId",
+            await client.tools.get_tool_execution_info(
+                tool_execution_id="toolExecutionId",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_executed_tool(api_task_execution_id, request_options=request_options)
+        _response = await self._raw_client.get_tool_execution_info(tool_execution_id, request_options=request_options)
         return _response.data

@@ -4,9 +4,14 @@ import typing
 
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
+from ..types.file_upload_response import FileUploadResponse
 from ..types.get_files_response import GetFilesResponse
 from ..types.storage_file import StorageFile
 from .raw_client import AsyncRawFilesClient, RawFilesClient
+from .types.create_file_upload_request_type import CreateFileUploadRequestType
+
+# this is used as the default value for optional parameters
+OMIT = typing.cast(typing.Any, ...)
 
 
 class FilesClient:
@@ -26,6 +31,8 @@ class FilesClient:
 
     def get_files(self, *, request_options: typing.Optional[RequestOptions] = None) -> GetFilesResponse:
         """
+        List all files in your account, including generated assets and uploads.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -50,6 +57,8 @@ class FilesClient:
 
     def get_file(self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> StorageFile:
         """
+        Retrieve metadata for a single file by its id.
+
         Parameters
         ----------
         storage_file_id : str
@@ -76,6 +85,85 @@ class FilesClient:
         _response = self._raw_client.get_file(storage_file_id, request_options=request_options)
         return _response.data
 
+    def create_file_upload(
+        self,
+        *,
+        type: CreateFileUploadRequestType,
+        display_name: str,
+        is_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> FileUploadResponse:
+        """
+        Create a new file and receive a pre-signed upload URL. PUT the file bytes to the returned URL, then poll `GET /v1/files/{storageFileId}` until the file is ready.
+
+        Parameters
+        ----------
+        type : CreateFileUploadRequestType
+            The type of file to upload.
+
+        display_name : str
+            Display name for the uploaded file.
+
+        is_temporary : typing.Optional[bool]
+            When true, the file is temporary and automatically deleted after 24 hours. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        FileUploadResponse
+            Upload instructions
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.files.create_file_upload(
+            type="IMAGE",
+            display_name="displayName",
+        )
+        """
+        _response = self._raw_client.create_file_upload(
+            type=type, display_name=display_name, is_temporary=is_temporary, request_options=request_options
+        )
+        return _response.data
+
+    def hydrate_file(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> StorageFile:
+        """
+        Generate fresh signed URLs for all available renditions of a file. Call this when source URLs are missing or expired. Returns the full file object with populated `thumbnailSource`, `previewSource`, and `downloadSource`.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StorageFile
+            File with hydrated sources
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.files.hydrate_file(
+            storage_file_id="storageFileId",
+        )
+        """
+        _response = self._raw_client.hydrate_file(storage_file_id, request_options=request_options)
+        return _response.data
+
 
 class AsyncFilesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -94,6 +182,8 @@ class AsyncFilesClient:
 
     async def get_files(self, *, request_options: typing.Optional[RequestOptions] = None) -> GetFilesResponse:
         """
+        List all files in your account, including generated assets and uploads.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -128,6 +218,8 @@ class AsyncFilesClient:
         self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StorageFile:
         """
+        Retrieve metadata for a single file by its id.
+
         Parameters
         ----------
         storage_file_id : str
@@ -160,4 +252,99 @@ class AsyncFilesClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get_file(storage_file_id, request_options=request_options)
+        return _response.data
+
+    async def create_file_upload(
+        self,
+        *,
+        type: CreateFileUploadRequestType,
+        display_name: str,
+        is_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> FileUploadResponse:
+        """
+        Create a new file and receive a pre-signed upload URL. PUT the file bytes to the returned URL, then poll `GET /v1/files/{storageFileId}` until the file is ready.
+
+        Parameters
+        ----------
+        type : CreateFileUploadRequestType
+            The type of file to upload.
+
+        display_name : str
+            Display name for the uploaded file.
+
+        is_temporary : typing.Optional[bool]
+            When true, the file is temporary and automatically deleted after 24 hours. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        FileUploadResponse
+            Upload instructions
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.files.create_file_upload(
+                type="IMAGE",
+                display_name="displayName",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.create_file_upload(
+            type=type, display_name=display_name, is_temporary=is_temporary, request_options=request_options
+        )
+        return _response.data
+
+    async def hydrate_file(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> StorageFile:
+        """
+        Generate fresh signed URLs for all available renditions of a file. Call this when source URLs are missing or expired. Returns the full file object with populated `thumbnailSource`, `previewSource`, and `downloadSource`.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StorageFile
+            File with hydrated sources
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.files.hydrate_file(
+                storage_file_id="storageFileId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.hydrate_file(storage_file_id, request_options=request_options)
         return _response.data

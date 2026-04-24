@@ -27,6 +27,8 @@ class RawWebhooksClient:
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[WebhookEndpointListResponse]:
         """
+        List all configured webhook endpoints for your account.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -70,6 +72,8 @@ class RawWebhooksClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[WebhookEndpoint]:
         """
+        Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response — store it securely.
+
         Parameters
         ----------
         url : str
@@ -124,6 +128,8 @@ class RawWebhooksClient:
         self, endpoint_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[None]:
         """
+        Remove a webhook endpoint. It will stop receiving events immediately.
+
         Parameters
         ----------
         endpoint_id : str
@@ -161,6 +167,8 @@ class AsyncRawWebhooksClient:
         self, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[WebhookEndpointListResponse]:
         """
+        List all configured webhook endpoints for your account.
+
         Parameters
         ----------
         request_options : typing.Optional[RequestOptions]
@@ -204,6 +212,8 @@ class AsyncRawWebhooksClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[WebhookEndpoint]:
         """
+        Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response — store it securely.
+
         Parameters
         ----------
         url : str
@@ -258,6 +268,8 @@ class AsyncRawWebhooksClient:
         self, endpoint_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[None]:
         """
+        Remove a webhook endpoint. It will stop receiving events immediately.
+
         Parameters
         ----------
         endpoint_id : str

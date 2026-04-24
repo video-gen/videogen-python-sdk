@@ -6,6 +6,7 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
+from .file_source import FileSource
 from .storage_file_scope import StorageFileScope
 from .storage_file_type import StorageFileType
 
@@ -27,7 +28,7 @@ class StorageFile(UniversalBaseModel):
 
     scope: StorageFileScope = pydantic.Field()
     """
-    `GLOBAL` files persist; `TEMPORARY` files are auto-cleaned.
+    File scope. `GLOBAL` — user-uploaded or standalone generated files that persist indefinitely. `PROJECT` — project-specific files (e.g. text-to-speech clips in a generated project). `EXPORT` — project exports. `TEMPORARY` — short-lived files automatically deleted after 24 hours.
     """
 
     display_name: typing_extensions.Annotated[
@@ -36,6 +37,38 @@ class StorageFile(UniversalBaseModel):
         pydantic.Field(alias="displayName", description="Display name for the file."),
     ] = None
     description: typing.Optional[str] = None
+    duration_seconds: typing_extensions.Annotated[
+        typing.Optional[float],
+        FieldMetadata(alias="durationSeconds"),
+        pydantic.Field(
+            alias="durationSeconds", description="Duration in seconds for video and audio files. Null for images."
+        ),
+    ] = None
+    transcript: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Transcript text for video and audio files, when available. Null for images or when no transcript has been generated.
+    """
+
+    thumbnail_source: typing_extensions.Annotated[
+        typing.Optional[FileSource],
+        FieldMetadata(alias="thumbnailSource"),
+        pydantic.Field(alias="thumbnailSource", description="Thumbnail image source. Populated after hydration."),
+    ] = None
+    preview_source: typing_extensions.Annotated[
+        typing.Optional[FileSource],
+        FieldMetadata(alias="previewSource"),
+        pydantic.Field(
+            alias="previewSource",
+            description="Preview rendition source (720p for video, resized for images). Populated after hydration.",
+        ),
+    ] = None
+    download_source: typing_extensions.Annotated[
+        typing.Optional[FileSource],
+        FieldMetadata(alias="downloadSource"),
+        pydantic.Field(
+            alias="downloadSource", description="Highest-quality downloadable rendition. Populated after hydration."
+        ),
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
