@@ -36,7 +36,7 @@ client = VideoGenApi(
 )
 
 client.tools.prompt_to_image(
-    prompt="prompt",
+    prompt="A serene Japanese garden with cherry blossoms at golden hour",
 )
 
 ```
@@ -77,7 +77,7 @@ client.tools.prompt_to_image(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
     
 </dd>
 </dl>
@@ -133,7 +133,7 @@ client = VideoGenApi(
 )
 
 client.tools.prompt_to_video_clip(
-    prompt="prompt",
+    prompt="A golden retriever running through a sunlit meadow in slow motion, cinematic",
 )
 
 ```
@@ -182,7 +182,7 @@ client.tools.prompt_to_video_clip(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
     
 </dd>
 </dl>
@@ -295,7 +295,7 @@ client.tools.image_to_video_clip(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
     
 </dd>
 </dl>
@@ -393,7 +393,7 @@ client.tools.image_to_image(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
     
 </dd>
 </dl>
@@ -491,7 +491,7 @@ client.tools.video_to_video_clip(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
     
 </dd>
 </dl>
@@ -620,7 +620,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
     
 </dd>
 </dl>
@@ -725,7 +725,7 @@ client.tools.prompt_to_sound_effect(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
     
 </dd>
 </dl>
@@ -823,7 +823,7 @@ client.tools.audio_to_avatar_clip(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
     
 </dd>
 </dl>
@@ -1418,6 +1418,87 @@ client.files.get_files()
 </dl>
 </details>
 
+<details><summary><code>client.files.<a href="src/videogen/files/client.py">search_files</a>(...) -> SearchFilesResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Semantic vector search over your files. Embeds the query text and returns the closest matching files ranked by cosine similarity. Only files with indexed descriptions are searchable.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.files.search_files(
+    query="query",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**query:** `str` — Natural-language search query. The text is embedded and compared against file description vectors using cosine similarity.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**num_results:** `typing.Optional[int]` — Number of results to return (1–100). Defaults to 10.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.files.<a href="src/videogen/files/client.py">get_file</a>(...) -> StorageFile</code></summary>
 <dl>
 <dd>
@@ -1527,7 +1608,6 @@ client = VideoGenApi(
 )
 
 client.files.create_file_upload(
-    type="IMAGE",
     display_name="displayName",
 )
 
@@ -1545,14 +1625,6 @@ client.files.create_file_upload(
 <dl>
 <dd>
 
-**type:** `CreateFileUploadRequestType` — The type of file to upload.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
 **display_name:** `str` — Display name for the uploaded file.
     
 </dd>
@@ -1561,7 +1633,15 @@ client.files.create_file_upload(
 <dl>
 <dd>
 
-**is_temporary:** `typing.Optional[bool]` — When true, the file is temporary and automatically deleted after 24 hours. Defaults to false.
+**type:** `typing.Optional[CreateFileUploadRequestType]` — The type of file to upload. Optional; when omitted, the type is inferred after upload processing completes.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**is_temporary:** `typing.Optional[bool]` — When true, the file is temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
     
 </dd>
 </dl>
@@ -1617,6 +1697,152 @@ client = VideoGenApi(
 )
 
 client.files.hydrate_file(
+    storage_file_id="storageFileId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**storage_file_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.files.<a href="src/videogen/files/client.py">enable_public_preview</a>(...) -> StorageFile</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Enable public preview for a file. Creates a public playback ID on the underlying Mux asset so the file can be streamed without authentication. Returns the updated file with `allowsPublicPreview`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.files.enable_public_preview(
+    storage_file_id="storageFileId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**storage_file_id:** `str` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.files.<a href="src/videogen/files/client.py">disable_public_preview</a>(...) -> StorageFile</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Disable public preview for a file. Deletes the public playback ID from the underlying Mux asset. The file's signed URLs remain functional. Returns the updated file.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.files.disable_public_preview(
     storage_file_id="storageFileId",
 )
 
@@ -1865,7 +2091,7 @@ client.webhooks.list_webhook_endpoints()
 <dl>
 <dd>
 
-Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response — store it securely.
+Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response. Store it securely.
 </dd>
 </dl>
 </dd>

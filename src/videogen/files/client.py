@@ -6,6 +6,7 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.file_upload_response import FileUploadResponse
 from ..types.get_files_response import GetFilesResponse
+from ..types.search_files_response import SearchFilesResponse
 from ..types.storage_file import StorageFile
 from .raw_client import AsyncRawFilesClient, RawFilesClient
 from .types.create_file_upload_request_type import CreateFileUploadRequestType
@@ -55,6 +56,46 @@ class FilesClient:
         _response = self._raw_client.get_files(request_options=request_options)
         return _response.data
 
+    def search_files(
+        self,
+        *,
+        query: str,
+        num_results: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchFilesResponse:
+        """
+        Semantic vector search over your files. Embeds the query text and returns the closest matching files ranked by cosine similarity. Only files with indexed descriptions are searchable.
+
+        Parameters
+        ----------
+        query : str
+            Natural-language search query. The text is embedded and compared against file description vectors using cosine similarity.
+
+        num_results : typing.Optional[int]
+            Number of results to return (1–100). Defaults to 10.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchFilesResponse
+            Search results ordered by descending similarity
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.files.search_files(
+            query="query",
+        )
+        """
+        _response = self._raw_client.search_files(query=query, num_results=num_results, request_options=request_options)
+        return _response.data
+
     def get_file(self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> StorageFile:
         """
         Retrieve metadata for a single file by its id.
@@ -88,8 +129,8 @@ class FilesClient:
     def create_file_upload(
         self,
         *,
-        type: CreateFileUploadRequestType,
         display_name: str,
+        type: typing.Optional[CreateFileUploadRequestType] = OMIT,
         is_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> FileUploadResponse:
@@ -98,14 +139,14 @@ class FilesClient:
 
         Parameters
         ----------
-        type : CreateFileUploadRequestType
-            The type of file to upload.
-
         display_name : str
             Display name for the uploaded file.
 
+        type : typing.Optional[CreateFileUploadRequestType]
+            The type of file to upload. Optional; when omitted, the type is inferred after upload processing completes.
+
         is_temporary : typing.Optional[bool]
-            When true, the file is temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, the file is temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -123,12 +164,11 @@ class FilesClient:
             token="YOUR_TOKEN",
         )
         client.files.create_file_upload(
-            type="IMAGE",
             display_name="displayName",
         )
         """
         _response = self._raw_client.create_file_upload(
-            type=type, display_name=display_name, is_temporary=is_temporary, request_options=request_options
+            display_name=display_name, type=type, is_temporary=is_temporary, request_options=request_options
         )
         return _response.data
 
@@ -162,6 +202,70 @@ class FilesClient:
         )
         """
         _response = self._raw_client.hydrate_file(storage_file_id, request_options=request_options)
+        return _response.data
+
+    def enable_public_preview(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> StorageFile:
+        """
+        Enable public preview for a file. Creates a public playback ID on the underlying Mux asset so the file can be streamed without authentication. Returns the updated file with `allowsPublicPreview`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StorageFile
+            File with public preview enabled
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.files.enable_public_preview(
+            storage_file_id="storageFileId",
+        )
+        """
+        _response = self._raw_client.enable_public_preview(storage_file_id, request_options=request_options)
+        return _response.data
+
+    def disable_public_preview(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> StorageFile:
+        """
+        Disable public preview for a file. Deletes the public playback ID from the underlying Mux asset. The file's signed URLs remain functional. Returns the updated file.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StorageFile
+            File with public preview disabled
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.files.disable_public_preview(
+            storage_file_id="storageFileId",
+        )
+        """
+        _response = self._raw_client.disable_public_preview(storage_file_id, request_options=request_options)
         return _response.data
 
 
@@ -214,6 +318,56 @@ class AsyncFilesClient:
         _response = await self._raw_client.get_files(request_options=request_options)
         return _response.data
 
+    async def search_files(
+        self,
+        *,
+        query: str,
+        num_results: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> SearchFilesResponse:
+        """
+        Semantic vector search over your files. Embeds the query text and returns the closest matching files ranked by cosine similarity. Only files with indexed descriptions are searchable.
+
+        Parameters
+        ----------
+        query : str
+            Natural-language search query. The text is embedded and compared against file description vectors using cosine similarity.
+
+        num_results : typing.Optional[int]
+            Number of results to return (1–100). Defaults to 10.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        SearchFilesResponse
+            Search results ordered by descending similarity
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.files.search_files(
+                query="query",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.search_files(
+            query=query, num_results=num_results, request_options=request_options
+        )
+        return _response.data
+
     async def get_file(
         self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StorageFile:
@@ -257,8 +411,8 @@ class AsyncFilesClient:
     async def create_file_upload(
         self,
         *,
-        type: CreateFileUploadRequestType,
         display_name: str,
+        type: typing.Optional[CreateFileUploadRequestType] = OMIT,
         is_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> FileUploadResponse:
@@ -267,14 +421,14 @@ class AsyncFilesClient:
 
         Parameters
         ----------
-        type : CreateFileUploadRequestType
-            The type of file to upload.
-
         display_name : str
             Display name for the uploaded file.
 
+        type : typing.Optional[CreateFileUploadRequestType]
+            The type of file to upload. Optional; when omitted, the type is inferred after upload processing completes.
+
         is_temporary : typing.Optional[bool]
-            When true, the file is temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, the file is temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -297,7 +451,6 @@ class AsyncFilesClient:
 
         async def main() -> None:
             await client.files.create_file_upload(
-                type="IMAGE",
                 display_name="displayName",
             )
 
@@ -305,7 +458,7 @@ class AsyncFilesClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.create_file_upload(
-            type=type, display_name=display_name, is_temporary=is_temporary, request_options=request_options
+            display_name=display_name, type=type, is_temporary=is_temporary, request_options=request_options
         )
         return _response.data
 
@@ -347,4 +500,84 @@ class AsyncFilesClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.hydrate_file(storage_file_id, request_options=request_options)
+        return _response.data
+
+    async def enable_public_preview(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> StorageFile:
+        """
+        Enable public preview for a file. Creates a public playback ID on the underlying Mux asset so the file can be streamed without authentication. Returns the updated file with `allowsPublicPreview`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StorageFile
+            File with public preview enabled
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.files.enable_public_preview(
+                storage_file_id="storageFileId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.enable_public_preview(storage_file_id, request_options=request_options)
+        return _response.data
+
+    async def disable_public_preview(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> StorageFile:
+        """
+        Disable public preview for a file. Deletes the public playback ID from the underlying Mux asset. The file's signed URLs remain functional. Returns the updated file.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StorageFile
+            File with public preview disabled
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.files.disable_public_preview(
+                storage_file_id="storageFileId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.disable_public_preview(storage_file_id, request_options=request_options)
         return _response.data

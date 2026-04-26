@@ -16,7 +16,7 @@ class FileSource(UniversalBaseModel):
 
     status: FileSourceStatus = pydantic.Field()
     """
-    `pending` — asset is still processing or has not been hydrated yet. `ready` — signed URL is available. `failed` — rendition generation failed. `skipped` — rendition does not apply to this file type (e.g. thumbnail for audio).
+    `pending`: asset is still processing or has not been hydrated yet. `ready`: signed URL is available. `failed`: rendition generation failed. `skipped`: rendition does not apply to this file type (e.g. thumbnail for audio).
     """
 
     url: typing.Optional[str] = pydantic.Field(default=None)

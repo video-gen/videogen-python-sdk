@@ -27,7 +27,7 @@ class ImageAssetRequest(UniversalBaseModel):
         FieldMetadata(alias="isOutputTemporary"),
         pydantic.Field(
             alias="isOutputTemporary",
-            description="When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.",
+            description="When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.",
         ),
     ] = None
 

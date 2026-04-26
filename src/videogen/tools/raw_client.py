@@ -48,7 +48,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -121,7 +121,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -200,7 +200,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -270,7 +270,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -338,7 +338,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -420,7 +420,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -497,7 +497,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -566,7 +566,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -630,7 +630,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -693,7 +693,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -756,7 +756,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -819,7 +819,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -882,7 +882,7 @@ class RawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1037,7 +1037,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1110,7 +1110,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1189,7 +1189,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1259,7 +1259,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1327,7 +1327,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1409,7 +1409,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1486,7 +1486,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1555,7 +1555,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1619,7 +1619,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1682,7 +1682,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1745,7 +1745,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1808,7 +1808,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1871,7 +1871,7 @@ class AsyncRawToolsClient:
             Number of output candidates to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

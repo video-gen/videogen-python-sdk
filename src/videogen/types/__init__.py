@@ -19,6 +19,8 @@ if typing.TYPE_CHECKING:
     from .get_files_response import GetFilesResponse
     from .image_asset_request import ImageAssetRequest
     from .pronunciation_replacement import PronunciationReplacement
+    from .search_files_response import SearchFilesResponse
+    from .search_files_result import SearchFilesResult
     from .start_tool_execution_response import StartToolExecutionResponse
     from .storage_file import StorageFile
     from .storage_file_scope import StorageFileScope
@@ -47,6 +49,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "GetFilesResponse": ".get_files_response",
     "ImageAssetRequest": ".image_asset_request",
     "PronunciationReplacement": ".pronunciation_replacement",
+    "SearchFilesResponse": ".search_files_response",
+    "SearchFilesResult": ".search_files_result",
     "StartToolExecutionResponse": ".start_tool_execution_response",
     "StorageFile": ".storage_file",
     "StorageFileScope": ".storage_file_scope",
@@ -99,6 +103,8 @@ __all__ = [
     "GetFilesResponse",
     "ImageAssetRequest",
     "PronunciationReplacement",
+    "SearchFilesResponse",
+    "SearchFilesResult",
     "StartToolExecutionResponse",
     "StorageFile",
     "StorageFileScope",

@@ -72,7 +72,7 @@ class RawWebhooksClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[WebhookEndpoint]:
         """
-        Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response — store it securely.
+        Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response. Store it securely.
 
         Parameters
         ----------
@@ -212,7 +212,7 @@ class AsyncRawWebhooksClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[WebhookEndpoint]:
         """
-        Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response — store it securely.
+        Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response. Store it securely.
 
         Parameters
         ----------

@@ -12,6 +12,7 @@ from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..types.file_upload_response import FileUploadResponse
 from ..types.get_files_response import GetFilesResponse
+from ..types.search_files_response import SearchFilesResponse
 from ..types.storage_file import StorageFile
 from .types.create_file_upload_request_type import CreateFileUploadRequestType
 from pydantic import ValidationError
@@ -49,6 +50,64 @@ class RawFilesClient:
                     GetFilesResponse,
                     parse_obj_as(
                         type_=GetFilesResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def search_files(
+        self,
+        *,
+        query: str,
+        num_results: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[SearchFilesResponse]:
+        """
+        Semantic vector search over your files. Embeds the query text and returns the closest matching files ranked by cosine similarity. Only files with indexed descriptions are searchable.
+
+        Parameters
+        ----------
+        query : str
+            Natural-language search query. The text is embedded and compared against file description vectors using cosine similarity.
+
+        num_results : typing.Optional[int]
+            Number of results to return (1–100). Defaults to 10.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[SearchFilesResponse]
+            Search results ordered by descending similarity
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/files/search",
+            method="POST",
+            json={
+                "query": query,
+                "numResults": num_results,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SearchFilesResponse,
+                    parse_obj_as(
+                        type_=SearchFilesResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -107,8 +166,8 @@ class RawFilesClient:
     def create_file_upload(
         self,
         *,
-        type: CreateFileUploadRequestType,
         display_name: str,
+        type: typing.Optional[CreateFileUploadRequestType] = OMIT,
         is_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[FileUploadResponse]:
@@ -117,14 +176,14 @@ class RawFilesClient:
 
         Parameters
         ----------
-        type : CreateFileUploadRequestType
-            The type of file to upload.
-
         display_name : str
             Display name for the uploaded file.
 
+        type : typing.Optional[CreateFileUploadRequestType]
+            The type of file to upload. Optional; when omitted, the type is inferred after upload processing completes.
+
         is_temporary : typing.Optional[bool]
-            When true, the file is temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, the file is temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -209,6 +268,90 @@ class RawFilesClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def enable_public_preview(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[StorageFile]:
+        """
+        Enable public preview for a file. Creates a public playback ID on the underlying Mux asset so the file can be streamed without authentication. Returns the updated file with `allowsPublicPreview`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[StorageFile]
+            File with public preview enabled
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/files/{encode_path_param(storage_file_id)}/enable-public-preview",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StorageFile,
+                    parse_obj_as(
+                        type_=StorageFile,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def disable_public_preview(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[StorageFile]:
+        """
+        Disable public preview for a file. Deletes the public playback ID from the underlying Mux asset. The file's signed URLs remain functional. Returns the updated file.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[StorageFile]
+            File with public preview disabled
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/files/{encode_path_param(storage_file_id)}/disable-public-preview",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StorageFile,
+                    parse_obj_as(
+                        type_=StorageFile,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawFilesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -241,6 +384,64 @@ class AsyncRawFilesClient:
                     GetFilesResponse,
                     parse_obj_as(
                         type_=GetFilesResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def search_files(
+        self,
+        *,
+        query: str,
+        num_results: typing.Optional[int] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[SearchFilesResponse]:
+        """
+        Semantic vector search over your files. Embeds the query text and returns the closest matching files ranked by cosine similarity. Only files with indexed descriptions are searchable.
+
+        Parameters
+        ----------
+        query : str
+            Natural-language search query. The text is embedded and compared against file description vectors using cosine similarity.
+
+        num_results : typing.Optional[int]
+            Number of results to return (1–100). Defaults to 10.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[SearchFilesResponse]
+            Search results ordered by descending similarity
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/files/search",
+            method="POST",
+            json={
+                "query": query,
+                "numResults": num_results,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    SearchFilesResponse,
+                    parse_obj_as(
+                        type_=SearchFilesResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -299,8 +500,8 @@ class AsyncRawFilesClient:
     async def create_file_upload(
         self,
         *,
-        type: CreateFileUploadRequestType,
         display_name: str,
+        type: typing.Optional[CreateFileUploadRequestType] = OMIT,
         is_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[FileUploadResponse]:
@@ -309,14 +510,14 @@ class AsyncRawFilesClient:
 
         Parameters
         ----------
-        type : CreateFileUploadRequestType
-            The type of file to upload.
-
         display_name : str
             Display name for the uploaded file.
 
+        type : typing.Optional[CreateFileUploadRequestType]
+            The type of file to upload. Optional; when omitted, the type is inferred after upload processing completes.
+
         is_temporary : typing.Optional[bool]
-            When true, the file is temporary and automatically deleted after 24 hours. Defaults to false.
+            When true, the file is temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -379,6 +580,90 @@ class AsyncRawFilesClient:
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"v1/files/{encode_path_param(storage_file_id)}/hydrate",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StorageFile,
+                    parse_obj_as(
+                        type_=StorageFile,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def enable_public_preview(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[StorageFile]:
+        """
+        Enable public preview for a file. Creates a public playback ID on the underlying Mux asset so the file can be streamed without authentication. Returns the updated file with `allowsPublicPreview`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[StorageFile]
+            File with public preview enabled
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/files/{encode_path_param(storage_file_id)}/enable-public-preview",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StorageFile,
+                    parse_obj_as(
+                        type_=StorageFile,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def disable_public_preview(
+        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[StorageFile]:
+        """
+        Disable public preview for a file. Deletes the public playback ID from the underlying Mux asset. The file's signed URLs remain functional. Returns the updated file.
+
+        Parameters
+        ----------
+        storage_file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[StorageFile]
+            File with public preview disabled
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/files/{encode_path_param(storage_file_id)}/disable-public-preview",
             method="POST",
             request_options=request_options,
         )

@@ -48,7 +48,7 @@ client = VideoGenApi(
 )
 
 client.tools.prompt_to_video_clip(
-    prompt="prompt",
+    prompt="A golden retriever running through a sunlit meadow in slow motion, cinematic",
 )
 ```
 
@@ -81,7 +81,7 @@ client = AsyncVideoGenApi(
 
 async def main() -> None:
     await client.tools.prompt_to_video_clip(
-        prompt="prompt",
+        prompt="A golden retriever running through a sunlit meadow in slow motion, cinematic",
     )
 
 

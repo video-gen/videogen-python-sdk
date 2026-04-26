@@ -21,14 +21,14 @@ class StorageFile(UniversalBaseModel):
         FieldMetadata(alias="storageFileId"),
         pydantic.Field(alias="storageFileId", description="File id (e.g. `vg_file_...`)."),
     ]
-    type: StorageFileType = pydantic.Field()
+    type: typing.Optional[StorageFileType] = pydantic.Field(default=None)
     """
-    File type.
+    File type. Null when the file is still being processed and the type has not yet been determined.
     """
 
     scope: StorageFileScope = pydantic.Field()
     """
-    File scope. `GLOBAL` — user-uploaded or standalone generated files that persist indefinitely. `PROJECT` — project-specific files (e.g. text-to-speech clips in a generated project). `EXPORT` — project exports. `TEMPORARY` — short-lived files automatically deleted after 24 hours.
+    File scope. `GLOBAL`: user-uploaded or standalone generated files that persist indefinitely. `PROJECT`: project-specific files (e.g. text-to-speech clips in a generated project). `EXPORT`: project exports. `TEMPORARY`: short-lived files guaranteed to be available for 24 hours, after which they may be archived at any time.
     """
 
     display_name: typing_extensions.Annotated[
@@ -67,6 +67,30 @@ class StorageFile(UniversalBaseModel):
         FieldMetadata(alias="downloadSource"),
         pydantic.Field(
             alias="downloadSource", description="Highest-quality downloadable rendition. Populated after hydration."
+        ),
+    ] = None
+    allows_public_preview: typing_extensions.Annotated[
+        typing.Optional[bool],
+        FieldMetadata(alias="allowsPublicPreview"),
+        pydantic.Field(
+            alias="allowsPublicPreview",
+            description="Whether public preview is enabled for this file. When true, `publicHlsUrl` and `publicPlaybackId` are populated.",
+        ),
+    ] = None
+    public_hls_url: typing_extensions.Annotated[
+        typing.Optional[str],
+        FieldMetadata(alias="publicHlsUrl"),
+        pydantic.Field(
+            alias="publicHlsUrl",
+            description="Public HLS streaming URL. Only present when `allowsPublicPreview` is true. Does not require authentication or signed tokens.",
+        ),
+    ] = None
+    public_playback_id: typing_extensions.Annotated[
+        typing.Optional[str],
+        FieldMetadata(alias="publicPlaybackId"),
+        pydantic.Field(
+            alias="publicPlaybackId",
+            description="Encoded public playback id (e.g. `vg_play_...`). Pass this to the `@videogen/player` or `@videogen/player-react` packages. Only present when `allowsPublicPreview` is true.",
         ),
     ] = None
 
