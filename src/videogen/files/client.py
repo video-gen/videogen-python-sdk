@@ -61,6 +61,7 @@ class FilesClient:
         *,
         query: str,
         num_results: typing.Optional[int] = OMIT,
+        self_only: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SearchFilesResponse:
         """
@@ -73,6 +74,9 @@ class FilesClient:
 
         num_results : typing.Optional[int]
             Number of results to return (1–100). Defaults to 10.
+
+        self_only : typing.Optional[bool]
+            When true, only files created by the calling API key's user are returned. When false (default), all files accessible to the team are included.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -93,16 +97,18 @@ class FilesClient:
             query="query",
         )
         """
-        _response = self._raw_client.search_files(query=query, num_results=num_results, request_options=request_options)
+        _response = self._raw_client.search_files(
+            query=query, num_results=num_results, self_only=self_only, request_options=request_options
+        )
         return _response.data
 
-    def get_file(self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> StorageFile:
+    def get_file(self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> StorageFile:
         """
         Retrieve metadata for a single file by its id.
 
         Parameters
         ----------
-        storage_file_id : str
+        file_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -120,10 +126,10 @@ class FilesClient:
             token="YOUR_TOKEN",
         )
         client.files.get_file(
-            storage_file_id="storageFileId",
+            file_id="fileId",
         )
         """
-        _response = self._raw_client.get_file(storage_file_id, request_options=request_options)
+        _response = self._raw_client.get_file(file_id, request_options=request_options)
         return _response.data
 
     def create_file_upload(
@@ -135,7 +141,7 @@ class FilesClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> FileUploadResponse:
         """
-        Create a new file and receive a pre-signed upload URL. PUT the file bytes to the returned URL, then poll `GET /v1/files/{storageFileId}` until the file is ready.
+        Create a new file and receive a pre-signed upload URL. PUT the file bytes to the returned URL, then poll `GET /v1/files/{fileId}` until the file is ready.
 
         Parameters
         ----------
@@ -146,7 +152,7 @@ class FilesClient:
             The type of file to upload. Optional; when omitted, the type is inferred after upload processing completes.
 
         is_temporary : typing.Optional[bool]
-            When true, the file is temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
+            When true, the file is temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -172,15 +178,13 @@ class FilesClient:
         )
         return _response.data
 
-    def hydrate_file(
-        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> StorageFile:
+    def hydrate_file(self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> StorageFile:
         """
         Generate fresh signed URLs for all available renditions of a file. Call this when source URLs are missing or expired. Returns the full file object with populated `thumbnailSource`, `previewSource`, and `downloadSource`.
 
         Parameters
         ----------
-        storage_file_id : str
+        file_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -198,21 +202,21 @@ class FilesClient:
             token="YOUR_TOKEN",
         )
         client.files.hydrate_file(
-            storage_file_id="storageFileId",
+            file_id="fileId",
         )
         """
-        _response = self._raw_client.hydrate_file(storage_file_id, request_options=request_options)
+        _response = self._raw_client.hydrate_file(file_id, request_options=request_options)
         return _response.data
 
     def enable_public_preview(
-        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StorageFile:
         """
-        Enable public preview for a file. Creates a public playback ID on the underlying Mux asset so the file can be streamed without authentication. Returns the updated file with `allowsPublicPreview`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
+        Enable public preview for a file. Creates a public playback ID on the underlying Mux asset so the file can be streamed without authentication. Returns the updated file with `isPublicPreviewEnabled`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
 
         Parameters
         ----------
-        storage_file_id : str
+        file_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -230,21 +234,21 @@ class FilesClient:
             token="YOUR_TOKEN",
         )
         client.files.enable_public_preview(
-            storage_file_id="storageFileId",
+            file_id="fileId",
         )
         """
-        _response = self._raw_client.enable_public_preview(storage_file_id, request_options=request_options)
+        _response = self._raw_client.enable_public_preview(file_id, request_options=request_options)
         return _response.data
 
     def disable_public_preview(
-        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StorageFile:
         """
         Disable public preview for a file. Deletes the public playback ID from the underlying Mux asset. The file's signed URLs remain functional. Returns the updated file.
 
         Parameters
         ----------
-        storage_file_id : str
+        file_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -262,10 +266,10 @@ class FilesClient:
             token="YOUR_TOKEN",
         )
         client.files.disable_public_preview(
-            storage_file_id="storageFileId",
+            file_id="fileId",
         )
         """
-        _response = self._raw_client.disable_public_preview(storage_file_id, request_options=request_options)
+        _response = self._raw_client.disable_public_preview(file_id, request_options=request_options)
         return _response.data
 
 
@@ -323,6 +327,7 @@ class AsyncFilesClient:
         *,
         query: str,
         num_results: typing.Optional[int] = OMIT,
+        self_only: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> SearchFilesResponse:
         """
@@ -335,6 +340,9 @@ class AsyncFilesClient:
 
         num_results : typing.Optional[int]
             Number of results to return (1–100). Defaults to 10.
+
+        self_only : typing.Optional[bool]
+            When true, only files created by the calling API key's user are returned. When false (default), all files accessible to the team are included.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -364,19 +372,17 @@ class AsyncFilesClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.search_files(
-            query=query, num_results=num_results, request_options=request_options
+            query=query, num_results=num_results, self_only=self_only, request_options=request_options
         )
         return _response.data
 
-    async def get_file(
-        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> StorageFile:
+    async def get_file(self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> StorageFile:
         """
         Retrieve metadata for a single file by its id.
 
         Parameters
         ----------
-        storage_file_id : str
+        file_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -399,13 +405,13 @@ class AsyncFilesClient:
 
         async def main() -> None:
             await client.files.get_file(
-                storage_file_id="storageFileId",
+                file_id="fileId",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_file(storage_file_id, request_options=request_options)
+        _response = await self._raw_client.get_file(file_id, request_options=request_options)
         return _response.data
 
     async def create_file_upload(
@@ -417,7 +423,7 @@ class AsyncFilesClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> FileUploadResponse:
         """
-        Create a new file and receive a pre-signed upload URL. PUT the file bytes to the returned URL, then poll `GET /v1/files/{storageFileId}` until the file is ready.
+        Create a new file and receive a pre-signed upload URL. PUT the file bytes to the returned URL, then poll `GET /v1/files/{fileId}` until the file is ready.
 
         Parameters
         ----------
@@ -428,7 +434,7 @@ class AsyncFilesClient:
             The type of file to upload. Optional; when omitted, the type is inferred after upload processing completes.
 
         is_temporary : typing.Optional[bool]
-            When true, the file is temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
+            When true, the file is temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -463,14 +469,14 @@ class AsyncFilesClient:
         return _response.data
 
     async def hydrate_file(
-        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StorageFile:
         """
         Generate fresh signed URLs for all available renditions of a file. Call this when source URLs are missing or expired. Returns the full file object with populated `thumbnailSource`, `previewSource`, and `downloadSource`.
 
         Parameters
         ----------
-        storage_file_id : str
+        file_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -493,24 +499,24 @@ class AsyncFilesClient:
 
         async def main() -> None:
             await client.files.hydrate_file(
-                storage_file_id="storageFileId",
+                file_id="fileId",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.hydrate_file(storage_file_id, request_options=request_options)
+        _response = await self._raw_client.hydrate_file(file_id, request_options=request_options)
         return _response.data
 
     async def enable_public_preview(
-        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StorageFile:
         """
-        Enable public preview for a file. Creates a public playback ID on the underlying Mux asset so the file can be streamed without authentication. Returns the updated file with `allowsPublicPreview`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
+        Enable public preview for a file. Creates a public playback ID on the underlying Mux asset so the file can be streamed without authentication. Returns the updated file with `isPublicPreviewEnabled`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
 
         Parameters
         ----------
-        storage_file_id : str
+        file_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -533,24 +539,24 @@ class AsyncFilesClient:
 
         async def main() -> None:
             await client.files.enable_public_preview(
-                storage_file_id="storageFileId",
+                file_id="fileId",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.enable_public_preview(storage_file_id, request_options=request_options)
+        _response = await self._raw_client.enable_public_preview(file_id, request_options=request_options)
         return _response.data
 
     async def disable_public_preview(
-        self, storage_file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StorageFile:
         """
         Disable public preview for a file. Deletes the public playback ID from the underlying Mux asset. The file's signed URLs remain functional. Returns the updated file.
 
         Parameters
         ----------
-        storage_file_id : str
+        file_id : str
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -573,11 +579,11 @@ class AsyncFilesClient:
 
         async def main() -> None:
             await client.files.disable_public_preview(
-                storage_file_id="storageFileId",
+                file_id="fileId",
             )
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.disable_public_preview(storage_file_id, request_options=request_options)
+        _response = await self._raw_client.disable_public_preview(file_id, request_options=request_options)
         return _response.data

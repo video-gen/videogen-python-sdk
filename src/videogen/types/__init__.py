@@ -16,6 +16,8 @@ if typing.TYPE_CHECKING:
     from .file_source import FileSource
     from .file_source_status import FileSourceStatus
     from .file_upload_response import FileUploadResponse
+    from .file_upload_webhook_event_name import FileUploadWebhookEventName
+    from .file_upload_webhook_payload import FileUploadWebhookPayload
     from .get_files_response import GetFilesResponse
     from .image_asset_request import ImageAssetRequest
     from .pronunciation_replacement import PronunciationReplacement
@@ -35,6 +37,7 @@ if typing.TYPE_CHECKING:
     from .video_asset_request import VideoAssetRequest
     from .webhook_endpoint import WebhookEndpoint
     from .webhook_endpoint_list_response import WebhookEndpointListResponse
+    from .webhook_event_name import WebhookEventName
 _dynamic_imports: typing.Dict[str, str] = {
     "ApiError": ".api_error",
     "AspectRatio": ".aspect_ratio",
@@ -46,6 +49,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "FileSource": ".file_source",
     "FileSourceStatus": ".file_source_status",
     "FileUploadResponse": ".file_upload_response",
+    "FileUploadWebhookEventName": ".file_upload_webhook_event_name",
+    "FileUploadWebhookPayload": ".file_upload_webhook_payload",
     "GetFilesResponse": ".get_files_response",
     "ImageAssetRequest": ".image_asset_request",
     "PronunciationReplacement": ".pronunciation_replacement",
@@ -65,6 +70,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "VideoAssetRequest": ".video_asset_request",
     "WebhookEndpoint": ".webhook_endpoint",
     "WebhookEndpointListResponse": ".webhook_endpoint_list_response",
+    "WebhookEventName": ".webhook_event_name",
 }
 
 
@@ -100,6 +106,8 @@ __all__ = [
     "FileSource",
     "FileSourceStatus",
     "FileUploadResponse",
+    "FileUploadWebhookEventName",
+    "FileUploadWebhookPayload",
     "GetFilesResponse",
     "ImageAssetRequest",
     "PronunciationReplacement",
@@ -119,4 +127,5 @@ __all__ = [
     "VideoAssetRequest",
     "WebhookEndpoint",
     "WebhookEndpointListResponse",
+    "WebhookEventName",
 ]

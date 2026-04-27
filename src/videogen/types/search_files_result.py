@@ -3,26 +3,17 @@
 import typing
 
 import pydantic
-import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from ..core.serialization import FieldMetadata
+from .storage_file import StorageFile
 
 
 class SearchFilesResult(UniversalBaseModel):
-    storage_file_id: typing_extensions.Annotated[
-        str,
-        FieldMetadata(alias="storageFileId"),
-        pydantic.Field(alias="storageFileId", description="Opaque file identifier."),
-    ]
     similarity: float = pydantic.Field()
     """
-    Cosine similarity score between 0 and 1, where 1 is an exact match.
+    Cosine similarity between the query embedding and the file description embedding. Ranges from 0 (no match) to 1 (identical). Values above 0.7 typically indicate strong relevance.
     """
 
-    description: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    The file description that was matched against.
-    """
+    file: StorageFile
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

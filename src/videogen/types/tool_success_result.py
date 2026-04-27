@@ -15,10 +15,10 @@ class ToolSuccessResult(UniversalBaseModel):
     Result for a single generated file. Present when `status` is `succeeded`.
     """
 
-    storage_file_id: typing_extensions.Annotated[
+    file_id: typing_extensions.Annotated[
         str,
-        FieldMetadata(alias="storageFileId"),
-        pydantic.Field(alias="storageFileId", description="File id for the generated asset."),
+        FieldMetadata(alias="fileId"),
+        pydantic.Field(alias="fileId", description="File id for the generated asset."),
     ]
     type: ToolSuccessResultType = pydantic.Field()
     """

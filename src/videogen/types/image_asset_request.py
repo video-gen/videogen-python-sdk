@@ -27,7 +27,7 @@ class ImageAssetRequest(UniversalBaseModel):
         FieldMetadata(alias="isOutputTemporary"),
         pydantic.Field(
             alias="isOutputTemporary",
-            description="When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.",
+            description="When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.",
         ),
     ] = None
 

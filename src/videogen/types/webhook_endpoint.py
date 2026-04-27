@@ -6,13 +6,13 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
-from .tool_execution_webhook_event_name import ToolExecutionWebhookEventName
+from .webhook_event_name import WebhookEventName
 
 
 class WebhookEndpoint(UniversalBaseModel):
     endpoint_id: typing_extensions.Annotated[str, FieldMetadata(alias="endpointId"), pydantic.Field(alias="endpointId")]
     url: str
-    events: typing.List[ToolExecutionWebhookEventName]
+    events: typing.List[WebhookEventName]
     description: typing.Optional[str] = None
     created_at: typing_extensions.Annotated[
         float,

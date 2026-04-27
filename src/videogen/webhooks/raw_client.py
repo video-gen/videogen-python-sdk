@@ -10,9 +10,9 @@ from ..core.jsonable_encoder import encode_path_param
 from ..core.parse_error import ParsingError
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
-from ..types.tool_execution_webhook_event_name import ToolExecutionWebhookEventName
 from ..types.webhook_endpoint import WebhookEndpoint
 from ..types.webhook_endpoint_list_response import WebhookEndpointListResponse
+from ..types.webhook_event_name import WebhookEventName
 from pydantic import ValidationError
 
 # this is used as the default value for optional parameters
@@ -67,19 +67,19 @@ class RawWebhooksClient:
         self,
         *,
         url: str,
-        events: typing.Sequence[ToolExecutionWebhookEventName],
+        events: typing.Sequence[WebhookEventName],
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[WebhookEndpoint]:
         """
-        Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response. Store it securely.
+        Register a new webhook endpoint to receive `tool_execution.*` and `file.*` events. The signing secret is only returned in this response. Store it securely.
 
         Parameters
         ----------
         url : str
             HTTPS URL that will receive webhook POST requests.
 
-        events : typing.Sequence[ToolExecutionWebhookEventName]
+        events : typing.Sequence[WebhookEventName]
 
         description : typing.Optional[str]
 
@@ -207,19 +207,19 @@ class AsyncRawWebhooksClient:
         self,
         *,
         url: str,
-        events: typing.Sequence[ToolExecutionWebhookEventName],
+        events: typing.Sequence[WebhookEventName],
         description: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[WebhookEndpoint]:
         """
-        Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response. Store it securely.
+        Register a new webhook endpoint to receive `tool_execution.*` and `file.*` events. The signing secret is only returned in this response. Store it securely.
 
         Parameters
         ----------
         url : str
             HTTPS URL that will receive webhook POST requests.
 
-        events : typing.Sequence[ToolExecutionWebhookEventName]
+        events : typing.Sequence[WebhookEventName]
 
         description : typing.Optional[str]
 

@@ -4,11 +4,23 @@ dynamic = ["version"]
 
 [tool.poetry]
 name = "videogen"
-version = "0.0.45"
+version = "0.0.16"
 description = ""
 readme = "README.md"
 authors = []
-keywords = []
+keywords = [
+    "videogen",
+    "video",
+    "ai",
+    "generative",
+    "api",
+    "sdk",
+    "text-to-video",
+    "text-to-speech",
+    "image-generation",
+    "video-generation",
+    "avatar"
+]
 
 classifiers = [
     "Intended Audience :: Developers",

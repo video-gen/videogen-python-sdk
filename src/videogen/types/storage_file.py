@@ -16,10 +16,8 @@ class StorageFile(UniversalBaseModel):
     Metadata for a generated file. Obtain ids from tool results or `GET /v1/files`.
     """
 
-    storage_file_id: typing_extensions.Annotated[
-        str,
-        FieldMetadata(alias="storageFileId"),
-        pydantic.Field(alias="storageFileId", description="File id (e.g. `vg_file_...`)."),
+    file_id: typing_extensions.Annotated[
+        str, FieldMetadata(alias="fileId"), pydantic.Field(alias="fileId", description="File id (e.g. `vg_file_...`).")
     ]
     type: typing.Optional[StorageFileType] = pydantic.Field(default=None)
     """
@@ -28,7 +26,12 @@ class StorageFile(UniversalBaseModel):
 
     scope: StorageFileScope = pydantic.Field()
     """
-    File scope. `GLOBAL`: user-uploaded or standalone generated files that persist indefinitely. `PROJECT`: project-specific files (e.g. text-to-speech clips in a generated project). `EXPORT`: project exports. `TEMPORARY`: short-lived files guaranteed to be available for 24 hours, after which they may be archived at any time.
+    File scope.
+    
+    - `GLOBAL`: user-uploaded or standalone generated files that persist indefinitely.
+    - `PROJECT`: project-specific files (e.g. text-to-speech clips in a generated project).
+    - `EXPORT`: project exports.
+    - `TEMPORARY`: short-lived files guaranteed to be available for 24 hours, after which they may be archived at any time. Not analyzed (no description, transcript, or embedding).
     """
 
     display_name: typing_extensions.Annotated[
@@ -69,11 +72,19 @@ class StorageFile(UniversalBaseModel):
             alias="downloadSource", description="Highest-quality downloadable rendition. Populated after hydration."
         ),
     ] = None
-    allows_public_preview: typing_extensions.Annotated[
-        typing.Optional[bool],
-        FieldMetadata(alias="allowsPublicPreview"),
+    hls_source: typing_extensions.Annotated[
+        typing.Optional[FileSource],
+        FieldMetadata(alias="hlsSource"),
         pydantic.Field(
-            alias="allowsPublicPreview",
+            alias="hlsSource",
+            description="Private HLS streaming source. Populated for video and audio files once Mux playback is ready. Uses a signed token; treat like other signed sources.",
+        ),
+    ] = None
+    is_public_preview_enabled: typing_extensions.Annotated[
+        typing.Optional[bool],
+        FieldMetadata(alias="isPublicPreviewEnabled"),
+        pydantic.Field(
+            alias="isPublicPreviewEnabled",
             description="Whether public preview is enabled for this file. When true, `publicHlsUrl` and `publicPlaybackId` are populated.",
         ),
     ] = None
@@ -82,7 +93,7 @@ class StorageFile(UniversalBaseModel):
         FieldMetadata(alias="publicHlsUrl"),
         pydantic.Field(
             alias="publicHlsUrl",
-            description="Public HLS streaming URL. Only present when `allowsPublicPreview` is true. Does not require authentication or signed tokens.",
+            description="Public HLS streaming URL. Only present when `isPublicPreviewEnabled` is true. Does not require authentication or signed tokens.",
         ),
     ] = None
     public_playback_id: typing_extensions.Annotated[
@@ -90,7 +101,23 @@ class StorageFile(UniversalBaseModel):
         FieldMetadata(alias="publicPlaybackId"),
         pydantic.Field(
             alias="publicPlaybackId",
-            description="Encoded public playback id (e.g. `vg_play_...`). Pass this to the `@videogen/player` or `@videogen/player-react` packages. Only present when `allowsPublicPreview` is true.",
+            description="Encoded public playback id (e.g. `vg_play_...`). Pass this to the `@videogen/player` or `@videogen/player-react` packages. Only present when `isPublicPreviewEnabled` is true.",
+        ),
+    ] = None
+    source_tool_type: typing_extensions.Annotated[
+        typing.Optional[str],
+        FieldMetadata(alias="sourceToolType"),
+        pydantic.Field(
+            alias="sourceToolType",
+            description="Tool type that generated this file (e.g. `PROMPT_TO_IMAGE`, `TEXT_TO_SPEECH`). Only present when the file was created by a tool execution.",
+        ),
+    ] = None
+    source_tool_execution_id: typing_extensions.Annotated[
+        typing.Optional[str],
+        FieldMetadata(alias="sourceToolExecutionId"),
+        pydantic.Field(
+            alias="sourceToolExecutionId",
+            description="Execution id of the tool call that generated this file (e.g. `vg_exec_...`). Only present when the file was created by a tool execution.",
         ),
     ] = None
 

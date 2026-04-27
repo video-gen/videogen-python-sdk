@@ -77,7 +77,7 @@ client.tools.prompt_to_image(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
     
 </dd>
 </dl>
@@ -182,7 +182,7 @@ client.tools.prompt_to_video_clip(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
     
 </dd>
 </dl>
@@ -295,7 +295,7 @@ client.tools.image_to_video_clip(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
     
 </dd>
 </dl>
@@ -393,7 +393,7 @@ client.tools.image_to_image(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
     
 </dd>
 </dl>
@@ -491,7 +491,7 @@ client.tools.video_to_video_clip(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
     
 </dd>
 </dl>
@@ -620,7 +620,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
     
 </dd>
 </dl>
@@ -725,7 +725,7 @@ client.tools.prompt_to_sound_effect(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
     
 </dd>
 </dl>
@@ -823,7 +823,7 @@ client.tools.audio_to_avatar_clip(
 <dl>
 <dd>
 
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
     
 </dd>
 </dl>
@@ -1487,6 +1487,14 @@ client.files.search_files(
 <dl>
 <dd>
 
+**self_only:** `typing.Optional[bool]` — When true, only files created by the calling API key's user are returned. When false (default), all files accessible to the team are included.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -1535,7 +1543,7 @@ client = VideoGenApi(
 )
 
 client.files.get_file(
-    storage_file_id="storageFileId",
+    file_id="fileId",
 )
 
 ```
@@ -1552,7 +1560,7 @@ client.files.get_file(
 <dl>
 <dd>
 
-**storage_file_id:** `str` 
+**file_id:** `str` 
     
 </dd>
 </dl>
@@ -1584,7 +1592,7 @@ client.files.get_file(
 <dl>
 <dd>
 
-Create a new file and receive a pre-signed upload URL. PUT the file bytes to the returned URL, then poll `GET /v1/files/{storageFileId}` until the file is ready.
+Create a new file and receive a pre-signed upload URL. PUT the file bytes to the returned URL, then poll `GET /v1/files/{fileId}` until the file is ready.
 </dd>
 </dl>
 </dd>
@@ -1641,7 +1649,7 @@ client.files.create_file_upload(
 <dl>
 <dd>
 
-**is_temporary:** `typing.Optional[bool]` — When true, the file is temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Defaults to false.
+**is_temporary:** `typing.Optional[bool]` — When true, the file is temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
     
 </dd>
 </dl>
@@ -1697,7 +1705,7 @@ client = VideoGenApi(
 )
 
 client.files.hydrate_file(
-    storage_file_id="storageFileId",
+    file_id="fileId",
 )
 
 ```
@@ -1714,7 +1722,7 @@ client.files.hydrate_file(
 <dl>
 <dd>
 
-**storage_file_id:** `str` 
+**file_id:** `str` 
     
 </dd>
 </dl>
@@ -1746,7 +1754,7 @@ client.files.hydrate_file(
 <dl>
 <dd>
 
-Enable public preview for a file. Creates a public playback ID on the underlying Mux asset so the file can be streamed without authentication. Returns the updated file with `allowsPublicPreview`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
+Enable public preview for a file. Creates a public playback ID on the underlying Mux asset so the file can be streamed without authentication. Returns the updated file with `isPublicPreviewEnabled`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
 </dd>
 </dl>
 </dd>
@@ -1770,7 +1778,7 @@ client = VideoGenApi(
 )
 
 client.files.enable_public_preview(
-    storage_file_id="storageFileId",
+    file_id="fileId",
 )
 
 ```
@@ -1787,7 +1795,7 @@ client.files.enable_public_preview(
 <dl>
 <dd>
 
-**storage_file_id:** `str` 
+**file_id:** `str` 
     
 </dd>
 </dl>
@@ -1843,7 +1851,7 @@ client = VideoGenApi(
 )
 
 client.files.disable_public_preview(
-    storage_file_id="storageFileId",
+    file_id="fileId",
 )
 
 ```
@@ -1860,7 +1868,7 @@ client.files.disable_public_preview(
 <dl>
 <dd>
 
-**storage_file_id:** `str` 
+**file_id:** `str` 
     
 </dd>
 </dl>
@@ -2091,7 +2099,7 @@ client.webhooks.list_webhook_endpoints()
 <dl>
 <dd>
 
-Register a new webhook endpoint to receive `tool_execution.*` events. The signing secret is only returned in this response. Store it securely.
+Register a new webhook endpoint to receive `tool_execution.*` and `file.*` events. The signing secret is only returned in this response. Store it securely.
 </dd>
 </dl>
 </dd>
@@ -2143,7 +2151,7 @@ client.webhooks.create_webhook_endpoint(
 <dl>
 <dd>
 
-**events:** `typing.List[ToolExecutionWebhookEventName]` 
+**events:** `typing.List[WebhookEventName]` 
     
 </dd>
 </dl>

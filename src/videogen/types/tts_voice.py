@@ -52,7 +52,7 @@ class TtsVoice(UniversalBaseModel):
         FieldMetadata(alias="supportsDirectToolExecution"),
         pydantic.Field(
             alias="supportsDirectToolExecution",
-            description="When true, this voice can be used directly with `POST /v1/tools/text-to-speech`. Voices where this is false are returned for discovery purposes but cannot be used through this API.",
+            description="When false, this voice cannot be used directly with `POST /v1/tools/text-to-speech`. All voices, regardless of this field, can be used in full video generation workflows such as script-to-video.",
         ),
     ]
     supports_all_languages: typing_extensions.Annotated[

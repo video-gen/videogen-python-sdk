@@ -9,12 +9,10 @@ from ..core.serialization import FieldMetadata
 
 
 class FileUploadResponse(UniversalBaseModel):
-    storage_file_id: typing_extensions.Annotated[
+    file_id: typing_extensions.Annotated[
         str,
-        FieldMetadata(alias="storageFileId"),
-        pydantic.Field(
-            alias="storageFileId", description="The file id to use in subsequent API calls (e.g. `vg_file_...`)."
-        ),
+        FieldMetadata(alias="fileId"),
+        pydantic.Field(alias="fileId", description="The file id to use in subsequent API calls (e.g. `vg_file_...`)."),
     ]
     upload_url: typing_extensions.Annotated[
         str,
