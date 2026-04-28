@@ -37,7 +37,7 @@ class ToolExecutionWebhookPayload(UniversalBaseModel):
     ]
     results: typing.Optional[typing.List[ToolSuccessResult]] = pydantic.Field(default=None)
     """
-    One entry per generated candidate, each with a hydrated `file`. Present only on `tool_execution.succeeded`.
+    One entry per generated result, each with a hydrated `file`. Present only on `tool_execution.succeeded`.
     """
 
     error: typing.Optional[ApiError] = pydantic.Field(default=None)

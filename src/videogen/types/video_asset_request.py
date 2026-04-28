@@ -17,10 +17,10 @@ class VideoAssetRequest(UniversalBaseModel):
             description="File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.",
         ),
     ]
-    num_candidates: typing_extensions.Annotated[
+    num_results: typing_extensions.Annotated[
         typing.Optional[int],
-        FieldMetadata(alias="numCandidates"),
-        pydantic.Field(alias="numCandidates", description="Number of output candidates to generate. Defaults to 1."),
+        FieldMetadata(alias="numResults"),
+        pydantic.Field(alias="numResults", description="Number of output results to generate. Defaults to 1."),
     ] = None
     is_output_temporary: typing_extensions.Annotated[
         typing.Optional[bool],

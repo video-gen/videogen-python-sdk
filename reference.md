@@ -69,7 +69,7 @@ client.tools.prompt_to_image(
 <dl>
 <dd>
 
-**num_candidates:** `typing.Optional[int]` — Number of output candidates to generate. Defaults to 1.
+**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
     
 </dd>
 </dl>
@@ -174,7 +174,7 @@ client.tools.prompt_to_video_clip(
 <dl>
 <dd>
 
-**num_candidates:** `typing.Optional[int]` — Number of output candidates to generate. Defaults to 1.
+**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
     
 </dd>
 </dl>
@@ -287,7 +287,7 @@ client.tools.image_to_video_clip(
 <dl>
 <dd>
 
-**num_candidates:** `typing.Optional[int]` — Number of output candidates to generate. Defaults to 1.
+**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
     
 </dd>
 </dl>
@@ -351,7 +351,9 @@ client = VideoGenApi(
 )
 
 client.tools.image_to_image(
-    image_storage_file_id="imageStorageFileId",
+    image_storage_file_ids=[
+        "imageStorageFileIds"
+    ],
     prompt="prompt",
 )
 
@@ -369,7 +371,7 @@ client.tools.image_to_image(
 <dl>
 <dd>
 
-**image_storage_file_id:** `str` — File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+**image_storage_file_ids:** `typing.List[str]` — File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here.
     
 </dd>
 </dl>
@@ -385,7 +387,7 @@ client.tools.image_to_image(
 <dl>
 <dd>
 
-**num_candidates:** `typing.Optional[int]` — Number of output candidates to generate. Defaults to 1.
+**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
     
 </dd>
 </dl>
@@ -483,7 +485,7 @@ client.tools.video_to_video_clip(
 <dl>
 <dd>
 
-**num_candidates:** `typing.Optional[int]` — Number of output candidates to generate. Defaults to 1.
+**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
     
 </dd>
 </dl>
@@ -612,7 +614,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**num_candidates:** `typing.Optional[int]` — Number of output candidates to generate. Defaults to 1.
+**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
     
 </dd>
 </dl>
@@ -717,7 +719,7 @@ client.tools.prompt_to_sound_effect(
 <dl>
 <dd>
 
-**num_candidates:** `typing.Optional[int]` — Number of output candidates to generate. Defaults to 1.
+**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
     
 </dd>
 </dl>
@@ -815,7 +817,7 @@ client.tools.audio_to_avatar_clip(
 <dl>
 <dd>
 
-**num_candidates:** `typing.Optional[int]` — Number of output candidates to generate. Defaults to 1.
+**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
     
 </dd>
 </dl>

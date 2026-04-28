@@ -30,7 +30,7 @@ class RawToolsClient:
         *,
         prompt: str,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -44,8 +44,8 @@ class RawToolsClient:
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated image. Defaults to 16:9 when omitted.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -66,7 +66,7 @@ class RawToolsClient:
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -100,7 +100,7 @@ class RawToolsClient:
         prompt: str,
         generate_audio: typing.Optional[bool] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -117,8 +117,8 @@ class RawToolsClient:
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -140,7 +140,7 @@ class RawToolsClient:
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -175,7 +175,7 @@ class RawToolsClient:
         prompt: typing.Optional[str] = OMIT,
         generate_audio: typing.Optional[bool] = OMIT,
         source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -196,8 +196,8 @@ class RawToolsClient:
         source_prompt_to_image_prompt : typing.Optional[str]
             Optional prompt used when the source image was generated.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -218,7 +218,7 @@ class RawToolsClient:
                 "prompt": prompt,
                 "generateAudio": generate_audio,
                 "sourcePromptToImagePrompt": source_prompt_to_image_prompt,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -249,9 +249,9 @@ class RawToolsClient:
     def image_to_image(
         self,
         *,
-        image_storage_file_id: str,
+        image_storage_file_ids: typing.Sequence[str],
         prompt: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -260,14 +260,14 @@ class RawToolsClient:
 
         Parameters
         ----------
-        image_storage_file_id : str
-            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+        image_storage_file_ids : typing.Sequence[str]
+            File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here.
 
         prompt : str
             Prompt describing how to transform the input image.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -284,9 +284,9 @@ class RawToolsClient:
             "v1/tools/image-to-image",
             method="POST",
             json={
-                "imageStorageFileId": image_storage_file_id,
+                "imageStorageFileIds": image_storage_file_ids,
                 "prompt": prompt,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -319,7 +319,7 @@ class RawToolsClient:
         *,
         video_storage_file_id: str,
         prompt: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -334,8 +334,8 @@ class RawToolsClient:
         prompt : str
             Prompt describing how to transform the input video.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -354,7 +354,7 @@ class RawToolsClient:
             json={
                 "videoStorageFileId": video_storage_file_id,
                 "prompt": prompt,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -391,7 +391,7 @@ class RawToolsClient:
         pronunciation_replacements: typing.Optional[typing.Sequence[PronunciationReplacement]] = OMIT,
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -416,8 +416,8 @@ class RawToolsClient:
         voice_speed : typing.Optional[float]
             Speech rate multiplier. Defaults to the voice's default speed.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -444,7 +444,7 @@ class RawToolsClient:
                 ),
                 "autoExpandPronunciationReplacements": auto_expand_pronunciation_replacements,
                 "voiceSpeed": voice_speed,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -478,7 +478,7 @@ class RawToolsClient:
         prompt: str,
         duration_seconds: typing.Optional[float] = OMIT,
         prompt_influence: typing.Optional[float] = OMIT,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -493,8 +493,8 @@ class RawToolsClient:
 
         prompt_influence : typing.Optional[float]
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -514,7 +514,7 @@ class RawToolsClient:
                 "prompt": prompt,
                 "durationSeconds": duration_seconds,
                 "promptInfluence": prompt_influence,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -547,7 +547,7 @@ class RawToolsClient:
         *,
         avatar_presenter_id: str,
         audio_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -562,8 +562,8 @@ class RawToolsClient:
         audio_storage_file_id : str
             File id of an AUDIO file (e.g. `vg_file_...`), typically from a prior text-to-speech result. Upload a file first via `POST /v1/files/upload` or generate one with `POST /v1/tools/text-to-speech`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -582,7 +582,7 @@ class RawToolsClient:
             json={
                 "avatarPresenterId": avatar_presenter_id,
                 "audioStorageFileId": audio_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -614,7 +614,7 @@ class RawToolsClient:
         self,
         *,
         image_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -626,8 +626,8 @@ class RawToolsClient:
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -645,7 +645,7 @@ class RawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -677,7 +677,7 @@ class RawToolsClient:
         self,
         *,
         image_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -689,8 +689,8 @@ class RawToolsClient:
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -708,7 +708,7 @@ class RawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -740,7 +740,7 @@ class RawToolsClient:
         self,
         *,
         video_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -752,8 +752,8 @@ class RawToolsClient:
         video_storage_file_id : str
             File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -771,7 +771,7 @@ class RawToolsClient:
             method="POST",
             json={
                 "videoStorageFileId": video_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -803,7 +803,7 @@ class RawToolsClient:
         self,
         *,
         image_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -815,8 +815,8 @@ class RawToolsClient:
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -834,7 +834,7 @@ class RawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -866,7 +866,7 @@ class RawToolsClient:
         self,
         *,
         video_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -878,8 +878,8 @@ class RawToolsClient:
         video_storage_file_id : str
             File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -897,7 +897,7 @@ class RawToolsClient:
             method="POST",
             json={
                 "videoStorageFileId": video_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1019,7 +1019,7 @@ class AsyncRawToolsClient:
         *,
         prompt: str,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1033,8 +1033,8 @@ class AsyncRawToolsClient:
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated image. Defaults to 16:9 when omitted.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1055,7 +1055,7 @@ class AsyncRawToolsClient:
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1089,7 +1089,7 @@ class AsyncRawToolsClient:
         prompt: str,
         generate_audio: typing.Optional[bool] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1106,8 +1106,8 @@ class AsyncRawToolsClient:
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1129,7 +1129,7 @@ class AsyncRawToolsClient:
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1164,7 +1164,7 @@ class AsyncRawToolsClient:
         prompt: typing.Optional[str] = OMIT,
         generate_audio: typing.Optional[bool] = OMIT,
         source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1185,8 +1185,8 @@ class AsyncRawToolsClient:
         source_prompt_to_image_prompt : typing.Optional[str]
             Optional prompt used when the source image was generated.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1207,7 +1207,7 @@ class AsyncRawToolsClient:
                 "prompt": prompt,
                 "generateAudio": generate_audio,
                 "sourcePromptToImagePrompt": source_prompt_to_image_prompt,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1238,9 +1238,9 @@ class AsyncRawToolsClient:
     async def image_to_image(
         self,
         *,
-        image_storage_file_id: str,
+        image_storage_file_ids: typing.Sequence[str],
         prompt: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1249,14 +1249,14 @@ class AsyncRawToolsClient:
 
         Parameters
         ----------
-        image_storage_file_id : str
-            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+        image_storage_file_ids : typing.Sequence[str]
+            File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here.
 
         prompt : str
             Prompt describing how to transform the input image.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1273,9 +1273,9 @@ class AsyncRawToolsClient:
             "v1/tools/image-to-image",
             method="POST",
             json={
-                "imageStorageFileId": image_storage_file_id,
+                "imageStorageFileIds": image_storage_file_ids,
                 "prompt": prompt,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1308,7 +1308,7 @@ class AsyncRawToolsClient:
         *,
         video_storage_file_id: str,
         prompt: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1323,8 +1323,8 @@ class AsyncRawToolsClient:
         prompt : str
             Prompt describing how to transform the input video.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1343,7 +1343,7 @@ class AsyncRawToolsClient:
             json={
                 "videoStorageFileId": video_storage_file_id,
                 "prompt": prompt,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1380,7 +1380,7 @@ class AsyncRawToolsClient:
         pronunciation_replacements: typing.Optional[typing.Sequence[PronunciationReplacement]] = OMIT,
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1405,8 +1405,8 @@ class AsyncRawToolsClient:
         voice_speed : typing.Optional[float]
             Speech rate multiplier. Defaults to the voice's default speed.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1433,7 +1433,7 @@ class AsyncRawToolsClient:
                 ),
                 "autoExpandPronunciationReplacements": auto_expand_pronunciation_replacements,
                 "voiceSpeed": voice_speed,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1467,7 +1467,7 @@ class AsyncRawToolsClient:
         prompt: str,
         duration_seconds: typing.Optional[float] = OMIT,
         prompt_influence: typing.Optional[float] = OMIT,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1482,8 +1482,8 @@ class AsyncRawToolsClient:
 
         prompt_influence : typing.Optional[float]
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1503,7 +1503,7 @@ class AsyncRawToolsClient:
                 "prompt": prompt,
                 "durationSeconds": duration_seconds,
                 "promptInfluence": prompt_influence,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1536,7 +1536,7 @@ class AsyncRawToolsClient:
         *,
         avatar_presenter_id: str,
         audio_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1551,8 +1551,8 @@ class AsyncRawToolsClient:
         audio_storage_file_id : str
             File id of an AUDIO file (e.g. `vg_file_...`), typically from a prior text-to-speech result. Upload a file first via `POST /v1/files/upload` or generate one with `POST /v1/tools/text-to-speech`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1571,7 +1571,7 @@ class AsyncRawToolsClient:
             json={
                 "avatarPresenterId": avatar_presenter_id,
                 "audioStorageFileId": audio_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1603,7 +1603,7 @@ class AsyncRawToolsClient:
         self,
         *,
         image_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1615,8 +1615,8 @@ class AsyncRawToolsClient:
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1634,7 +1634,7 @@ class AsyncRawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1666,7 +1666,7 @@ class AsyncRawToolsClient:
         self,
         *,
         image_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1678,8 +1678,8 @@ class AsyncRawToolsClient:
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1697,7 +1697,7 @@ class AsyncRawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1729,7 +1729,7 @@ class AsyncRawToolsClient:
         self,
         *,
         video_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1741,8 +1741,8 @@ class AsyncRawToolsClient:
         video_storage_file_id : str
             File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1760,7 +1760,7 @@ class AsyncRawToolsClient:
             method="POST",
             json={
                 "videoStorageFileId": video_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1792,7 +1792,7 @@ class AsyncRawToolsClient:
         self,
         *,
         image_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1804,8 +1804,8 @@ class AsyncRawToolsClient:
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1823,7 +1823,7 @@ class AsyncRawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={
@@ -1855,7 +1855,7 @@ class AsyncRawToolsClient:
         self,
         *,
         video_storage_file_id: str,
-        num_candidates: typing.Optional[int] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1867,8 +1867,8 @@ class AsyncRawToolsClient:
         video_storage_file_id : str
             File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
 
-        num_candidates : typing.Optional[int]
-            Number of output candidates to generate. Defaults to 1.
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
 
         is_output_temporary : typing.Optional[bool]
             When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
@@ -1886,7 +1886,7 @@ class AsyncRawToolsClient:
             method="POST",
             json={
                 "videoStorageFileId": video_storage_file_id,
-                "numCandidates": num_candidates,
+                "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
             headers={

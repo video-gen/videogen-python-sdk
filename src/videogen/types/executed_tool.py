@@ -25,7 +25,7 @@ class ExecutedTool(UniversalBaseModel):
     ]
     results: typing.Optional[typing.List[ToolSuccessResult]] = pydantic.Field(default=None)
     """
-    One entry per generated candidate. Present when `status` is `succeeded`.
+    One entry per generated result. Present when `status` is `succeeded`.
     """
 
     error: typing.Optional[ApiError] = None

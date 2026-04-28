@@ -42,6 +42,10 @@ if typing.TYPE_CHECKING:
     )
     from . import files, resources, tools, webhooks
     from ._default_clients import DefaultAioHttpClient, DefaultAsyncHttpxClient
+    from .async_download_file import async_download_file
+    from .async_get_hydrated_file import async_get_hydrated_file
+    from .async_poll_executed_tool import async_poll_executed_tool
+    from .async_upload_file import async_upload_file
     from .client import AsyncVideoGenApi, VideoGenApi
     from .download_file import download_file
     from .environment import VideoGenApiEnvironment
@@ -49,7 +53,7 @@ if typing.TYPE_CHECKING:
     from .get_hydrated_file import get_hydrated_file
     from .poll_executed_tool import poll_executed_tool
     from .upload_file import upload_file
-    from .verify_webhook_signature import verify_webhook_signature
+    from .verify_webhook_signature import WebhookEvent, verify_webhook_signature
     from .version import __version__
 _dynamic_imports: typing.Dict[str, str] = {
     "ApiError": ".types",
@@ -89,8 +93,13 @@ _dynamic_imports: typing.Dict[str, str] = {
     "VideoGenApiEnvironment": ".environment",
     "WebhookEndpoint": ".types",
     "WebhookEndpointListResponse": ".types",
+    "WebhookEvent": ".verify_webhook_signature",
     "WebhookEventName": ".types",
     "__version__": ".version",
+    "async_download_file": ".async_download_file",
+    "async_get_hydrated_file": ".async_get_hydrated_file",
+    "async_poll_executed_tool": ".async_poll_executed_tool",
+    "async_upload_file": ".async_upload_file",
     "download_file": ".download_file",
     "files": ".files",
     "get_hydrated_file": ".get_hydrated_file",
@@ -162,8 +171,13 @@ __all__ = [
     "VideoGenApiEnvironment",
     "WebhookEndpoint",
     "WebhookEndpointListResponse",
+    "WebhookEvent",
     "WebhookEventName",
     "__version__",
+    "async_download_file",
+    "async_get_hydrated_file",
+    "async_poll_executed_tool",
+    "async_upload_file",
     "download_file",
     "files",
     "get_hydrated_file",

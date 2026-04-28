@@ -1,5 +1,5 @@
 {
-  "cliVersion": "4.97.0",
+  "cliVersion": "4.106.0",
   "generatorName": "fernapi/fern-python-sdk",
   "generatorVersion": "5.8.0",
   "generatorConfig": {
@@ -13,9 +13,21 @@
         ]
       },
       {
+        "from": "async_poll_executed_tool",
+        "imports": [
+          "async_poll_executed_tool"
+        ]
+      },
+      {
         "from": "get_hydrated_file",
         "imports": [
           "get_hydrated_file"
+        ]
+      },
+      {
+        "from": "async_get_hydrated_file",
+        "imports": [
+          "async_get_hydrated_file"
         ]
       },
       {
@@ -25,22 +37,35 @@
         ]
       },
       {
+        "from": "async_download_file",
+        "imports": [
+          "async_download_file"
+        ]
+      },
+      {
         "from": "upload_file",
         "imports": [
           "upload_file"
         ]
       },
       {
+        "from": "async_upload_file",
+        "imports": [
+          "async_upload_file"
+        ]
+      },
+      {
         "from": "verify_webhook_signature",
         "imports": [
-          "verify_webhook_signature"
+          "verify_webhook_signature",
+          "WebhookEvent"
         ]
       }
     ]
   },
-  "originGitCommit": "58d4f84e7bf62da6e7b7b551c12320101c3560d5",
+  "originGitCommit": "340815a92d6c131211b27e26cf4e1d881cccbb44",
   "originGitCommitIsDirty": true,
   "invokedBy": "manual",
-  "requestedVersion": "0.0.19",
-  "sdkVersion": "0.0.19"
+  "requestedVersion": "0.0.20",
+  "sdkVersion": "0.0.20"
 }

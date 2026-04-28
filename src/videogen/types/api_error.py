@@ -3,12 +3,30 @@
 import typing
 
 import pydantic
+import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ..core.serialization import FieldMetadata
 
 
 class ApiError(UniversalBaseModel):
-    message: str
-    code: typing.Optional[str] = None
+    message: str = pydantic.Field()
+    """
+    Human-readable error description.
+    """
+
+    code: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Machine-readable error code in snake_case (e.g. `invalid_api_key`, `insufficient_credits`). Not always present.
+    """
+
+    internal_error_code: typing_extensions.Annotated[
+        typing.Optional[str],
+        FieldMetadata(alias="internalErrorCode"),
+        pydantic.Field(
+            alias="internalErrorCode",
+            description="Opaque internal error code for debugging. Include this when contacting support.",
+        ),
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

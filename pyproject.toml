@@ -4,7 +4,7 @@ dynamic = ["version"]
 
 [tool.poetry]
 name = "videogen"
-version = "0.0.19"
+version = "0.0.20"
 description = ""
 readme = "README.md"
 authors = []
@@ -21,7 +21,7 @@ keywords = [
     "video-generation",
     "avatar"
 ]
-
+license = "MIT"
 classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python",
@@ -38,7 +38,8 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: Microsoft :: Windows",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "Typing :: Typed"
+    "Typing :: Typed",
+    "License :: OSI Approved :: MIT License"
 ]
 packages = [
     { include = "videogen", from = "src"}
