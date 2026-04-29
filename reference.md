@@ -158,7 +158,7 @@ client.tools.prompt_to_video_clip(
 <dl>
 <dd>
 
-**generate_audio:** `typing.Optional[bool]` — Whether to generate audio alongside the video. Defaults to false.
+**generate_audio:** `typing.Optional[bool]` — When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
     
 </dd>
 </dl>
@@ -271,7 +271,7 @@ client.tools.image_to_video_clip(
 <dl>
 <dd>
 
-**generate_audio:** `typing.Optional[bool]` — Whether to generate audio alongside the video. Defaults to false.
+**generate_audio:** `typing.Optional[bool]` — When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
     
 </dd>
 </dl>
@@ -371,7 +371,7 @@ client.tools.image_to_image(
 <dl>
 <dd>
 
-**image_storage_file_ids:** `typing.List[str]` — File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here.
+**image_storage_file_ids:** `typing.List[str]` — File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images.
     
 </dd>
 </dl>

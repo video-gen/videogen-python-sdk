@@ -63,9 +63,9 @@
       }
     ]
   },
-  "originGitCommit": "0ac50f11209e0675cc8e8e786d277f498491ec07",
+  "originGitCommit": "06b4e85b0edef7b23247ac647579fe07c6be18b6",
   "originGitCommitIsDirty": true,
   "invokedBy": "manual",
-  "requestedVersion": "0.0.24",
-  "sdkVersion": "0.0.24"
+  "requestedVersion": "0.0.25",
+  "sdkVersion": "0.0.25"
 }

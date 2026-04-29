@@ -112,7 +112,7 @@ class RawToolsClient:
         prompt : str
 
         generate_audio : typing.Optional[bool]
-            Whether to generate audio alongside the video. Defaults to false.
+            When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
 
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
@@ -191,7 +191,7 @@ class RawToolsClient:
             Optional text prompt to guide the animation. When omitted the model infers motion from the image.
 
         generate_audio : typing.Optional[bool]
-            Whether to generate audio alongside the video. Defaults to false.
+            When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
 
         source_prompt_to_image_prompt : typing.Optional[str]
             Optional prompt used when the source image was generated.
@@ -261,7 +261,7 @@ class RawToolsClient:
         Parameters
         ----------
         image_storage_file_ids : typing.Sequence[str]
-            File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here.
+            File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images.
 
         prompt : str
             Prompt describing how to transform the input image.
@@ -1101,7 +1101,7 @@ class AsyncRawToolsClient:
         prompt : str
 
         generate_audio : typing.Optional[bool]
-            Whether to generate audio alongside the video. Defaults to false.
+            When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
 
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
@@ -1180,7 +1180,7 @@ class AsyncRawToolsClient:
             Optional text prompt to guide the animation. When omitted the model infers motion from the image.
 
         generate_audio : typing.Optional[bool]
-            Whether to generate audio alongside the video. Defaults to false.
+            When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
 
         source_prompt_to_image_prompt : typing.Optional[str]
             Optional prompt used when the source image was generated.
@@ -1250,7 +1250,7 @@ class AsyncRawToolsClient:
         Parameters
         ----------
         image_storage_file_ids : typing.Sequence[str]
-            File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here.
+            File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images.
 
         prompt : str
             Prompt describing how to transform the input image.
