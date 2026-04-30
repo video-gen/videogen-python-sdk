@@ -1,1 +1,10 @@
-# Specify files that shouldn't be modified by Fern
+# Custom SDK helpers — preserved across Fern regeneration.
+src/videogen/poll_executed_tool.py
+src/videogen/async_poll_executed_tool.py
+src/videogen/get_hydrated_file.py
+src/videogen/async_get_hydrated_file.py
+src/videogen/download_file.py
+src/videogen/async_download_file.py
+src/videogen/upload_file.py
+src/videogen/async_upload_file.py
+src/videogen/verify_webhook_signature.py
