@@ -34,7 +34,7 @@ async def async_upload_file(
     upload_response = await client.files.create_file_upload(
         display_name=display_name,
         is_temporary=temporary,
-        **({"type": type} if type is not None else {}),
+        type=type,
     )
 
     data = file.read()

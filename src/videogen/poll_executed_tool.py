@@ -3,15 +3,8 @@ from typing import Optional
 
 from .client import VideoGenApi
 from .types.executed_tool import ExecutedTool
-from .types.executed_tool_status import ExecutedToolStatus
 
-_TERMINAL_STATUSES = frozenset(
-    {
-        ExecutedToolStatus.SUCCEEDED,
-        ExecutedToolStatus.FAILED,
-        ExecutedToolStatus.CANCELLED,
-    }
-)
+_TERMINAL_STATUSES = frozenset({"succeeded", "failed", "cancelled"})
 
 
 def poll_executed_tool(
