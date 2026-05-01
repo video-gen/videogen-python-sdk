@@ -32,7 +32,7 @@ class RawResourcesClient:
         Returns
         -------
         HttpResponse[AvatarPresenterListResponse]
-            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/audio-to-avatar-clip`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
         """
         _response = self._client_wrapper.httpx_client.request(
             "v1/resources/avatar-presenters",
@@ -126,7 +126,7 @@ class AsyncRawResourcesClient:
         Returns
         -------
         AsyncHttpResponse[AvatarPresenterListResponse]
-            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/audio-to-avatar-clip`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
         """
         _response = await self._client_wrapper.httpx_client.request(
             "v1/resources/avatar-presenters",

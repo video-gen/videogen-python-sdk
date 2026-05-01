@@ -6,6 +6,7 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
+from .api_error_requirement import ApiErrorRequirement
 
 
 class ApiError(UniversalBaseModel):
@@ -17,6 +18,11 @@ class ApiError(UniversalBaseModel):
     code: typing.Optional[str] = pydantic.Field(default=None)
     """
     Machine-readable error code in snake_case (e.g. `invalid_api_key`, `insufficient_credits`). Not always present.
+    """
+
+    requirement: typing.Optional[ApiErrorRequirement] = pydantic.Field(default=None)
+    """
+    What is needed to resolve the error. Present when the error can be fixed by fulfilling a specific requirement (e.g. purchasing an add-on).
     """
 
     internal_error_code: typing_extensions.Annotated[

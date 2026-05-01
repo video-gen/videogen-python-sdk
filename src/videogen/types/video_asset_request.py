@@ -6,6 +6,7 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
+from .watermark_mode import WatermarkMode
 
 
 class VideoAssetRequest(UniversalBaseModel):
@@ -17,6 +18,9 @@ class VideoAssetRequest(UniversalBaseModel):
             description="File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.",
         ),
     ]
+    watermark_mode: typing_extensions.Annotated[
+        typing.Optional[WatermarkMode], FieldMetadata(alias="watermarkMode"), pydantic.Field(alias="watermarkMode")
+    ] = None
     num_results: typing_extensions.Annotated[
         typing.Optional[int],
         FieldMetadata(alias="numResults"),

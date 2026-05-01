@@ -8,6 +8,7 @@ from importlib import import_module
 if typing.TYPE_CHECKING:
     from .types import (
         ApiError,
+        ApiErrorRequirement,
         AspectRatio,
         AvatarPresenter,
         AvatarPresenterDisplayableGender,
@@ -36,6 +37,7 @@ if typing.TYPE_CHECKING:
         TtsVoiceDisplayGender,
         TtsVoiceListResponse,
         VideoAssetRequest,
+        WatermarkMode,
         WebhookEndpoint,
         WebhookEndpointListResponse,
         WebhookEventName,
@@ -57,6 +59,7 @@ if typing.TYPE_CHECKING:
     from .version import __version__
 _dynamic_imports: typing.Dict[str, str] = {
     "ApiError": ".types",
+    "ApiErrorRequirement": ".types",
     "AspectRatio": ".types",
     "AsyncVideoGenApi": ".client",
     "AvatarPresenter": ".types",
@@ -91,6 +94,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "VideoAssetRequest": ".types",
     "VideoGenApi": ".client",
     "VideoGenApiEnvironment": ".environment",
+    "WatermarkMode": ".types",
     "WebhookEndpoint": ".types",
     "WebhookEndpointListResponse": ".types",
     "WebhookEvent": ".verify_webhook_signature",
@@ -135,6 +139,7 @@ def __dir__():
 
 __all__ = [
     "ApiError",
+    "ApiErrorRequirement",
     "AspectRatio",
     "AsyncVideoGenApi",
     "AvatarPresenter",
@@ -169,6 +174,7 @@ __all__ = [
     "VideoAssetRequest",
     "VideoGenApi",
     "VideoGenApiEnvironment",
+    "WatermarkMode",
     "WebhookEndpoint",
     "WebhookEndpointListResponse",
     "WebhookEvent",

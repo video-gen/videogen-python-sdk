@@ -109,7 +109,7 @@ class StorageFile(UniversalBaseModel):
         FieldMetadata(alias="sourceToolType"),
         pydantic.Field(
             alias="sourceToolType",
-            description="Tool type that generated this file (e.g. `PROMPT_TO_IMAGE`, `TEXT_TO_SPEECH`). Only present when the file was created by a tool execution.",
+            description="Tool type that generated this file (e.g. `GENERATE_IMAGE`, `TEXT_TO_SPEECH`). Only present when the file was created by a tool execution.",
         ),
     ] = None
     source_tool_execution_id: typing_extensions.Annotated[

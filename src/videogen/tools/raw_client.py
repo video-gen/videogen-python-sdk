@@ -15,6 +15,7 @@ from ..types.aspect_ratio import AspectRatio
 from ..types.executed_tool import ExecutedTool
 from ..types.pronunciation_replacement import PronunciationReplacement
 from ..types.start_tool_execution_response import StartToolExecutionResponse
+from ..types.watermark_mode import WatermarkMode
 from pydantic import ValidationError
 
 # this is used as the default value for optional parameters
@@ -25,24 +26,32 @@ class RawToolsClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def prompt_to_image(
+    def generate_image(
         self,
         *,
         prompt: str,
+        image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
-        Generate an image from a text prompt. Optionally specify an aspect ratio and number of candidates.
+        Generate an image from a text prompt, optionally guided by one or more reference images. When reference images are provided, the prompt describes the desired transformation.
 
         Parameters
         ----------
         prompt : str
+            Text prompt describing the image to generate. When reference images are provided, the prompt describes the desired transformation.
+
+        image_file_ids : typing.Optional[typing.Sequence[str]]
+            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images. When provided, the model uses these as guidance for generation.
 
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated image. Defaults to 16:9 when omitted.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -59,13 +68,15 @@ class RawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = self._client_wrapper.httpx_client.request(
-            "v1/tools/prompt-to-image",
+            "v1/tools/generate-image",
             method="POST",
             json={
                 "prompt": prompt,
+                "imageFileIds": image_file_ids,
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -94,22 +105,32 @@ class RawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def prompt_to_video_clip(
+    def generate_video_clip(
         self,
         *,
-        prompt: str,
+        prompt: typing.Optional[str] = OMIT,
+        image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
+        video_file_id: typing.Optional[str] = OMIT,
         generate_audio: typing.Optional[bool] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
-        Generate a video clip from a text prompt, with optional audio. Optionally specify an aspect ratio and number of candidates.
+        Generate a video clip from a text prompt, optionally guided by reference images or an input video. At least one of `prompt`, `imageFileIds`, or `videoFileId` must be provided.
 
         Parameters
         ----------
-        prompt : str
+        prompt : typing.Optional[str]
+            Text prompt describing the video to generate. Optional when reference images or a video are provided.
+
+        image_file_ids : typing.Optional[typing.Sequence[str]]
+            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model animates or uses these images as guidance.
+
+        video_file_id : typing.Optional[str]
+            Optional file id of a source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here. When provided, the model restyles or transforms the input video.
 
         generate_audio : typing.Optional[bool]
             When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
@@ -117,6 +138,8 @@ class RawToolsClient:
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
 
+        watermark_mode : typing.Optional[WatermarkMode]
+
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
 
@@ -132,228 +155,17 @@ class RawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = self._client_wrapper.httpx_client.request(
-            "v1/tools/prompt-to-video-clip",
+            "v1/tools/generate-video-clip",
             method="POST",
             json={
                 "prompt": prompt,
+                "imageFileIds": image_file_ids,
+                "videoFileId": video_file_id,
                 "generateAudio": generate_audio,
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
-                "numResults": num_results,
-                "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    StartToolExecutionResponse,
-                    parse_obj_as(
-                        type_=StartToolExecutionResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def image_to_video_clip(
-        self,
-        *,
-        image_storage_file_id: str,
-        prompt: typing.Optional[str] = OMIT,
-        generate_audio: typing.Optional[bool] = OMIT,
-        source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
-        num_results: typing.Optional[int] = OMIT,
-        is_output_temporary: typing.Optional[bool] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[StartToolExecutionResponse]:
-        """
-        Animate a still image into a video clip using a text prompt. Optionally generate audio alongside the video.
-
-        Parameters
-        ----------
-        image_storage_file_id : str
-            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
-
-        prompt : typing.Optional[str]
-            Optional text prompt to guide the animation. When omitted the model infers motion from the image.
-
-        generate_audio : typing.Optional[bool]
-            When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
-
-        source_prompt_to_image_prompt : typing.Optional[str]
-            Optional prompt used when the source image was generated.
-
-        num_results : typing.Optional[int]
-            Number of output results to generate. Defaults to 1.
-
-        is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[StartToolExecutionResponse]
-            Execution accepted; poll until complete.
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "v1/tools/image-to-video-clip",
-            method="POST",
-            json={
-                "imageStorageFileId": image_storage_file_id,
-                "prompt": prompt,
-                "generateAudio": generate_audio,
-                "sourcePromptToImagePrompt": source_prompt_to_image_prompt,
-                "numResults": num_results,
-                "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    StartToolExecutionResponse,
-                    parse_obj_as(
-                        type_=StartToolExecutionResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def image_to_image(
-        self,
-        *,
-        image_storage_file_ids: typing.Sequence[str],
-        prompt: str,
-        num_results: typing.Optional[int] = OMIT,
-        is_output_temporary: typing.Optional[bool] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[StartToolExecutionResponse]:
-        """
-        Transform an existing image using a text prompt. The prompt describes the desired changes to apply.
-
-        Parameters
-        ----------
-        image_storage_file_ids : typing.Sequence[str]
-            File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images.
-
-        prompt : str
-            Prompt describing how to transform the input image.
-
-        num_results : typing.Optional[int]
-            Number of output results to generate. Defaults to 1.
-
-        is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[StartToolExecutionResponse]
-            Execution accepted; poll until complete.
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "v1/tools/image-to-image",
-            method="POST",
-            json={
-                "imageStorageFileIds": image_storage_file_ids,
-                "prompt": prompt,
-                "numResults": num_results,
-                "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    StartToolExecutionResponse,
-                    parse_obj_as(
-                        type_=StartToolExecutionResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    def video_to_video_clip(
-        self,
-        *,
-        video_storage_file_id: str,
-        prompt: str,
-        num_results: typing.Optional[int] = OMIT,
-        is_output_temporary: typing.Optional[bool] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[StartToolExecutionResponse]:
-        """
-        Restyle an existing video using a text prompt. The prompt describes the visual transformation to apply.
-
-        Parameters
-        ----------
-        video_storage_file_id : str
-            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
-
-        prompt : str
-            Prompt describing how to transform the input video.
-
-        num_results : typing.Optional[int]
-            Number of output results to generate. Defaults to 1.
-
-        is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[StartToolExecutionResponse]
-            Execution accepted; poll until complete.
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "v1/tools/video-to-video-clip",
-            method="POST",
-            json={
-                "videoStorageFileId": video_storage_file_id,
-                "prompt": prompt,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -472,7 +284,7 @@ class RawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def prompt_to_sound_effect(
+    def generate_sound_effect(
         self,
         *,
         prompt: str,
@@ -508,7 +320,7 @@ class RawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = self._client_wrapper.httpx_client.request(
-            "v1/tools/prompt-to-sound-effect",
+            "v1/tools/generate-sound-effect",
             method="POST",
             json={
                 "prompt": prompt,
@@ -542,11 +354,12 @@ class RawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def audio_to_avatar_clip(
+    def generate_avatar(
         self,
         *,
         avatar_presenter_id: str,
         audio_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -561,6 +374,8 @@ class RawToolsClient:
 
         audio_storage_file_id : str
             File id of an AUDIO file (e.g. `vg_file_...`), typically from a prior text-to-speech result. Upload a file first via `POST /v1/files/upload` or generate one with `POST /v1/tools/text-to-speech`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -577,11 +392,12 @@ class RawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = self._client_wrapper.httpx_client.request(
-            "v1/tools/audio-to-avatar-clip",
+            "v1/tools/generate-avatar",
             method="POST",
             json={
                 "avatarPresenterId": avatar_presenter_id,
                 "audioStorageFileId": audio_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -614,6 +430,7 @@ class RawToolsClient:
         self,
         *,
         image_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -625,6 +442,8 @@ class RawToolsClient:
         ----------
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -645,6 +464,7 @@ class RawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -677,6 +497,7 @@ class RawToolsClient:
         self,
         *,
         image_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -688,6 +509,8 @@ class RawToolsClient:
         ----------
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -708,6 +531,7 @@ class RawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -740,6 +564,7 @@ class RawToolsClient:
         self,
         *,
         video_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -751,6 +576,8 @@ class RawToolsClient:
         ----------
         video_storage_file_id : str
             File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -771,6 +598,7 @@ class RawToolsClient:
             method="POST",
             json={
                 "videoStorageFileId": video_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -803,6 +631,7 @@ class RawToolsClient:
         self,
         *,
         image_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -814,6 +643,8 @@ class RawToolsClient:
         ----------
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -834,6 +665,7 @@ class RawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -866,6 +698,7 @@ class RawToolsClient:
         self,
         *,
         video_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -877,6 +710,8 @@ class RawToolsClient:
         ----------
         video_storage_file_id : str
             File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -897,6 +732,7 @@ class RawToolsClient:
             method="POST",
             json={
                 "videoStorageFileId": video_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1014,24 +850,32 @@ class AsyncRawToolsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def prompt_to_image(
+    async def generate_image(
         self,
         *,
         prompt: str,
+        image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
-        Generate an image from a text prompt. Optionally specify an aspect ratio and number of candidates.
+        Generate an image from a text prompt, optionally guided by one or more reference images. When reference images are provided, the prompt describes the desired transformation.
 
         Parameters
         ----------
         prompt : str
+            Text prompt describing the image to generate. When reference images are provided, the prompt describes the desired transformation.
+
+        image_file_ids : typing.Optional[typing.Sequence[str]]
+            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images. When provided, the model uses these as guidance for generation.
 
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated image. Defaults to 16:9 when omitted.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -1048,13 +892,15 @@ class AsyncRawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "v1/tools/prompt-to-image",
+            "v1/tools/generate-image",
             method="POST",
             json={
                 "prompt": prompt,
+                "imageFileIds": image_file_ids,
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1083,22 +929,32 @@ class AsyncRawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def prompt_to_video_clip(
+    async def generate_video_clip(
         self,
         *,
-        prompt: str,
+        prompt: typing.Optional[str] = OMIT,
+        image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
+        video_file_id: typing.Optional[str] = OMIT,
         generate_audio: typing.Optional[bool] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
-        Generate a video clip from a text prompt, with optional audio. Optionally specify an aspect ratio and number of candidates.
+        Generate a video clip from a text prompt, optionally guided by reference images or an input video. At least one of `prompt`, `imageFileIds`, or `videoFileId` must be provided.
 
         Parameters
         ----------
-        prompt : str
+        prompt : typing.Optional[str]
+            Text prompt describing the video to generate. Optional when reference images or a video are provided.
+
+        image_file_ids : typing.Optional[typing.Sequence[str]]
+            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model animates or uses these images as guidance.
+
+        video_file_id : typing.Optional[str]
+            Optional file id of a source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here. When provided, the model restyles or transforms the input video.
 
         generate_audio : typing.Optional[bool]
             When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
@@ -1106,6 +962,8 @@ class AsyncRawToolsClient:
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
 
+        watermark_mode : typing.Optional[WatermarkMode]
+
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
 
@@ -1121,228 +979,17 @@ class AsyncRawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "v1/tools/prompt-to-video-clip",
+            "v1/tools/generate-video-clip",
             method="POST",
             json={
                 "prompt": prompt,
+                "imageFileIds": image_file_ids,
+                "videoFileId": video_file_id,
                 "generateAudio": generate_audio,
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
-                "numResults": num_results,
-                "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    StartToolExecutionResponse,
-                    parse_obj_as(
-                        type_=StartToolExecutionResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def image_to_video_clip(
-        self,
-        *,
-        image_storage_file_id: str,
-        prompt: typing.Optional[str] = OMIT,
-        generate_audio: typing.Optional[bool] = OMIT,
-        source_prompt_to_image_prompt: typing.Optional[str] = OMIT,
-        num_results: typing.Optional[int] = OMIT,
-        is_output_temporary: typing.Optional[bool] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[StartToolExecutionResponse]:
-        """
-        Animate a still image into a video clip using a text prompt. Optionally generate audio alongside the video.
-
-        Parameters
-        ----------
-        image_storage_file_id : str
-            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
-
-        prompt : typing.Optional[str]
-            Optional text prompt to guide the animation. When omitted the model infers motion from the image.
-
-        generate_audio : typing.Optional[bool]
-            When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
-
-        source_prompt_to_image_prompt : typing.Optional[str]
-            Optional prompt used when the source image was generated.
-
-        num_results : typing.Optional[int]
-            Number of output results to generate. Defaults to 1.
-
-        is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[StartToolExecutionResponse]
-            Execution accepted; poll until complete.
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "v1/tools/image-to-video-clip",
-            method="POST",
-            json={
-                "imageStorageFileId": image_storage_file_id,
-                "prompt": prompt,
-                "generateAudio": generate_audio,
-                "sourcePromptToImagePrompt": source_prompt_to_image_prompt,
-                "numResults": num_results,
-                "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    StartToolExecutionResponse,
-                    parse_obj_as(
-                        type_=StartToolExecutionResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def image_to_image(
-        self,
-        *,
-        image_storage_file_ids: typing.Sequence[str],
-        prompt: str,
-        num_results: typing.Optional[int] = OMIT,
-        is_output_temporary: typing.Optional[bool] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[StartToolExecutionResponse]:
-        """
-        Transform an existing image using a text prompt. The prompt describes the desired changes to apply.
-
-        Parameters
-        ----------
-        image_storage_file_ids : typing.Sequence[str]
-            File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images.
-
-        prompt : str
-            Prompt describing how to transform the input image.
-
-        num_results : typing.Optional[int]
-            Number of output results to generate. Defaults to 1.
-
-        is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[StartToolExecutionResponse]
-            Execution accepted; poll until complete.
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "v1/tools/image-to-image",
-            method="POST",
-            json={
-                "imageStorageFileIds": image_storage_file_ids,
-                "prompt": prompt,
-                "numResults": num_results,
-                "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    StartToolExecutionResponse,
-                    parse_obj_as(
-                        type_=StartToolExecutionResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def video_to_video_clip(
-        self,
-        *,
-        video_storage_file_id: str,
-        prompt: str,
-        num_results: typing.Optional[int] = OMIT,
-        is_output_temporary: typing.Optional[bool] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[StartToolExecutionResponse]:
-        """
-        Restyle an existing video using a text prompt. The prompt describes the visual transformation to apply.
-
-        Parameters
-        ----------
-        video_storage_file_id : str
-            File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
-
-        prompt : str
-            Prompt describing how to transform the input video.
-
-        num_results : typing.Optional[int]
-            Number of output results to generate. Defaults to 1.
-
-        is_output_temporary : typing.Optional[bool]
-            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[StartToolExecutionResponse]
-            Execution accepted; poll until complete.
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "v1/tools/video-to-video-clip",
-            method="POST",
-            json={
-                "videoStorageFileId": video_storage_file_id,
-                "prompt": prompt,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1461,7 +1108,7 @@ class AsyncRawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def prompt_to_sound_effect(
+    async def generate_sound_effect(
         self,
         *,
         prompt: str,
@@ -1497,7 +1144,7 @@ class AsyncRawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "v1/tools/prompt-to-sound-effect",
+            "v1/tools/generate-sound-effect",
             method="POST",
             json={
                 "prompt": prompt,
@@ -1531,11 +1178,12 @@ class AsyncRawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def audio_to_avatar_clip(
+    async def generate_avatar(
         self,
         *,
         avatar_presenter_id: str,
         audio_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1550,6 +1198,8 @@ class AsyncRawToolsClient:
 
         audio_storage_file_id : str
             File id of an AUDIO file (e.g. `vg_file_...`), typically from a prior text-to-speech result. Upload a file first via `POST /v1/files/upload` or generate one with `POST /v1/tools/text-to-speech`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -1566,11 +1216,12 @@ class AsyncRawToolsClient:
             Execution accepted; poll until complete.
         """
         _response = await self._client_wrapper.httpx_client.request(
-            "v1/tools/audio-to-avatar-clip",
+            "v1/tools/generate-avatar",
             method="POST",
             json={
                 "avatarPresenterId": avatar_presenter_id,
                 "audioStorageFileId": audio_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1603,6 +1254,7 @@ class AsyncRawToolsClient:
         self,
         *,
         image_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1614,6 +1266,8 @@ class AsyncRawToolsClient:
         ----------
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -1634,6 +1288,7 @@ class AsyncRawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1666,6 +1321,7 @@ class AsyncRawToolsClient:
         self,
         *,
         image_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1677,6 +1333,8 @@ class AsyncRawToolsClient:
         ----------
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -1697,6 +1355,7 @@ class AsyncRawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1729,6 +1388,7 @@ class AsyncRawToolsClient:
         self,
         *,
         video_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1740,6 +1400,8 @@ class AsyncRawToolsClient:
         ----------
         video_storage_file_id : str
             File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -1760,6 +1422,7 @@ class AsyncRawToolsClient:
             method="POST",
             json={
                 "videoStorageFileId": video_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1792,6 +1455,7 @@ class AsyncRawToolsClient:
         self,
         *,
         image_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1803,6 +1467,8 @@ class AsyncRawToolsClient:
         ----------
         image_storage_file_id : str
             File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -1823,6 +1489,7 @@ class AsyncRawToolsClient:
             method="POST",
             json={
                 "imageStorageFileId": image_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1855,6 +1522,7 @@ class AsyncRawToolsClient:
         self,
         *,
         video_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
@@ -1866,6 +1534,8 @@ class AsyncRawToolsClient:
         ----------
         video_storage_file_id : str
             File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -1886,6 +1556,7 @@ class AsyncRawToolsClient:
             method="POST",
             json={
                 "videoStorageFileId": video_storage_file_id,
+                "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },

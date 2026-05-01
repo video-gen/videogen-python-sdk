@@ -38,7 +38,7 @@ class ResourcesClient:
         Returns
         -------
         AvatarPresenterListResponse
-            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/audio-to-avatar-clip`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
 
         Examples
         --------
@@ -118,7 +118,7 @@ class AsyncResourcesClient:
         Returns
         -------
         AvatarPresenterListResponse
-            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/audio-to-avatar-clip`.
+            List of avatar presenters. Pass an `avatarPresenterId` to `POST /v1/tools/generate-avatar`.
 
         Examples
         --------

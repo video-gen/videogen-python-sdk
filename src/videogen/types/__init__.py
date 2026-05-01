@@ -7,6 +7,7 @@ from importlib import import_module
 
 if typing.TYPE_CHECKING:
     from .api_error import ApiError
+    from .api_error_requirement import ApiErrorRequirement
     from .aspect_ratio import AspectRatio
     from .avatar_presenter import AvatarPresenter
     from .avatar_presenter_displayable_gender import AvatarPresenterDisplayableGender
@@ -35,11 +36,13 @@ if typing.TYPE_CHECKING:
     from .tts_voice_display_gender import TtsVoiceDisplayGender
     from .tts_voice_list_response import TtsVoiceListResponse
     from .video_asset_request import VideoAssetRequest
+    from .watermark_mode import WatermarkMode
     from .webhook_endpoint import WebhookEndpoint
     from .webhook_endpoint_list_response import WebhookEndpointListResponse
     from .webhook_event_name import WebhookEventName
 _dynamic_imports: typing.Dict[str, str] = {
     "ApiError": ".api_error",
+    "ApiErrorRequirement": ".api_error_requirement",
     "AspectRatio": ".aspect_ratio",
     "AvatarPresenter": ".avatar_presenter",
     "AvatarPresenterDisplayableGender": ".avatar_presenter_displayable_gender",
@@ -68,6 +71,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "TtsVoiceDisplayGender": ".tts_voice_display_gender",
     "TtsVoiceListResponse": ".tts_voice_list_response",
     "VideoAssetRequest": ".video_asset_request",
+    "WatermarkMode": ".watermark_mode",
     "WebhookEndpoint": ".webhook_endpoint",
     "WebhookEndpointListResponse": ".webhook_endpoint_list_response",
     "WebhookEventName": ".webhook_event_name",
@@ -97,6 +101,7 @@ def __dir__():
 
 __all__ = [
     "ApiError",
+    "ApiErrorRequirement",
     "AspectRatio",
     "AvatarPresenter",
     "AvatarPresenterDisplayableGender",
@@ -125,6 +130,7 @@ __all__ = [
     "TtsVoiceDisplayGender",
     "TtsVoiceListResponse",
     "VideoAssetRequest",
+    "WatermarkMode",
     "WebhookEndpoint",
     "WebhookEndpointListResponse",
     "WebhookEventName",

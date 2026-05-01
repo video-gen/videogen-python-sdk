@@ -21,7 +21,7 @@ class ExecutedTool(UniversalBaseModel):
     tool_type: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="toolType"),
-        pydantic.Field(alias="toolType", description="Tool name (e.g. `PROMPT_TO_IMAGE`, `TEXT_TO_SPEECH`)."),
+        pydantic.Field(alias="toolType", description="Tool name (e.g. `GENERATE_IMAGE`, `TEXT_TO_SPEECH`)."),
     ]
     results: typing.Optional[typing.List[ToolSuccessResult]] = pydantic.Field(default=None)
     """

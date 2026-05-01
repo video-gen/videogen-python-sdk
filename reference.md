@@ -1,6 +1,6 @@
 # Reference
 ## Tools
-<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">prompt_to_image</a>(...) -> StartToolExecutionResponse</code></summary>
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">generate_image</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
 <dd>
 
@@ -12,7 +12,7 @@
 <dl>
 <dd>
 
-Generate an image from a text prompt. Optionally specify an aspect ratio and number of candidates.
+Generate an image from a text prompt, optionally guided by one or more reference images. When reference images are provided, the prompt describes the desired transformation.
 </dd>
 </dl>
 </dd>
@@ -35,7 +35,7 @@ client = VideoGenApi(
     environment=VideoGenApiEnvironment.PRODUCTION,
 )
 
-client.tools.prompt_to_image(
+client.tools.generate_image(
     prompt="A serene Japanese garden with cherry blossoms at golden hour",
 )
 
@@ -53,7 +53,15 @@ client.tools.prompt_to_image(
 <dl>
 <dd>
 
-**prompt:** `str` 
+**prompt:** `str` — Text prompt describing the image to generate. When reference images are provided, the prompt describes the desired transformation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**image_file_ids:** `typing.Optional[typing.List[str]]` — Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images. When provided, the model uses these as guidance for generation.
     
 </dd>
 </dl>
@@ -62,6 +70,14 @@ client.tools.prompt_to_image(
 <dd>
 
 **aspect_ratio:** `typing.Optional[AspectRatio]` — Aspect ratio for the generated image. Defaults to 16:9 when omitted.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**watermark_mode:** `typing.Optional[WatermarkMode]` 
     
 </dd>
 </dl>
@@ -97,7 +113,7 @@ client.tools.prompt_to_image(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">prompt_to_video_clip</a>(...) -> StartToolExecutionResponse</code></summary>
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">generate_video_clip</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
 <dd>
 
@@ -109,7 +125,7 @@ client.tools.prompt_to_image(
 <dl>
 <dd>
 
-Generate a video clip from a text prompt, with optional audio. Optionally specify an aspect ratio and number of candidates.
+Generate a video clip from a text prompt, optionally guided by reference images or an input video. At least one of `prompt`, `imageFileIds`, or `videoFileId` must be provided.
 </dd>
 </dl>
 </dd>
@@ -132,9 +148,7 @@ client = VideoGenApi(
     environment=VideoGenApiEnvironment.PRODUCTION,
 )
 
-client.tools.prompt_to_video_clip(
-    prompt="A golden retriever running through a sunlit meadow in slow motion, cinematic",
-)
+client.tools.generate_video_clip()
 
 ```
 </dd>
@@ -150,7 +164,23 @@ client.tools.prompt_to_video_clip(
 <dl>
 <dd>
 
-**prompt:** `str` 
+**prompt:** `typing.Optional[str]` — Text prompt describing the video to generate. Optional when reference images or a video are provided.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**image_file_ids:** `typing.Optional[typing.List[str]]` — Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model animates or uses these images as guidance.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**video_file_id:** `typing.Optional[str]` — Optional file id of a source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here. When provided, the model restyles or transforms the input video.
     
 </dd>
 </dl>
@@ -174,310 +204,7 @@ client.tools.prompt_to_video_clip(
 <dl>
 <dd>
 
-**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">image_to_video_clip</a>(...) -> StartToolExecutionResponse</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Animate a still image into a video clip using a text prompt. Optionally generate audio alongside the video.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from videogen import VideoGenApi
-from videogen.environment import VideoGenApiEnvironment
-
-client = VideoGenApi(
-    token="<token>",
-    environment=VideoGenApiEnvironment.PRODUCTION,
-)
-
-client.tools.image_to_video_clip(
-    image_storage_file_id="imageStorageFileId",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**image_storage_file_id:** `str` — File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**prompt:** `typing.Optional[str]` — Optional text prompt to guide the animation. When omitted the model infers motion from the image.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**generate_audio:** `typing.Optional[bool]` — When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**source_prompt_to_image_prompt:** `typing.Optional[str]` — Optional prompt used when the source image was generated.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">image_to_image</a>(...) -> StartToolExecutionResponse</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Transform an existing image using a text prompt. The prompt describes the desired changes to apply.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from videogen import VideoGenApi
-from videogen.environment import VideoGenApiEnvironment
-
-client = VideoGenApi(
-    token="<token>",
-    environment=VideoGenApiEnvironment.PRODUCTION,
-)
-
-client.tools.image_to_image(
-    image_storage_file_ids=[
-        "imageStorageFileIds"
-    ],
-    prompt="prompt",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**image_storage_file_ids:** `typing.List[str]` — File ids of the source images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**prompt:** `str` — Prompt describing how to transform the input image.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">video_to_video_clip</a>(...) -> StartToolExecutionResponse</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Restyle an existing video using a text prompt. The prompt describes the visual transformation to apply.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from videogen import VideoGenApi
-from videogen.environment import VideoGenApiEnvironment
-
-client = VideoGenApi(
-    token="<token>",
-    environment=VideoGenApiEnvironment.PRODUCTION,
-)
-
-client.tools.video_to_video_clip(
-    video_storage_file_id="videoStorageFileId",
-    prompt="prompt",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**video_storage_file_id:** `str` — File id of the source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**prompt:** `str` — Prompt describing how to transform the input video.
+**watermark_mode:** `typing.Optional[WatermarkMode]` 
     
 </dd>
 </dl>
@@ -642,7 +369,7 @@ client.tools.text_to_speech(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">prompt_to_sound_effect</a>(...) -> StartToolExecutionResponse</code></summary>
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">generate_sound_effect</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
 <dd>
 
@@ -677,7 +404,7 @@ client = VideoGenApi(
     environment=VideoGenApiEnvironment.PRODUCTION,
 )
 
-client.tools.prompt_to_sound_effect(
+client.tools.generate_sound_effect(
     prompt="prompt",
 )
 
@@ -747,7 +474,7 @@ client.tools.prompt_to_sound_effect(
 </dl>
 </details>
 
-<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">audio_to_avatar_clip</a>(...) -> StartToolExecutionResponse</code></summary>
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">generate_avatar</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
 <dd>
 
@@ -782,7 +509,7 @@ client = VideoGenApi(
     environment=VideoGenApiEnvironment.PRODUCTION,
 )
 
-client.tools.audio_to_avatar_clip(
+client.tools.generate_avatar(
     avatar_presenter_id="avatarPresenterId",
     audio_storage_file_id="audioStorageFileId",
 )
@@ -810,6 +537,14 @@ client.tools.audio_to_avatar_clip(
 <dd>
 
 **audio_storage_file_id:** `str` — File id of an AUDIO file (e.g. `vg_file_...`), typically from a prior text-to-speech result. Upload a file first via `POST /v1/files/upload` or generate one with `POST /v1/tools/text-to-speech`, then pass the returned id here.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**watermark_mode:** `typing.Optional[WatermarkMode]` 
     
 </dd>
 </dl>
