@@ -208,6 +208,36 @@ class FilesClient:
         _response = self._raw_client.hydrate_file(file_id, request_options=request_options)
         return _response.data
 
+    def archive_file(self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> StorageFile:
+        """
+        Archive a file by setting its archived timestamp. Archived files are excluded from list results. Returns the updated file object.
+
+        Parameters
+        ----------
+        file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StorageFile
+            Archived file
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.files.archive_file(
+            file_id="fileId",
+        )
+        """
+        _response = self._raw_client.archive_file(file_id, request_options=request_options)
+        return _response.data
+
     def enable_public_preview(
         self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StorageFile:
@@ -506,6 +536,46 @@ class AsyncFilesClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.hydrate_file(file_id, request_options=request_options)
+        return _response.data
+
+    async def archive_file(
+        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> StorageFile:
+        """
+        Archive a file by setting its archived timestamp. Archived files are excluded from list results. Returns the updated file object.
+
+        Parameters
+        ----------
+        file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StorageFile
+            Archived file
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.files.archive_file(
+                file_id="fileId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.archive_file(file_id, request_options=request_options)
         return _response.data
 
     async def enable_public_preview(

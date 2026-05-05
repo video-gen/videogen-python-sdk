@@ -273,6 +273,48 @@ class RawFilesClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def archive_file(
+        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[StorageFile]:
+        """
+        Archive a file by setting its archived timestamp. Archived files are excluded from list results. Returns the updated file object.
+
+        Parameters
+        ----------
+        file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[StorageFile]
+            Archived file
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/files/{encode_path_param(file_id)}/archive",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StorageFile,
+                    parse_obj_as(
+                        type_=StorageFile,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def enable_public_preview(
         self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[StorageFile]:
@@ -590,6 +632,48 @@ class AsyncRawFilesClient:
         """
         _response = await self._client_wrapper.httpx_client.request(
             f"v1/files/{encode_path_param(file_id)}/hydrate",
+            method="POST",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StorageFile,
+                    parse_obj_as(
+                        type_=StorageFile,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def archive_file(
+        self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[StorageFile]:
+        """
+        Archive a file by setting its archived timestamp. Archived files are excluded from list results. Returns the updated file object.
+
+        Parameters
+        ----------
+        file_id : str
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[StorageFile]
+            Archived file
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/files/{encode_path_param(file_id)}/archive",
             method="POST",
             request_options=request_options,
         )
