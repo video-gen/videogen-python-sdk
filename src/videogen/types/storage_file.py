@@ -77,7 +77,7 @@ class StorageFile(UniversalBaseModel):
         FieldMetadata(alias="hlsSource"),
         pydantic.Field(
             alias="hlsSource",
-            description="Private HLS streaming source. Populated for video and audio files once Mux playback is ready. Uses a signed token; treat like other signed sources.",
+            description="Private HLS streaming source. Populated for video and audio files once streaming renditions are ready. Uses a signed token; treat like other signed sources.",
         ),
     ] = None
     is_public_preview_enabled: typing_extensions.Annotated[
