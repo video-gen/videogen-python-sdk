@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Dict, Union
 
-from standardwebhooks.webhooks import Webhook
+from standardwebhooks.webhooks import Webhook  # type: ignore[import-not-found]
 
 from .types.file_upload_webhook_payload import FileUploadWebhookPayload
 from .types.tool_execution_webhook_payload import ToolExecutionWebhookPayload
