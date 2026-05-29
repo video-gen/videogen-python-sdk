@@ -4,20 +4,21 @@ from typing import Optional
 
 from .client import VideoGenApi
 from .poll_helpers import _poll_raise_if_cancelled, _poll_sleep
-from .types.executed_tool import ExecutedTool
+from .types.project_export import ProjectExport
 
-_TERMINAL_STATUSES = frozenset({"succeeded", "failed", "cancelled"})
+_TERMINAL_STATUSES = frozenset({"succeeded", "failed"})
 
 
-def poll_executed_tool(
+def poll_project_export(
     client: VideoGenApi,
-    tool_execution_id: str,
+    project_id: str,
+    export_id: str,
     *,
     poll_interval_ms: int = 1500,
     timeout_ms: int = 3_600_000,
     cancel_event: Optional[Event] = None,
-) -> ExecutedTool:
-    """Polls ``get_tool_execution_info`` until status is ``succeeded``, ``failed``, or ``cancelled``.
+) -> ProjectExport:
+    """Polls ``get_project_export`` until status is ``succeeded`` or ``failed``.
 
     Args:
         timeout_ms: Maximum time in ms to wait for a terminal state. Defaults to
@@ -29,15 +30,16 @@ def poll_executed_tool(
     while time.monotonic() < deadline:
         _poll_raise_if_cancelled(cancel_event)
 
-        executed = client.tools.get_tool_execution_info(
-            tool_execution_id=tool_execution_id,
+        project_export = client.projects.get_project_export(
+            project_id=project_id,
+            export_id=export_id,
         )
 
-        if executed.status in _TERMINAL_STATUSES:
-            return executed
+        if project_export.status in _TERMINAL_STATUSES:
+            return project_export
 
         _poll_sleep(poll_interval_ms, cancel_event)
 
     raise TimeoutError(
-        f"Tool execution {tool_execution_id} did not reach a terminal state within {timeout_ms}ms."
+        f"Project export {export_id} for project {project_id} did not reach a terminal state within {timeout_ms}ms."
     )

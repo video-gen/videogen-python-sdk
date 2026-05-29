@@ -1,7 +1,12 @@
 # Custom SDK helpers — preserved across Fern regeneration.
 pyrightconfig.json
 src/videogen/poll_executed_tool.py
+src/videogen/poll_helpers.py
 src/videogen/async_poll_executed_tool.py
+src/videogen/poll_workflow_run.py
+src/videogen/async_poll_workflow_run.py
+src/videogen/poll_project_export.py
+src/videogen/async_poll_project_export.py
 src/videogen/get_hydrated_file.py
 src/videogen/async_get_hydrated_file.py
 src/videogen/download_file.py
@@ -9,4 +14,6 @@ src/videogen/async_download_file.py
 src/videogen/upload_file.py
 src/videogen/async_upload_file.py
 src/videogen/verify_webhook_signature.py
+src/videogen/poll_public_preview.py
+src/videogen/async_poll_public_preview.py
 requirements_ext.txt
