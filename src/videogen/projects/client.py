@@ -112,7 +112,6 @@ class ProjectsClient:
         project_id: str,
         *,
         quality: typing.Optional[ExportProjectQuality] = OMIT,
-        is_public: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ExportProjectResponse:
         """
@@ -124,9 +123,6 @@ class ProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         quality : typing.Optional[ExportProjectQuality]
-
-        is_public : typing.Optional[bool]
-            When true, the rendered MP4 is exposed at a public shareable URL.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -147,9 +143,7 @@ class ProjectsClient:
             project_id="projectId",
         )
         """
-        _response = self._raw_client.export_project(
-            project_id, quality=quality, is_public=is_public, request_options=request_options
-        )
+        _response = self._raw_client.export_project(project_id, quality=quality, request_options=request_options)
         return _response.data
 
     def get_project_export(
@@ -303,7 +297,6 @@ class AsyncProjectsClient:
         project_id: str,
         *,
         quality: typing.Optional[ExportProjectQuality] = OMIT,
-        is_public: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ExportProjectResponse:
         """
@@ -315,9 +308,6 @@ class AsyncProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         quality : typing.Optional[ExportProjectQuality]
-
-        is_public : typing.Optional[bool]
-            When true, the rendered MP4 is exposed at a public shareable URL.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -346,9 +336,7 @@ class AsyncProjectsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.export_project(
-            project_id, quality=quality, is_public=is_public, request_options=request_options
-        )
+        _response = await self._raw_client.export_project(project_id, quality=quality, request_options=request_options)
         return _response.data
 
     async def get_project_export(

@@ -31,7 +31,7 @@ class WorkflowsClient:
     def add_visuals_narrations_and_captions_to_script(
         self,
         *,
-        prompt: str,
+        script: str,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
@@ -40,8 +40,8 @@ class WorkflowsClient:
 
         Parameters
         ----------
-        prompt : str
-            A topic, idea, or full script to turn into a video.
+        script : str
+            The narration script, used verbatim. This exact text is narrated and turned into a video — it is not rewritten or expanded.
 
         aspect_ratio : typing.Optional[AspectRatio]
 
@@ -61,11 +61,11 @@ class WorkflowsClient:
             token="YOUR_TOKEN",
         )
         client.workflows.add_visuals_narrations_and_captions_to_script(
-            prompt="prompt",
+            script="script",
         )
         """
         _response = self._raw_client.add_visuals_narrations_and_captions_to_script(
-            prompt=prompt, aspect_ratio=aspect_ratio, request_options=request_options
+            script=script, aspect_ratio=aspect_ratio, request_options=request_options
         )
         return _response.data
 
@@ -151,51 +151,6 @@ class WorkflowsClient:
         )
         return _response.data
 
-    def start_ai_video_clip(
-        self,
-        *,
-        prompt: str,
-        image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
-        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> StartWorkflowRunResponse:
-        """
-        Generates a short AI video clip from a text prompt and optional image.
-
-        Parameters
-        ----------
-        prompt : str
-            Text prompt describing the desired video clip.
-
-        image_file_ids : typing.Optional[typing.Sequence[str]]
-            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model uses these images as guidance for the generated clip.
-
-        aspect_ratio : typing.Optional[AspectRatio]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        StartWorkflowRunResponse
-            Workflow run accepted.
-
-        Examples
-        --------
-        from videogen import VideoGenApi
-
-        client = VideoGenApi(
-            token="YOUR_TOKEN",
-        )
-        client.workflows.start_ai_video_clip(
-            prompt="prompt",
-        )
-        """
-        _response = self._raw_client.start_ai_video_clip(
-            prompt=prompt, image_file_ids=image_file_ids, aspect_ratio=aspect_ratio, request_options=request_options
-        )
-        return _response.data
-
     def get_workflow_run(
         self, workflow_run_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> WorkflowRun:
@@ -277,7 +232,7 @@ class AsyncWorkflowsClient:
     async def add_visuals_narrations_and_captions_to_script(
         self,
         *,
-        prompt: str,
+        script: str,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
@@ -286,8 +241,8 @@ class AsyncWorkflowsClient:
 
         Parameters
         ----------
-        prompt : str
-            A topic, idea, or full script to turn into a video.
+        script : str
+            The narration script, used verbatim. This exact text is narrated and turned into a video — it is not rewritten or expanded.
 
         aspect_ratio : typing.Optional[AspectRatio]
 
@@ -312,14 +267,14 @@ class AsyncWorkflowsClient:
 
         async def main() -> None:
             await client.workflows.add_visuals_narrations_and_captions_to_script(
-                prompt="prompt",
+                script="script",
             )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.add_visuals_narrations_and_captions_to_script(
-            prompt=prompt, aspect_ratio=aspect_ratio, request_options=request_options
+            script=script, aspect_ratio=aspect_ratio, request_options=request_options
         )
         return _response.data
 
@@ -418,59 +373,6 @@ class AsyncWorkflowsClient:
         """
         _response = await self._raw_client.add_narration_transitions_and_captions_to_slideshow(
             file_id=file_id, aspect_ratio=aspect_ratio, request_options=request_options
-        )
-        return _response.data
-
-    async def start_ai_video_clip(
-        self,
-        *,
-        prompt: str,
-        image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
-        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> StartWorkflowRunResponse:
-        """
-        Generates a short AI video clip from a text prompt and optional image.
-
-        Parameters
-        ----------
-        prompt : str
-            Text prompt describing the desired video clip.
-
-        image_file_ids : typing.Optional[typing.Sequence[str]]
-            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model uses these images as guidance for the generated clip.
-
-        aspect_ratio : typing.Optional[AspectRatio]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        StartWorkflowRunResponse
-            Workflow run accepted.
-
-        Examples
-        --------
-        import asyncio
-
-        from videogen import AsyncVideoGenApi
-
-        client = AsyncVideoGenApi(
-            token="YOUR_TOKEN",
-        )
-
-
-        async def main() -> None:
-            await client.workflows.start_ai_video_clip(
-                prompt="prompt",
-            )
-
-
-        asyncio.run(main())
-        """
-        _response = await self._raw_client.start_ai_video_clip(
-            prompt=prompt, image_file_ids=image_file_ids, aspect_ratio=aspect_ratio, request_options=request_options
         )
         return _response.data
 

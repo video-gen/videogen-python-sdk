@@ -132,7 +132,6 @@ class RawProjectsClient:
         project_id: str,
         *,
         quality: typing.Optional[ExportProjectQuality] = OMIT,
-        is_public: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ExportProjectResponse]:
         """
@@ -144,9 +143,6 @@ class RawProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         quality : typing.Optional[ExportProjectQuality]
-
-        is_public : typing.Optional[bool]
-            When true, the rendered MP4 is exposed at a public shareable URL.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -161,7 +157,6 @@ class RawProjectsClient:
             method="POST",
             json={
                 "quality": quality,
-                "isPublic": is_public,
             },
             headers={
                 "content-type": "application/json",
@@ -346,7 +341,6 @@ class AsyncRawProjectsClient:
         project_id: str,
         *,
         quality: typing.Optional[ExportProjectQuality] = OMIT,
-        is_public: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ExportProjectResponse]:
         """
@@ -358,9 +352,6 @@ class AsyncRawProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         quality : typing.Optional[ExportProjectQuality]
-
-        is_public : typing.Optional[bool]
-            When true, the rendered MP4 is exposed at a public shareable URL.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -375,7 +366,6 @@ class AsyncRawProjectsClient:
             method="POST",
             json={
                 "quality": quality,
-                "isPublic": is_public,
             },
             headers={
                 "content-type": "application/json",

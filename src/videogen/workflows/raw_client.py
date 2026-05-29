@@ -27,7 +27,7 @@ class RawWorkflowsClient:
     def add_visuals_narrations_and_captions_to_script(
         self,
         *,
-        prompt: str,
+        script: str,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartWorkflowRunResponse]:
@@ -36,8 +36,8 @@ class RawWorkflowsClient:
 
         Parameters
         ----------
-        prompt : str
-            A topic, idea, or full script to turn into a video.
+        script : str
+            The narration script, used verbatim. This exact text is narrated and turned into a video — it is not rewritten or expanded.
 
         aspect_ratio : typing.Optional[AspectRatio]
 
@@ -53,7 +53,7 @@ class RawWorkflowsClient:
             "v1/workflows/add-visuals-narrations-and-captions-to-script",
             method="POST",
             json={
-                "prompt": prompt,
+                "script": script,
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
@@ -201,70 +201,6 @@ class RawWorkflowsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def start_ai_video_clip(
-        self,
-        *,
-        prompt: str,
-        image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
-        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[StartWorkflowRunResponse]:
-        """
-        Generates a short AI video clip from a text prompt and optional image.
-
-        Parameters
-        ----------
-        prompt : str
-            Text prompt describing the desired video clip.
-
-        image_file_ids : typing.Optional[typing.Sequence[str]]
-            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model uses these images as guidance for the generated clip.
-
-        aspect_ratio : typing.Optional[AspectRatio]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        HttpResponse[StartWorkflowRunResponse]
-            Workflow run accepted.
-        """
-        _response = self._client_wrapper.httpx_client.request(
-            "v1/workflows/ai-video-clip",
-            method="POST",
-            json={
-                "prompt": prompt,
-                "imageFileIds": image_file_ids,
-                "aspectRatio": convert_and_respect_annotation_metadata(
-                    object_=aspect_ratio, annotation=AspectRatio, direction="write"
-                ),
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    StartWorkflowRunResponse,
-                    parse_obj_as(
-                        type_=StartWorkflowRunResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return HttpResponse(response=_response, data=_data)
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
     def get_workflow_run(
         self, workflow_run_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[WorkflowRun]:
@@ -355,7 +291,7 @@ class AsyncRawWorkflowsClient:
     async def add_visuals_narrations_and_captions_to_script(
         self,
         *,
-        prompt: str,
+        script: str,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartWorkflowRunResponse]:
@@ -364,8 +300,8 @@ class AsyncRawWorkflowsClient:
 
         Parameters
         ----------
-        prompt : str
-            A topic, idea, or full script to turn into a video.
+        script : str
+            The narration script, used verbatim. This exact text is narrated and turned into a video — it is not rewritten or expanded.
 
         aspect_ratio : typing.Optional[AspectRatio]
 
@@ -381,7 +317,7 @@ class AsyncRawWorkflowsClient:
             "v1/workflows/add-visuals-narrations-and-captions-to-script",
             method="POST",
             json={
-                "prompt": prompt,
+                "script": script,
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
@@ -500,70 +436,6 @@ class AsyncRawWorkflowsClient:
             method="POST",
             json={
                 "fileId": file_id,
-                "aspectRatio": convert_and_respect_annotation_metadata(
-                    object_=aspect_ratio, annotation=AspectRatio, direction="write"
-                ),
-            },
-            headers={
-                "content-type": "application/json",
-            },
-            request_options=request_options,
-            omit=OMIT,
-        )
-        try:
-            if 200 <= _response.status_code < 300:
-                _data = typing.cast(
-                    StartWorkflowRunResponse,
-                    parse_obj_as(
-                        type_=StartWorkflowRunResponse,  # type: ignore
-                        object_=_response.json(),
-                    ),
-                )
-                return AsyncHttpResponse(response=_response, data=_data)
-            _response_json = _response.json()
-        except JSONDecodeError:
-            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
-        except ValidationError as e:
-            raise ParsingError(
-                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
-            )
-        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
-
-    async def start_ai_video_clip(
-        self,
-        *,
-        prompt: str,
-        image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
-        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
-        request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[StartWorkflowRunResponse]:
-        """
-        Generates a short AI video clip from a text prompt and optional image.
-
-        Parameters
-        ----------
-        prompt : str
-            Text prompt describing the desired video clip.
-
-        image_file_ids : typing.Optional[typing.Sequence[str]]
-            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model uses these images as guidance for the generated clip.
-
-        aspect_ratio : typing.Optional[AspectRatio]
-
-        request_options : typing.Optional[RequestOptions]
-            Request-specific configuration.
-
-        Returns
-        -------
-        AsyncHttpResponse[StartWorkflowRunResponse]
-            Workflow run accepted.
-        """
-        _response = await self._client_wrapper.httpx_client.request(
-            "v1/workflows/ai-video-clip",
-            method="POST",
-            json={
-                "prompt": prompt,
-                "imageFileIds": image_file_ids,
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),

@@ -7,7 +7,6 @@ WorkflowType = typing.Union[
         "ADD_VISUALS_NARRATIONS_AND_CAPTIONS_TO_SCRIPT",
         "ADD_VISUALS_AND_CAPTIONS_TO_VOICEOVER",
         "ADD_NARRATION_TRANSITIONS_AND_CAPTIONS_TO_SLIDESHOW",
-        "AI_VIDEO_CLIP",
     ],
     typing.Any,
 ]

@@ -48,7 +48,7 @@ client = VideoGenApi(
 )
 
 client.workflows.add_visuals_narrations_and_captions_to_script(
-    prompt="prompt",
+    script="script",
 )
 ```
 
@@ -81,7 +81,7 @@ client = AsyncVideoGenApi(
 
 async def main() -> None:
     await client.workflows.add_visuals_narrations_and_captions_to_script(
-        prompt="prompt",
+        script="script",
     )
 
 

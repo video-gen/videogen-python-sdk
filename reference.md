@@ -36,7 +36,7 @@ client = VideoGenApi(
 )
 
 client.workflows.add_visuals_narrations_and_captions_to_script(
-    prompt="prompt",
+    script="script",
 )
 
 ```
@@ -53,7 +53,7 @@ client.workflows.add_visuals_narrations_and_captions_to_script(
 <dl>
 <dd>
 
-**prompt:** `str` — A topic, idea, or full script to turn into a video.
+**script:** `str` — The narration script, used verbatim. This exact text is narrated and turned into a video — it is not rewritten or expanded.
     
 </dd>
 </dl>
@@ -216,95 +216,6 @@ client.workflows.add_narration_transitions_and_captions_to_slideshow(
 <dd>
 
 **file_id:** `str` — Opaque file id of an uploaded PDF or PowerPoint file (e.g. `vg_file_...`). Upload the file first via `POST /v1/files/upload`.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**aspect_ratio:** `typing.Optional[AspectRatio]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">start_ai_video_clip</a>(...) -> StartWorkflowRunResponse</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Generates a short AI video clip from a text prompt and optional image.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```python
-from videogen import VideoGenApi
-from videogen.environment import VideoGenApiEnvironment
-
-client = VideoGenApi(
-    token="<token>",
-    environment=VideoGenApiEnvironment.PRODUCTION,
-)
-
-client.workflows.start_ai_video_clip(
-    prompt="prompt",
-)
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**prompt:** `str` — Text prompt describing the desired video clip.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**image_file_ids:** `typing.Optional[typing.List[str]]` — Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model uses these images as guidance for the generated clip.
     
 </dd>
 </dl>
@@ -673,14 +584,6 @@ client.projects.export_project(
 <dd>
 
 **quality:** `typing.Optional[ExportProjectQuality]` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**is_public:** `typing.Optional[bool]` — When true, the rendered MP4 is exposed at a public shareable URL.
     
 </dd>
 </dl>
