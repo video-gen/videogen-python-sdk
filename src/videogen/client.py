@@ -11,9 +11,12 @@ from .environment import VideoGenApiEnvironment
 
 if typing.TYPE_CHECKING:
     from .files.client import AsyncFilesClient, FilesClient
+    from .projects.client import AsyncProjectsClient, ProjectsClient
     from .resources.client import AsyncResourcesClient, ResourcesClient
+    from .text.client import AsyncTextClient, TextClient
     from .tools.client import AsyncToolsClient, ToolsClient
     from .webhooks.client import AsyncWebhooksClient, WebhooksClient
+    from .workflows.client import AsyncWorkflowsClient, WorkflowsClient
 
 
 class VideoGenApi:
@@ -86,10 +89,29 @@ class VideoGenApi:
             timeout=_defaulted_timeout,
             logging=logging,
         )
+        self._workflows: typing.Optional[WorkflowsClient] = None
+        self._projects: typing.Optional[ProjectsClient] = None
         self._tools: typing.Optional[ToolsClient] = None
         self._files: typing.Optional[FilesClient] = None
+        self._text: typing.Optional[TextClient] = None
         self._resources: typing.Optional[ResourcesClient] = None
         self._webhooks: typing.Optional[WebhooksClient] = None
+
+    @property
+    def workflows(self):
+        if self._workflows is None:
+            from .workflows.client import WorkflowsClient  # noqa: E402
+
+            self._workflows = WorkflowsClient(client_wrapper=self._client_wrapper)
+        return self._workflows
+
+    @property
+    def projects(self):
+        if self._projects is None:
+            from .projects.client import ProjectsClient  # noqa: E402
+
+            self._projects = ProjectsClient(client_wrapper=self._client_wrapper)
+        return self._projects
 
     @property
     def tools(self):
@@ -106,6 +128,14 @@ class VideoGenApi:
 
             self._files = FilesClient(client_wrapper=self._client_wrapper)
         return self._files
+
+    @property
+    def text(self):
+        if self._text is None:
+            from .text.client import TextClient  # noqa: E402
+
+            self._text = TextClient(client_wrapper=self._client_wrapper)
+        return self._text
 
     @property
     def resources(self):
@@ -215,10 +245,29 @@ class AsyncVideoGenApi:
             timeout=_defaulted_timeout,
             logging=logging,
         )
+        self._workflows: typing.Optional[AsyncWorkflowsClient] = None
+        self._projects: typing.Optional[AsyncProjectsClient] = None
         self._tools: typing.Optional[AsyncToolsClient] = None
         self._files: typing.Optional[AsyncFilesClient] = None
+        self._text: typing.Optional[AsyncTextClient] = None
         self._resources: typing.Optional[AsyncResourcesClient] = None
         self._webhooks: typing.Optional[AsyncWebhooksClient] = None
+
+    @property
+    def workflows(self):
+        if self._workflows is None:
+            from .workflows.client import AsyncWorkflowsClient  # noqa: E402
+
+            self._workflows = AsyncWorkflowsClient(client_wrapper=self._client_wrapper)
+        return self._workflows
+
+    @property
+    def projects(self):
+        if self._projects is None:
+            from .projects.client import AsyncProjectsClient  # noqa: E402
+
+            self._projects = AsyncProjectsClient(client_wrapper=self._client_wrapper)
+        return self._projects
 
     @property
     def tools(self):
@@ -235,6 +284,14 @@ class AsyncVideoGenApi:
 
             self._files = AsyncFilesClient(client_wrapper=self._client_wrapper)
         return self._files
+
+    @property
+    def text(self):
+        if self._text is None:
+            from .text.client import AsyncTextClient  # noqa: E402
+
+            self._text = AsyncTextClient(client_wrapper=self._client_wrapper)
+        return self._text
 
     @property
     def resources(self):

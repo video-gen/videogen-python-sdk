@@ -25,6 +25,26 @@
         ]
       },
       {
+        "from": "async_poll_project_export",
+        "imports": [
+          "async_poll_project_export"
+        ]
+      },
+      {
+        "from": "async_poll_public_preview",
+        "imports": [
+          "async_poll_public_preview_url",
+          "async_poll_public_embed_playback_id",
+          "async_poll_public_preview"
+        ]
+      },
+      {
+        "from": "async_poll_workflow_run",
+        "imports": [
+          "async_poll_workflow_run"
+        ]
+      },
+      {
         "from": "async_upload_file",
         "imports": [
           "async_upload_file"
@@ -49,6 +69,27 @@
         ]
       },
       {
+        "from": "poll_project_export",
+        "imports": [
+          "poll_project_export"
+        ]
+      },
+      {
+        "from": "poll_public_preview",
+        "imports": [
+          "poll_public_preview_url",
+          "poll_public_embed_playback_id",
+          "poll_public_preview",
+          "PUBLIC_PREVIEW_NOT_ENABLED_ERROR_MESSAGE"
+        ]
+      },
+      {
+        "from": "poll_workflow_run",
+        "imports": [
+          "poll_workflow_run"
+        ]
+      },
+      {
         "from": "upload_file",
         "imports": [
           "upload_file"
@@ -63,9 +104,9 @@
       }
     ]
   },
-  "originGitCommit": "af6706cc613d53df6fa37a840063f542a06cf4c2",
+  "originGitCommit": "175b35c5d23cdf387e30592eb7f84f866e7c3d41",
   "originGitCommitIsDirty": true,
   "invokedBy": "manual",
-  "requestedVersion": "0.0.38",
-  "sdkVersion": "0.0.38"
+  "requestedVersion": "1.0.0-beta.1",
+  "sdkVersion": "1.0.0-beta.1"
 }

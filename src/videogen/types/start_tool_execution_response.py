@@ -16,7 +16,7 @@ class StartToolExecutionResponse(UniversalBaseModel):
     tool_execution_id: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="toolExecutionId"),
-        pydantic.Field(alias="toolExecutionId", description="Execution id (e.g. `vg_exec_...`)."),
+        pydantic.Field(alias="toolExecutionId", description="Execution id (e.g. `vg_tool_...`)."),
     ]
 
     if IS_PYDANTIC_V2:

@@ -1,4 +1,787 @@
 # Reference
+## Workflows
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">add_visuals_narrations_and_captions_to_script</a>(...) -> StartWorkflowRunResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates a project and generates a narrated video from a prompt or script. Returns immediately with a workflow run id; poll or subscribe to webhooks for completion.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.add_visuals_narrations_and_captions_to_script(
+    prompt="prompt",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**prompt:** `str` — A topic, idea, or full script to turn into a video.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**aspect_ratio:** `typing.Optional[AspectRatio]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">add_visuals_and_captions_to_voiceover</a>(...) -> StartWorkflowRunResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates a project from an uploaded voiceover file and generates a video with matching b-roll. Upload the voiceover via the files API first.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.add_visuals_and_captions_to_voiceover(
+    file_id="fileId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file_id:** `str` — Opaque file id of an uploaded voiceover audio file (e.g. `vg_file_...`). Upload the file first via `POST /v1/files/upload`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**aspect_ratio:** `typing.Optional[AspectRatio]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">add_narration_transitions_and_captions_to_slideshow</a>(...) -> StartWorkflowRunResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates a project from an uploaded PDF or PowerPoint file and generates an AI-narrated video walking through each slide. Upload the file via `POST /v1/files/upload` first.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.add_narration_transitions_and_captions_to_slideshow(
+    file_id="fileId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**file_id:** `str` — Opaque file id of an uploaded PDF or PowerPoint file (e.g. `vg_file_...`). Upload the file first via `POST /v1/files/upload`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**aspect_ratio:** `typing.Optional[AspectRatio]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">start_ai_video_clip</a>(...) -> StartWorkflowRunResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generates a short AI video clip from a text prompt and optional image.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.start_ai_video_clip(
+    prompt="prompt",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**prompt:** `str` — Text prompt describing the desired video clip.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**image_file_ids:** `typing.Optional[typing.List[str]]` — Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model uses these images as guidance for the generated clip.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**aspect_ratio:** `typing.Optional[AspectRatio]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">get_workflow_run</a>(...) -> WorkflowRun</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.get_workflow_run(
+    workflow_run_id="workflowRunId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**workflow_run_id:** `str` — The workflow run id returned when the workflow was started.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">cancel_workflow_run</a>(...) -> StartWorkflowRunResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.cancel_workflow_run(
+    workflow_run_id="workflowRunId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**workflow_run_id:** `str` — The workflow run id returned when the workflow was started.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Projects
+<details><summary><code>client.projects.<a href="src/videogen/projects/client.py">list_projects</a>(...) -> ListProjectsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns API-created projects, most recently updated first. Dashboard projects are excluded. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all API-created projects for the team are returned. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.projects.list_projects()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**self_only:** `typing.Optional[bool]` — When true, returns only projects created by the API key's owner workspace. When false (default), returns all projects accessible to the team.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.<a href="src/videogen/projects/client.py">get_project</a>(...) -> ProjectResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a simplified view of a project including its title, aspect ratio, status, and URL.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.projects.get_project(
+    project_id="projectId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**project_id:** `str` — The project id (e.g. `vg_proj_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.<a href="src/videogen/projects/client.py">export_project</a>(...) -> ExportProjectResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Starts an export of a project to MP4. Returns immediately with an export id; the file becomes available when the export task completes.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.projects.export_project(
+    project_id="projectId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**project_id:** `str` — The project id (e.g. `vg_proj_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**quality:** `typing.Optional[ExportProjectQuality]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**is_public:** `typing.Optional[bool]` — When true, the rendered MP4 is exposed at a public shareable URL.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.<a href="src/videogen/projects/client.py">get_project_export</a>(...) -> ProjectExport</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the current status of a project export started via `POST /v1/projects/{projectId}/export`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.projects.get_project_export(
+    project_id="projectId",
+    export_id="exportId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**project_id:** `str` — The project id (e.g. `vg_proj_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**export_id:** `str` — The export id returned by `POST /v1/projects/{projectId}/export`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Tools
 <details><summary><code>client.tools.<a href="src/videogen/tools/client.py">generate_image</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
@@ -37,6 +820,7 @@ client = VideoGenApi(
 
 client.tools.generate_image(
     prompt="A serene Japanese garden with cherry blossoms at golden hour",
+    quality="LOW",
 )
 
 ```
@@ -54,6 +838,14 @@ client.tools.generate_image(
 <dd>
 
 **prompt:** `str` — Text prompt describing the image to generate. When reference images are provided, the prompt describes the desired transformation.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**quality:** `GenerateImageRequestQuality` — Image generation quality tier. LOW is fastest; HIGH is slowest and highest quality.
     
 </dd>
 </dl>
@@ -148,7 +940,9 @@ client = VideoGenApi(
     environment=VideoGenApiEnvironment.PRODUCTION,
 )
 
-client.tools.generate_video_clip()
+client.tools.generate_video_clip(
+    quality="STANDARD",
+)
 
 ```
 </dd>
@@ -160,6 +954,14 @@ client.tools.generate_video_clip()
 
 <dl>
 <dd>
+
+<dl>
+<dd>
+
+**quality:** `GenerateVideoClipRequestQuality` — Video generation quality tier. STANDARD is fastest; HIGH is slowest and highest quality.
+    
+</dd>
+</dl>
 
 <dl>
 <dd>
@@ -439,6 +1241,103 @@ client.tools.generate_sound_effect(
 <dd>
 
 **prompt_influence:** `typing.Optional[float]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**num_results:** `typing.Optional[int]` — Number of output results to generate. Defaults to 1.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**is_output_temporary:** `typing.Optional[bool]` — When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">generate_music</a>(...) -> StartToolExecutionResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate an instrumental music track from a text description. The returned track is approximately 30 seconds long.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.tools.generate_music(
+    prompt="prompt",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**prompt:** `str` — A text description of the music to generate. Include genre, mood, instrumentation, and tempo for best results.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**duration_seconds:** `typing.Optional[float]` — Desired track length in seconds. Currently informational — output tracks are approximately 30 seconds regardless of this value.
     
 </dd>
 </dl>
@@ -945,6 +1844,79 @@ client.tools.upscale_video(
 </dl>
 </details>
 
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">image3d_effect</a>(...) -> StartToolExecutionResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Turn a still image into a short video clip with a 3D parallax motion effect, simulating camera movement through the scene.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.tools.image3d_effect(
+    image_storage_file_id="imageStorageFileId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ImageAssetRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.tools.<a href="src/videogen/tools/client.py">cancel_tool_execution</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
 <dd>
@@ -998,7 +1970,7 @@ client.tools.cancel_tool_execution(
 <dl>
 <dd>
 
-**tool_execution_id:** `str` 
+**tool_execution_id:** `str` — The tool execution id returned when the tool was started.
     
 </dd>
 </dl>
@@ -1071,7 +2043,7 @@ client.tools.get_tool_execution_info(
 <dl>
 <dd>
 
-**tool_execution_id:** `str` 
+**tool_execution_id:** `str` — The tool execution id returned when the tool was started.
     
 </dd>
 </dl>
@@ -1092,7 +2064,7 @@ client.tools.get_tool_execution_info(
 </details>
 
 ## Files
-<details><summary><code>client.files.<a href="src/videogen/files/client.py">get_files</a>() -> GetFilesResponse</code></summary>
+<details><summary><code>client.files.<a href="src/videogen/files/client.py">get_files</a>(...) -> GetFilesResponse</code></summary>
 <dl>
 <dd>
 
@@ -1104,7 +2076,7 @@ client.tools.get_tool_execution_info(
 <dl>
 <dd>
 
-List all files in your account, including generated assets and uploads.
+List files in your account, including generated assets and uploads. Files are returned most recently updated first. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 </dd>
 </dl>
 </dd>
@@ -1139,6 +2111,22 @@ client.files.get_files()
 
 <dl>
 <dd>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+    
+</dd>
+</dl>
 
 <dl>
 <dd>
@@ -1216,7 +2204,7 @@ client.files.search_files(
 <dl>
 <dd>
 
-**num_results:** `typing.Optional[int]` — Number of results to return (1–100). Defaults to 10.
+**num_results:** `typing.Optional[int]` — Number of results to return (1-100). Defaults to 10.
     
 </dd>
 </dl>
@@ -1297,7 +2285,7 @@ client.files.get_file(
 <dl>
 <dd>
 
-**file_id:** `str` 
+**file_id:** `str` — The file id (e.g. `vg_file_...`).
     
 </dd>
 </dl>
@@ -1459,7 +2447,7 @@ client.files.hydrate_file(
 <dl>
 <dd>
 
-**file_id:** `str` 
+**file_id:** `str` — The file id (e.g. `vg_file_...`).
     
 </dd>
 </dl>
@@ -1532,7 +2520,7 @@ client.files.archive_file(
 <dl>
 <dd>
 
-**file_id:** `str` 
+**file_id:** `str` — The file id (e.g. `vg_file_...`).
     
 </dd>
 </dl>
@@ -1564,7 +2552,7 @@ client.files.archive_file(
 <dl>
 <dd>
 
-Enable public preview for a file. Registers a public playback id so the file can be streamed without authentication. Returns the updated file with `isPublicPreviewEnabled`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
+Enable public preview for a file. Works for any file type. Copies the file to a permanent public URL (`staticPublicPreviewSource`) and, for video and audio, registers a public embed playback id (`publicPlaybackId`) for use with `@videogen/player`. If the file is not yet on the streaming provider, the endpoint starts the upload and polls briefly; otherwise the Mux asset-ready webhook finishes creating the embed playback id. Returns the updated file.
 </dd>
 </dl>
 </dd>
@@ -1605,7 +2593,7 @@ client.files.enable_public_preview(
 <dl>
 <dd>
 
-**file_id:** `str` 
+**file_id:** `str` — The file id (e.g. `vg_file_...`).
     
 </dd>
 </dl>
@@ -1637,7 +2625,7 @@ client.files.enable_public_preview(
 <dl>
 <dd>
 
-Disable public preview for a file. Revokes unauthenticated streaming access. The file's signed URLs for authenticated access remain functional. Returns the updated file.
+Disable public preview for a file. Removes the permanent public URL copy and revokes unauthenticated embed streaming access. Authenticated signed URLs remain functional. Returns the updated file.
 </dd>
 </dl>
 </dd>
@@ -1678,7 +2666,113 @@ client.files.disable_public_preview(
 <dl>
 <dd>
 
-**file_id:** `str` 
+**file_id:** `str` — The file id (e.g. `vg_file_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Text
+<details><summary><code>client.text.<a href="src/videogen/text/client.py">generate_text</a>(...) -> GenerateTextResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate text from a prompt using a fast, general-purpose language model. Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.text.generate_text(
+    prompt="Write a 30-second upbeat video script about why the sky is blue.",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**prompt:** `str` — The instruction or content to generate text from.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**system:** `typing.Optional[str]` — Optional system instructions that steer the model's role, tone, and constraints.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**model:** `typing.Optional[GenerateTextRequestModel]` — Model tier. `fast` is quickest and cheapest; `smart` is higher quality. Defaults to `fast`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**temperature:** `typing.Optional[float]` — Sampling temperature. Higher values produce more varied output. Defaults to the model's default.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**max_output_tokens:** `typing.Optional[int]` — Maximum number of tokens to generate. Defaults to 512.
     
 </dd>
 </dl>
@@ -1699,7 +2793,7 @@ client.files.disable_public_preview(
 </details>
 
 ## Resources
-<details><summary><code>client.resources.<a href="src/videogen/resources/client.py">list_avatar_presenters</a>() -> AvatarPresenterListResponse</code></summary>
+<details><summary><code>client.resources.<a href="src/videogen/resources/client.py">list_avatar_presenters</a>(...) -> AvatarPresenterListResponse</code></summary>
 <dl>
 <dd>
 
@@ -1711,7 +2805,7 @@ client.files.disable_public_preview(
 <dl>
 <dd>
 
-List all available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint.
+List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 </dd>
 </dl>
 </dd>
@@ -1750,6 +2844,22 @@ client.resources.list_avatar_presenters()
 <dl>
 <dd>
 
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -1774,7 +2884,7 @@ client.resources.list_avatar_presenters()
 <dl>
 <dd>
 
-List all available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint.
+List available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 </dd>
 </dl>
 </dd>
@@ -1813,7 +2923,23 @@ client.resources.list_tts_voices()
 <dl>
 <dd>
 
-**include_deprecated_voices:** `typing.Optional[bool]` — When true, includes deprecated voices in the response. Defaults to false.
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**include_deprecated_voices:** `typing.Optional[bool]` — When true, includes voices that are deprecated but still callable. Defaults to false.
     
 </dd>
 </dl>
@@ -1834,7 +2960,7 @@ client.resources.list_tts_voices()
 </details>
 
 ## Webhooks
-<details><summary><code>client.webhooks.<a href="src/videogen/webhooks/client.py">list_webhook_endpoints</a>() -> WebhookEndpointListResponse</code></summary>
+<details><summary><code>client.webhooks.<a href="src/videogen/webhooks/client.py">list_webhook_endpoints</a>(...) -> WebhookEndpointListResponse</code></summary>
 <dl>
 <dd>
 
@@ -1846,7 +2972,7 @@ client.resources.list_tts_voices()
 <dl>
 <dd>
 
-List all configured webhook endpoints for your account.
+List configured webhook endpoints for your account. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 </dd>
 </dl>
 </dd>
@@ -1881,6 +3007,22 @@ client.webhooks.list_webhook_endpoints()
 
 <dl>
 <dd>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+    
+</dd>
+</dl>
 
 <dl>
 <dd>
@@ -2042,7 +3184,7 @@ client.webhooks.delete_webhook_endpoint(
 <dl>
 <dd>
 
-**endpoint_id:** `str` 
+**endpoint_id:** `str` — The webhook endpoint id returned by `POST /v1/webhooks/endpoints`.
     
 </dd>
 </dl>

@@ -10,6 +10,8 @@ from ..types.pronunciation_replacement import PronunciationReplacement
 from ..types.start_tool_execution_response import StartToolExecutionResponse
 from ..types.watermark_mode import WatermarkMode
 from .raw_client import AsyncRawToolsClient, RawToolsClient
+from .types.generate_image_request_quality import GenerateImageRequestQuality
+from .types.generate_video_clip_request_quality import GenerateVideoClipRequestQuality
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -34,6 +36,7 @@ class ToolsClient:
         self,
         *,
         prompt: str,
+        quality: GenerateImageRequestQuality,
         image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         watermark_mode: typing.Optional[WatermarkMode] = OMIT,
@@ -48,6 +51,9 @@ class ToolsClient:
         ----------
         prompt : str
             Text prompt describing the image to generate. When reference images are provided, the prompt describes the desired transformation.
+
+        quality : GenerateImageRequestQuality
+            Image generation quality tier. LOW is fastest; HIGH is slowest and highest quality.
 
         image_file_ids : typing.Optional[typing.Sequence[str]]
             Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images. When provided, the model uses these as guidance for generation.
@@ -80,10 +86,12 @@ class ToolsClient:
         )
         client.tools.generate_image(
             prompt="A serene Japanese garden with cherry blossoms at golden hour",
+            quality="LOW",
         )
         """
         _response = self._raw_client.generate_image(
             prompt=prompt,
+            quality=quality,
             image_file_ids=image_file_ids,
             aspect_ratio=aspect_ratio,
             watermark_mode=watermark_mode,
@@ -96,6 +104,7 @@ class ToolsClient:
     def generate_video_clip(
         self,
         *,
+        quality: GenerateVideoClipRequestQuality,
         prompt: typing.Optional[str] = OMIT,
         image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         video_file_id: typing.Optional[str] = OMIT,
@@ -111,6 +120,9 @@ class ToolsClient:
 
         Parameters
         ----------
+        quality : GenerateVideoClipRequestQuality
+            Video generation quality tier. STANDARD is fastest; HIGH is slowest and highest quality.
+
         prompt : typing.Optional[str]
             Text prompt describing the video to generate. Optional when reference images or a video are provided.
 
@@ -149,9 +161,12 @@ class ToolsClient:
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
-        client.tools.generate_video_clip()
+        client.tools.generate_video_clip(
+            quality="STANDARD",
+        )
         """
         _response = self._raw_client.generate_video_clip(
+            quality=quality,
             prompt=prompt,
             image_file_ids=image_file_ids,
             video_file_id=video_file_id,
@@ -286,6 +301,60 @@ class ToolsClient:
             prompt=prompt,
             duration_seconds=duration_seconds,
             prompt_influence=prompt_influence,
+            num_results=num_results,
+            is_output_temporary=is_output_temporary,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def generate_music(
+        self,
+        *,
+        prompt: str,
+        duration_seconds: typing.Optional[float] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartToolExecutionResponse:
+        """
+        Generate an instrumental music track from a text description. The returned track is approximately 30 seconds long.
+
+        Parameters
+        ----------
+        prompt : str
+            A text description of the music to generate. Include genre, mood, instrumentation, and tempo for best results.
+
+        duration_seconds : typing.Optional[float]
+            Desired track length in seconds. Currently informational — output tracks are approximately 30 seconds regardless of this value.
+
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartToolExecutionResponse
+            Execution accepted; poll until complete.
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.tools.generate_music(
+            prompt="prompt",
+        )
+        """
+        _response = self._raw_client.generate_music(
+            prompt=prompt,
+            duration_seconds=duration_seconds,
             num_results=num_results,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -616,6 +685,59 @@ class ToolsClient:
         )
         return _response.data
 
+    def image3d_effect(
+        self,
+        *,
+        image_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartToolExecutionResponse:
+        """
+        Turn a still image into a short video clip with a 3D parallax motion effect, simulating camera movement through the scene.
+
+        Parameters
+        ----------
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
+
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartToolExecutionResponse
+            Execution accepted; poll until complete.
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.tools.image3d_effect(
+            image_storage_file_id="imageStorageFileId",
+        )
+        """
+        _response = self._raw_client.image3d_effect(
+            image_storage_file_id=image_storage_file_id,
+            watermark_mode=watermark_mode,
+            num_results=num_results,
+            is_output_temporary=is_output_temporary,
+            request_options=request_options,
+        )
+        return _response.data
+
     def cancel_tool_execution(
         self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StartToolExecutionResponse:
@@ -625,6 +747,7 @@ class ToolsClient:
         Parameters
         ----------
         tool_execution_id : str
+            The tool execution id returned when the tool was started.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -657,6 +780,7 @@ class ToolsClient:
         Parameters
         ----------
         tool_execution_id : str
+            The tool execution id returned when the tool was started.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -700,6 +824,7 @@ class AsyncToolsClient:
         self,
         *,
         prompt: str,
+        quality: GenerateImageRequestQuality,
         image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         watermark_mode: typing.Optional[WatermarkMode] = OMIT,
@@ -714,6 +839,9 @@ class AsyncToolsClient:
         ----------
         prompt : str
             Text prompt describing the image to generate. When reference images are provided, the prompt describes the desired transformation.
+
+        quality : GenerateImageRequestQuality
+            Image generation quality tier. LOW is fastest; HIGH is slowest and highest quality.
 
         image_file_ids : typing.Optional[typing.Sequence[str]]
             Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images. When provided, the model uses these as guidance for generation.
@@ -751,6 +879,7 @@ class AsyncToolsClient:
         async def main() -> None:
             await client.tools.generate_image(
                 prompt="A serene Japanese garden with cherry blossoms at golden hour",
+                quality="LOW",
             )
 
 
@@ -758,6 +887,7 @@ class AsyncToolsClient:
         """
         _response = await self._raw_client.generate_image(
             prompt=prompt,
+            quality=quality,
             image_file_ids=image_file_ids,
             aspect_ratio=aspect_ratio,
             watermark_mode=watermark_mode,
@@ -770,6 +900,7 @@ class AsyncToolsClient:
     async def generate_video_clip(
         self,
         *,
+        quality: GenerateVideoClipRequestQuality,
         prompt: typing.Optional[str] = OMIT,
         image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         video_file_id: typing.Optional[str] = OMIT,
@@ -785,6 +916,9 @@ class AsyncToolsClient:
 
         Parameters
         ----------
+        quality : GenerateVideoClipRequestQuality
+            Video generation quality tier. STANDARD is fastest; HIGH is slowest and highest quality.
+
         prompt : typing.Optional[str]
             Text prompt describing the video to generate. Optional when reference images or a video are provided.
 
@@ -828,12 +962,15 @@ class AsyncToolsClient:
 
 
         async def main() -> None:
-            await client.tools.generate_video_clip()
+            await client.tools.generate_video_clip(
+                quality="STANDARD",
+            )
 
 
         asyncio.run(main())
         """
         _response = await self._raw_client.generate_video_clip(
+            quality=quality,
             prompt=prompt,
             image_file_ids=image_file_ids,
             video_file_id=video_file_id,
@@ -984,6 +1121,68 @@ class AsyncToolsClient:
             prompt=prompt,
             duration_seconds=duration_seconds,
             prompt_influence=prompt_influence,
+            num_results=num_results,
+            is_output_temporary=is_output_temporary,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def generate_music(
+        self,
+        *,
+        prompt: str,
+        duration_seconds: typing.Optional[float] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartToolExecutionResponse:
+        """
+        Generate an instrumental music track from a text description. The returned track is approximately 30 seconds long.
+
+        Parameters
+        ----------
+        prompt : str
+            A text description of the music to generate. Include genre, mood, instrumentation, and tempo for best results.
+
+        duration_seconds : typing.Optional[float]
+            Desired track length in seconds. Currently informational — output tracks are approximately 30 seconds regardless of this value.
+
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartToolExecutionResponse
+            Execution accepted; poll until complete.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.tools.generate_music(
+                prompt="prompt",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.generate_music(
+            prompt=prompt,
+            duration_seconds=duration_seconds,
             num_results=num_results,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -1362,6 +1561,67 @@ class AsyncToolsClient:
         )
         return _response.data
 
+    async def image3d_effect(
+        self,
+        *,
+        image_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartToolExecutionResponse:
+        """
+        Turn a still image into a short video clip with a 3D parallax motion effect, simulating camera movement through the scene.
+
+        Parameters
+        ----------
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
+
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartToolExecutionResponse
+            Execution accepted; poll until complete.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.tools.image3d_effect(
+                image_storage_file_id="imageStorageFileId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.image3d_effect(
+            image_storage_file_id=image_storage_file_id,
+            watermark_mode=watermark_mode,
+            num_results=num_results,
+            is_output_temporary=is_output_temporary,
+            request_options=request_options,
+        )
+        return _response.data
+
     async def cancel_tool_execution(
         self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> StartToolExecutionResponse:
@@ -1371,6 +1631,7 @@ class AsyncToolsClient:
         Parameters
         ----------
         tool_execution_id : str
+            The tool execution id returned when the tool was started.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1411,6 +1672,7 @@ class AsyncToolsClient:
         Parameters
         ----------
         tool_execution_id : str
+            The tool execution id returned when the tool was started.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

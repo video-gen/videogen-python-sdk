@@ -16,6 +16,8 @@ from ..types.executed_tool import ExecutedTool
 from ..types.pronunciation_replacement import PronunciationReplacement
 from ..types.start_tool_execution_response import StartToolExecutionResponse
 from ..types.watermark_mode import WatermarkMode
+from .types.generate_image_request_quality import GenerateImageRequestQuality
+from .types.generate_video_clip_request_quality import GenerateVideoClipRequestQuality
 from pydantic import ValidationError
 
 # this is used as the default value for optional parameters
@@ -30,6 +32,7 @@ class RawToolsClient:
         self,
         *,
         prompt: str,
+        quality: GenerateImageRequestQuality,
         image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         watermark_mode: typing.Optional[WatermarkMode] = OMIT,
@@ -44,6 +47,9 @@ class RawToolsClient:
         ----------
         prompt : str
             Text prompt describing the image to generate. When reference images are provided, the prompt describes the desired transformation.
+
+        quality : GenerateImageRequestQuality
+            Image generation quality tier. LOW is fastest; HIGH is slowest and highest quality.
 
         image_file_ids : typing.Optional[typing.Sequence[str]]
             Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images. When provided, the model uses these as guidance for generation.
@@ -76,6 +82,7 @@ class RawToolsClient:
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
+                "quality": quality,
                 "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
@@ -108,6 +115,7 @@ class RawToolsClient:
     def generate_video_clip(
         self,
         *,
+        quality: GenerateVideoClipRequestQuality,
         prompt: typing.Optional[str] = OMIT,
         image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         video_file_id: typing.Optional[str] = OMIT,
@@ -123,6 +131,9 @@ class RawToolsClient:
 
         Parameters
         ----------
+        quality : GenerateVideoClipRequestQuality
+            Video generation quality tier. STANDARD is fastest; HIGH is slowest and highest quality.
+
         prompt : typing.Optional[str]
             Text prompt describing the video to generate. Optional when reference images or a video are provided.
 
@@ -165,6 +176,7 @@ class RawToolsClient:
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
+                "quality": quality,
                 "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
@@ -326,6 +338,74 @@ class RawToolsClient:
                 "prompt": prompt,
                 "durationSeconds": duration_seconds,
                 "promptInfluence": prompt_influence,
+                "numResults": num_results,
+                "isOutputTemporary": is_output_temporary,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StartToolExecutionResponse,
+                    parse_obj_as(
+                        type_=StartToolExecutionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def generate_music(
+        self,
+        *,
+        prompt: str,
+        duration_seconds: typing.Optional[float] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[StartToolExecutionResponse]:
+        """
+        Generate an instrumental music track from a text description. The returned track is approximately 30 seconds long.
+
+        Parameters
+        ----------
+        prompt : str
+            A text description of the music to generate. Include genre, mood, instrumentation, and tempo for best results.
+
+        duration_seconds : typing.Optional[float]
+            Desired track length in seconds. Currently informational — output tracks are approximately 30 seconds regardless of this value.
+
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[StartToolExecutionResponse]
+            Execution accepted; poll until complete.
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/tools/generate-music",
+            method="POST",
+            json={
+                "prompt": prompt,
+                "durationSeconds": duration_seconds,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -761,6 +841,73 @@ class RawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def image3d_effect(
+        self,
+        *,
+        image_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[StartToolExecutionResponse]:
+        """
+        Turn a still image into a short video clip with a 3D parallax motion effect, simulating camera movement through the scene.
+
+        Parameters
+        ----------
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
+
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[StartToolExecutionResponse]
+            Execution accepted; poll until complete.
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/tools/image-3d-effect",
+            method="POST",
+            json={
+                "imageStorageFileId": image_storage_file_id,
+                "watermarkMode": watermark_mode,
+                "numResults": num_results,
+                "isOutputTemporary": is_output_temporary,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StartToolExecutionResponse,
+                    parse_obj_as(
+                        type_=StartToolExecutionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     def cancel_tool_execution(
         self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[StartToolExecutionResponse]:
@@ -770,6 +917,7 @@ class RawToolsClient:
         Parameters
         ----------
         tool_execution_id : str
+            The tool execution id returned when the tool was started.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -812,6 +960,7 @@ class RawToolsClient:
         Parameters
         ----------
         tool_execution_id : str
+            The tool execution id returned when the tool was started.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -854,6 +1003,7 @@ class AsyncRawToolsClient:
         self,
         *,
         prompt: str,
+        quality: GenerateImageRequestQuality,
         image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         watermark_mode: typing.Optional[WatermarkMode] = OMIT,
@@ -868,6 +1018,9 @@ class AsyncRawToolsClient:
         ----------
         prompt : str
             Text prompt describing the image to generate. When reference images are provided, the prompt describes the desired transformation.
+
+        quality : GenerateImageRequestQuality
+            Image generation quality tier. LOW is fastest; HIGH is slowest and highest quality.
 
         image_file_ids : typing.Optional[typing.Sequence[str]]
             Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. Maximum 4 images. When provided, the model uses these as guidance for generation.
@@ -900,6 +1053,7 @@ class AsyncRawToolsClient:
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
+                "quality": quality,
                 "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
@@ -932,6 +1086,7 @@ class AsyncRawToolsClient:
     async def generate_video_clip(
         self,
         *,
+        quality: GenerateVideoClipRequestQuality,
         prompt: typing.Optional[str] = OMIT,
         image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         video_file_id: typing.Optional[str] = OMIT,
@@ -947,6 +1102,9 @@ class AsyncRawToolsClient:
 
         Parameters
         ----------
+        quality : GenerateVideoClipRequestQuality
+            Video generation quality tier. STANDARD is fastest; HIGH is slowest and highest quality.
+
         prompt : typing.Optional[str]
             Text prompt describing the video to generate. Optional when reference images or a video are provided.
 
@@ -989,6 +1147,7 @@ class AsyncRawToolsClient:
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
+                "quality": quality,
                 "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
@@ -1150,6 +1309,74 @@ class AsyncRawToolsClient:
                 "prompt": prompt,
                 "durationSeconds": duration_seconds,
                 "promptInfluence": prompt_influence,
+                "numResults": num_results,
+                "isOutputTemporary": is_output_temporary,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StartToolExecutionResponse,
+                    parse_obj_as(
+                        type_=StartToolExecutionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def generate_music(
+        self,
+        *,
+        prompt: str,
+        duration_seconds: typing.Optional[float] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[StartToolExecutionResponse]:
+        """
+        Generate an instrumental music track from a text description. The returned track is approximately 30 seconds long.
+
+        Parameters
+        ----------
+        prompt : str
+            A text description of the music to generate. Include genre, mood, instrumentation, and tempo for best results.
+
+        duration_seconds : typing.Optional[float]
+            Desired track length in seconds. Currently informational — output tracks are approximately 30 seconds regardless of this value.
+
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[StartToolExecutionResponse]
+            Execution accepted; poll until complete.
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/tools/generate-music",
+            method="POST",
+            json={
+                "prompt": prompt,
+                "durationSeconds": duration_seconds,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
@@ -1585,6 +1812,73 @@ class AsyncRawToolsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    async def image3d_effect(
+        self,
+        *,
+        image_storage_file_id: str,
+        watermark_mode: typing.Optional[WatermarkMode] = OMIT,
+        num_results: typing.Optional[int] = OMIT,
+        is_output_temporary: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[StartToolExecutionResponse]:
+        """
+        Turn a still image into a short video clip with a 3D parallax motion effect, simulating camera movement through the scene.
+
+        Parameters
+        ----------
+        image_storage_file_id : str
+            File id of the source image (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here.
+
+        watermark_mode : typing.Optional[WatermarkMode]
+
+        num_results : typing.Optional[int]
+            Number of output results to generate. Defaults to 1.
+
+        is_output_temporary : typing.Optional[bool]
+            When true, generated files are temporary. Temporary files are guaranteed to be available for 24 hours, after which they may be archived at any time. Temporary files are not analyzed (no description, transcript, or embedding will be generated), so they will not appear in search results. Defaults to false.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[StartToolExecutionResponse]
+            Execution accepted; poll until complete.
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/tools/image-3d-effect",
+            method="POST",
+            json={
+                "imageStorageFileId": image_storage_file_id,
+                "watermarkMode": watermark_mode,
+                "numResults": num_results,
+                "isOutputTemporary": is_output_temporary,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    StartToolExecutionResponse,
+                    parse_obj_as(
+                        type_=StartToolExecutionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
     async def cancel_tool_execution(
         self, tool_execution_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
@@ -1594,6 +1888,7 @@ class AsyncRawToolsClient:
         Parameters
         ----------
         tool_execution_id : str
+            The tool execution id returned when the tool was started.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1636,6 +1931,7 @@ class AsyncRawToolsClient:
         Parameters
         ----------
         tool_execution_id : str
+            The tool execution id returned when the tool was started.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

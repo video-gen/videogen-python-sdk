@@ -2,4 +2,4 @@
 
 import typing
 
-ToolSuccessResultType = typing.Union[typing.Literal["IMAGE", "VIDEO", "AUDIO"], typing.Any]
+ToolSuccessResultType = typing.Union[typing.Literal["IMAGE", "VIDEO", "AUDIO", "PDF", "SLIDESHOW"], typing.Any]

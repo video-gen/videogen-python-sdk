@@ -25,13 +25,23 @@ class ResourcesClient:
         return self._raw_client
 
     def list_avatar_presenters(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AvatarPresenterListResponse:
         """
-        List all available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint.
+        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -49,22 +59,30 @@ class ResourcesClient:
         )
         client.resources.list_avatar_presenters()
         """
-        _response = self._raw_client.list_avatar_presenters(request_options=request_options)
+        _response = self._raw_client.list_avatar_presenters(limit=limit, cursor=cursor, request_options=request_options)
         return _response.data
 
     def list_tts_voices(
         self,
         *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
         include_deprecated_voices: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> TtsVoiceListResponse:
         """
-        List all available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint.
+        List available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
         include_deprecated_voices : typing.Optional[bool]
-            When true, includes deprecated voices in the response. Defaults to false.
+            When true, includes voices that are deprecated but still callable. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -84,7 +102,10 @@ class ResourcesClient:
         client.resources.list_tts_voices()
         """
         _response = self._raw_client.list_tts_voices(
-            include_deprecated_voices=include_deprecated_voices, request_options=request_options
+            limit=limit,
+            cursor=cursor,
+            include_deprecated_voices=include_deprecated_voices,
+            request_options=request_options,
         )
         return _response.data
 
@@ -105,13 +126,23 @@ class AsyncResourcesClient:
         return self._raw_client
 
     async def list_avatar_presenters(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AvatarPresenterListResponse:
         """
-        List all available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint.
+        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -137,22 +168,32 @@ class AsyncResourcesClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.list_avatar_presenters(request_options=request_options)
+        _response = await self._raw_client.list_avatar_presenters(
+            limit=limit, cursor=cursor, request_options=request_options
+        )
         return _response.data
 
     async def list_tts_voices(
         self,
         *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
         include_deprecated_voices: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> TtsVoiceListResponse:
         """
-        List all available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint.
+        List available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
         include_deprecated_voices : typing.Optional[bool]
-            When true, includes deprecated voices in the response. Defaults to false.
+            When true, includes voices that are deprecated but still callable. Defaults to false.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -180,6 +221,9 @@ class AsyncResourcesClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.list_tts_voices(
-            include_deprecated_voices=include_deprecated_voices, request_options=request_options
+            limit=limit,
+            cursor=cursor,
+            include_deprecated_voices=include_deprecated_voices,
+            request_options=request_options,
         )
         return _response.data

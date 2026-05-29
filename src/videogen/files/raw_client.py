@@ -25,12 +25,24 @@ class RawFilesClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def get_files(self, *, request_options: typing.Optional[RequestOptions] = None) -> HttpResponse[GetFilesResponse]:
+    def get_files(
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[GetFilesResponse]:
         """
-        List all files in your account, including generated assets and uploads.
+        List files in your account, including generated assets and uploads. Files are returned most recently updated first. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -42,6 +54,10 @@ class RawFilesClient:
         _response = self._client_wrapper.httpx_client.request(
             "v1/files",
             method="GET",
+            params={
+                "limit": limit,
+                "cursor": cursor,
+            },
             request_options=request_options,
         )
         try:
@@ -80,7 +96,7 @@ class RawFilesClient:
             Natural-language search query. The text is embedded and compared against file description vectors using cosine similarity.
 
         num_results : typing.Optional[int]
-            Number of results to return (1–100). Defaults to 10.
+            Number of results to return (1-100). Defaults to 10.
 
         self_only : typing.Optional[bool]
             When true, only files created by the calling API key's user are returned. When false (default), all files accessible to the team are included.
@@ -135,6 +151,7 @@ class RawFilesClient:
         Parameters
         ----------
         file_id : str
+            The file id (e.g. `vg_file_...`).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -240,6 +257,7 @@ class RawFilesClient:
         Parameters
         ----------
         file_id : str
+            The file id (e.g. `vg_file_...`).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -282,6 +300,7 @@ class RawFilesClient:
         Parameters
         ----------
         file_id : str
+            The file id (e.g. `vg_file_...`).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -319,11 +338,12 @@ class RawFilesClient:
         self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[StorageFile]:
         """
-        Enable public preview for a file. Registers a public playback id so the file can be streamed without authentication. Returns the updated file with `isPublicPreviewEnabled`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
+        Enable public preview for a file. Works for any file type. Copies the file to a permanent public URL (`staticPublicPreviewSource`) and, for video and audio, registers a public embed playback id (`publicPlaybackId`) for use with `@videogen/player`. If the file is not yet on the streaming provider, the endpoint starts the upload and polls briefly; otherwise the Mux asset-ready webhook finishes creating the embed playback id. Returns the updated file.
 
         Parameters
         ----------
         file_id : str
+            The file id (e.g. `vg_file_...`).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -361,11 +381,12 @@ class RawFilesClient:
         self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[StorageFile]:
         """
-        Disable public preview for a file. Revokes unauthenticated streaming access. The file's signed URLs for authenticated access remain functional. Returns the updated file.
+        Disable public preview for a file. Removes the permanent public URL copy and revokes unauthenticated embed streaming access. Authenticated signed URLs remain functional. Returns the updated file.
 
         Parameters
         ----------
         file_id : str
+            The file id (e.g. `vg_file_...`).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -405,13 +426,23 @@ class AsyncRawFilesClient:
         self._client_wrapper = client_wrapper
 
     async def get_files(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[GetFilesResponse]:
         """
-        List all files in your account, including generated assets and uploads.
+        List files in your account, including generated assets and uploads. Files are returned most recently updated first. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -423,6 +454,10 @@ class AsyncRawFilesClient:
         _response = await self._client_wrapper.httpx_client.request(
             "v1/files",
             method="GET",
+            params={
+                "limit": limit,
+                "cursor": cursor,
+            },
             request_options=request_options,
         )
         try:
@@ -461,7 +496,7 @@ class AsyncRawFilesClient:
             Natural-language search query. The text is embedded and compared against file description vectors using cosine similarity.
 
         num_results : typing.Optional[int]
-            Number of results to return (1–100). Defaults to 10.
+            Number of results to return (1-100). Defaults to 10.
 
         self_only : typing.Optional[bool]
             When true, only files created by the calling API key's user are returned. When false (default), all files accessible to the team are included.
@@ -516,6 +551,7 @@ class AsyncRawFilesClient:
         Parameters
         ----------
         file_id : str
+            The file id (e.g. `vg_file_...`).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -621,6 +657,7 @@ class AsyncRawFilesClient:
         Parameters
         ----------
         file_id : str
+            The file id (e.g. `vg_file_...`).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -663,6 +700,7 @@ class AsyncRawFilesClient:
         Parameters
         ----------
         file_id : str
+            The file id (e.g. `vg_file_...`).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -700,11 +738,12 @@ class AsyncRawFilesClient:
         self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[StorageFile]:
         """
-        Enable public preview for a file. Registers a public playback id so the file can be streamed without authentication. Returns the updated file with `isPublicPreviewEnabled`, `publicHlsUrl`, and `publicPlaybackId` populated. Only works for video and audio files.
+        Enable public preview for a file. Works for any file type. Copies the file to a permanent public URL (`staticPublicPreviewSource`) and, for video and audio, registers a public embed playback id (`publicPlaybackId`) for use with `@videogen/player`. If the file is not yet on the streaming provider, the endpoint starts the upload and polls briefly; otherwise the Mux asset-ready webhook finishes creating the embed playback id. Returns the updated file.
 
         Parameters
         ----------
         file_id : str
+            The file id (e.g. `vg_file_...`).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -742,11 +781,12 @@ class AsyncRawFilesClient:
         self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[StorageFile]:
         """
-        Disable public preview for a file. Revokes unauthenticated streaming access. The file's signed URLs for authenticated access remain functional. Returns the updated file.
+        Disable public preview for a file. Removes the permanent public URL copy and revokes unauthenticated embed streaming access. Authenticated signed URLs remain functional. Returns the updated file.
 
         Parameters
         ----------
         file_id : str
+            The file id (e.g. `vg_file_...`).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

@@ -24,13 +24,23 @@ class RawWebhooksClient:
         self._client_wrapper = client_wrapper
 
     def list_webhook_endpoints(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[WebhookEndpointListResponse]:
         """
-        List all configured webhook endpoints for your account.
+        List configured webhook endpoints for your account. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -42,6 +52,10 @@ class RawWebhooksClient:
         _response = self._client_wrapper.httpx_client.request(
             "v1/webhooks/endpoints",
             method="GET",
+            params={
+                "limit": limit,
+                "cursor": cursor,
+            },
             request_options=request_options,
         )
         try:
@@ -133,6 +147,7 @@ class RawWebhooksClient:
         Parameters
         ----------
         endpoint_id : str
+            The webhook endpoint id returned by `POST /v1/webhooks/endpoints`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -164,13 +179,23 @@ class AsyncRawWebhooksClient:
         self._client_wrapper = client_wrapper
 
     async def list_webhook_endpoints(
-        self, *, request_options: typing.Optional[RequestOptions] = None
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[WebhookEndpointListResponse]:
         """
-        List all configured webhook endpoints for your account.
+        List configured webhook endpoints for your account. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -182,6 +207,10 @@ class AsyncRawWebhooksClient:
         _response = await self._client_wrapper.httpx_client.request(
             "v1/webhooks/endpoints",
             method="GET",
+            params={
+                "limit": limit,
+                "cursor": cursor,
+            },
             request_options=request_options,
         )
         try:
@@ -273,6 +302,7 @@ class AsyncRawWebhooksClient:
         Parameters
         ----------
         endpoint_id : str
+            The webhook endpoint id returned by `POST /v1/webhooks/endpoints`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

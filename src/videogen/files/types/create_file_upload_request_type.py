@@ -2,4 +2,4 @@
 
 import typing
 
-CreateFileUploadRequestType = typing.Union[typing.Literal["IMAGE", "VIDEO", "AUDIO"], typing.Any]
+CreateFileUploadRequestType = typing.Union[typing.Literal["IMAGE", "VIDEO", "AUDIO", "PDF", "SLIDESHOW"], typing.Any]

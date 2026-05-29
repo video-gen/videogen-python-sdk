@@ -3,12 +3,29 @@
 import typing
 
 import pydantic
+import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ..core.serialization import FieldMetadata
 from .webhook_endpoint import WebhookEndpoint
 
 
 class WebhookEndpointListResponse(UniversalBaseModel):
     endpoints: typing.List[WebhookEndpoint]
+    has_more: typing_extensions.Annotated[
+        bool,
+        FieldMetadata(alias="hasMore"),
+        pydantic.Field(
+            alias="hasMore",
+            description="When true, there are more endpoints available. Pass `nextCursor` as the `cursor` query param to fetch the next page.",
+        ),
+    ]
+    next_cursor: typing_extensions.Annotated[
+        typing.Optional[str],
+        FieldMetadata(alias="nextCursor"),
+        pydantic.Field(
+            alias="nextCursor", description="Opaque cursor to fetch the next page. `null` when `hasMore` is false."
+        ),
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

@@ -6,6 +6,7 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
+from .file_analysis_metadata import FileAnalysisMetadata
 from .file_source import FileSource
 from .storage_file_scope import StorageFileScope
 from .storage_file_type import StorageFileType
@@ -85,7 +86,15 @@ class StorageFile(UniversalBaseModel):
         FieldMetadata(alias="isPublicPreviewEnabled"),
         pydantic.Field(
             alias="isPublicPreviewEnabled",
-            description="Whether public preview is enabled for this file. When true, `publicHlsUrl` and `publicPlaybackId` are populated.",
+            description="Whether public preview is enabled for this file. When true, `staticPublicPreviewSource` is populated for all file types. For video and audio, `publicHlsUrl` and `publicPlaybackId` are also populated once embed streaming is ready.",
+        ),
+    ] = None
+    static_public_preview_source: typing_extensions.Annotated[
+        typing.Optional[FileSource],
+        FieldMetadata(alias="staticPublicPreviewSource"),
+        pydantic.Field(
+            alias="staticPublicPreviewSource",
+            description="Permanent public URL for the file's highest-quality rendition. Populated when `isPublicPreviewEnabled` is true. Does not expire (`expiresAt` is null). Use for direct links to images, downloads, or any file type. For embedded video or audio players, prefer `publicPlaybackId`.",
         ),
     ] = None
     public_hls_url: typing_extensions.Annotated[
@@ -93,7 +102,7 @@ class StorageFile(UniversalBaseModel):
         FieldMetadata(alias="publicHlsUrl"),
         pydantic.Field(
             alias="publicHlsUrl",
-            description="Public HLS streaming URL. Only present when `isPublicPreviewEnabled` is true. Does not require authentication or signed tokens.",
+            description="Public HLS streaming URL for video and audio. Only present when `isPublicPreviewEnabled` is true and embed streaming is ready. Prefer `publicPlaybackId` with `@videogen/player` for embeds.",
         ),
     ] = None
     public_playback_id: typing_extensions.Annotated[
@@ -101,7 +110,7 @@ class StorageFile(UniversalBaseModel):
         FieldMetadata(alias="publicPlaybackId"),
         pydantic.Field(
             alias="publicPlaybackId",
-            description="Encoded public playback id (e.g. `vg_play_...`). Pass this to the `@videogen/player` or `@videogen/player-react` packages. Only present when `isPublicPreviewEnabled` is true.",
+            description="Encoded public playback id (e.g. `vg_play_...`) for video and audio embeds. Pass this to `@videogen/player` or `@videogen/player-react`. Only present when `isPublicPreviewEnabled` is true and embed streaming is ready. For a permanent direct file URL (any type), use `staticPublicPreviewSource` instead.",
         ),
     ] = None
     source_tool_type: typing_extensions.Annotated[
@@ -117,7 +126,15 @@ class StorageFile(UniversalBaseModel):
         FieldMetadata(alias="sourceToolExecutionId"),
         pydantic.Field(
             alias="sourceToolExecutionId",
-            description="Execution id of the tool call that generated this file (e.g. `vg_exec_...`). Only present when the file was created by a tool execution.",
+            description="Execution id of the tool call that generated this file (e.g. `vg_tool_...`). Only present when the file was created by a tool execution.",
+        ),
+    ] = None
+    file_analysis_metadata: typing_extensions.Annotated[
+        typing.Optional[FileAnalysisMetadata],
+        FieldMetadata(alias="fileAnalysisMetadata"),
+        pydantic.Field(
+            alias="fileAnalysisMetadata",
+            description="Background analysis state for the file (used to populate `description`, `transcript`, `durationSeconds`, and the search embedding). Omitted when the file was returned via a path that does not check analysis progress (e.g. tool-result inline files and webhook payloads).",
         ),
     ] = None
 

@@ -23,6 +23,21 @@ class ExecutedTool(UniversalBaseModel):
         FieldMetadata(alias="toolType"),
         pydantic.Field(alias="toolType", description="Tool name (e.g. `GENERATE_IMAGE`, `TEXT_TO_SPEECH`)."),
     ]
+    progress_percentage: typing_extensions.Annotated[
+        float,
+        FieldMetadata(alias="progressPercentage"),
+        pydantic.Field(
+            alias="progressPercentage",
+            description="Completion progress for the current attempt (0-100). Always `100` when `status` is `succeeded`.",
+        ),
+    ]
+    attempt_index: typing_extensions.Annotated[
+        int,
+        FieldMetadata(alias="attemptIndex"),
+        pydantic.Field(
+            alias="attemptIndex", description="Zero-based index of the current or most recent execution attempt."
+        ),
+    ]
     results: typing.Optional[typing.List[ToolSuccessResult]] = pydantic.Field(default=None)
     """
     One entry per generated result. Present when `status` is `succeeded`.
