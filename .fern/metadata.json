@@ -107,6 +107,6 @@
   "originGitCommit": "f1680abfa14e367b30875b9292ab6c0c738005fd",
   "originGitCommitIsDirty": true,
   "invokedBy": "manual",
-  "requestedVersion": "1.0.0-beta.5",
-  "sdkVersion": "1.0.0-beta.5"
+  "requestedVersion": "1.0.0",
+  "sdkVersion": "1.0.0"
 }
