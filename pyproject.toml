@@ -4,7 +4,7 @@ dynamic = ["version"]
 
 [tool.poetry]
 name = "videogen"
-version = "1.0.0"
+version = "1.0.0-beta.5"
 description = "Official Python SDK for the VideoGen API. Programmatically generate images, videos, voiceovers, sound effects, and avatars."
 readme = "README.md"
 authors = []
