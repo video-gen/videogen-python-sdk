@@ -2,4 +2,4 @@
 
 import typing
 
-GenerateTextRequestModel = typing.Union[typing.Literal["fast", "smart"], typing.Any]
+GenerateTextRequestModel = typing.Union[typing.Literal["LOW", "STANDARD", "HIGH"], typing.Any]

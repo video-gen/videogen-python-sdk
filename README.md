@@ -41,7 +41,7 @@ A full reference for this library is available [here](https://github.com/video-g
 Instantiate and use the client with the following:
 
 ```python
-from videogen import VideoGenApi
+from videogen import VideoGenApi, WorkflowVisualStyle
 
 client = VideoGenApi(
     token="<token>",
@@ -49,6 +49,9 @@ client = VideoGenApi(
 
 client.workflows.add_visuals_narrations_and_captions_to_script(
     script="script",
+    visual_style=WorkflowVisualStyle(
+        type="STOCK",
+    ),
 )
 ```
 
@@ -82,6 +85,9 @@ client = AsyncVideoGenApi(
 async def main() -> None:
     await client.workflows.add_visuals_narrations_and_captions_to_script(
         script="script",
+        visual_style=WorkflowVisualStyle(
+            type="STOCK",
+        ),
     )
 
 

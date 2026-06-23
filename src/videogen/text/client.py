@@ -38,7 +38,7 @@ class TextClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> GenerateTextResponse:
         """
-        Generate text from a prompt using a fast, general-purpose language model. Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
+        Generate text from a prompt using a general-purpose language model. Choose a quality tier with `model` (`LOW`, `STANDARD`, or `HIGH`). Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
 
         Parameters
         ----------
@@ -49,7 +49,7 @@ class TextClient:
             Optional system instructions that steer the model's role, tone, and constraints.
 
         model : typing.Optional[GenerateTextRequestModel]
-            Model tier. `fast` is quickest and cheapest; `smart` is higher quality. Defaults to `fast`.
+            Model quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is highest quality. Defaults to `STANDARD`.
 
         temperature : typing.Optional[float]
             Sampling temperature. Higher values produce more varied output. Defaults to the model's default.
@@ -113,7 +113,7 @@ class AsyncTextClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> GenerateTextResponse:
         """
-        Generate text from a prompt using a fast, general-purpose language model. Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
+        Generate text from a prompt using a general-purpose language model. Choose a quality tier with `model` (`LOW`, `STANDARD`, or `HIGH`). Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
 
         Parameters
         ----------
@@ -124,7 +124,7 @@ class AsyncTextClient:
             Optional system instructions that steer the model's role, tone, and constraints.
 
         model : typing.Optional[GenerateTextRequestModel]
-            Model tier. `fast` is quickest and cheapest; `smart` is higher quality. Defaults to `fast`.
+            Model quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is highest quality. Defaults to `STANDARD`.
 
         temperature : typing.Optional[float]
             Sampling temperature. Higher values produce more varied output. Defaults to the model's default.

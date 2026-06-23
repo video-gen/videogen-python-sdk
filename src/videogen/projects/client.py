@@ -7,8 +7,11 @@ from ..core.request_options import RequestOptions
 from ..types.export_project_quality import ExportProjectQuality
 from ..types.export_project_response import ExportProjectResponse
 from ..types.list_projects_response import ListProjectsResponse
+from ..types.list_remix_actions_response import ListRemixActionsResponse
 from ..types.project_export import ProjectExport
 from ..types.project_response import ProjectResponse
+from ..types.remix_action import RemixAction
+from ..types.remix_project_response import RemixProjectResponse
 from .raw_client import AsyncRawProjectsClient, RawProjectsClient
 
 # this is used as the default value for optional parameters
@@ -50,7 +53,7 @@ class ProjectsClient:
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
 
         self_only : typing.Optional[bool]
-            When true, returns only projects created by the API key's owner workspace. When false (default), returns all projects accessible to the team.
+            When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -183,6 +186,89 @@ class ProjectsClient:
         _response = self._raw_client.get_project_export(project_id, export_id, request_options=request_options)
         return _response.data
 
+    def remix_project(
+        self,
+        project_id: str,
+        *,
+        remix_actions: typing.Sequence[RemixAction],
+        save_as_new_project: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> RemixProjectResponse:
+        """
+        Applies an ordered list of edits (background music, logo overlay, caption visibility/style) to a project. Each action runs asynchronously as its own remix action; the response returns one remix action id per action in order. Set `saveAsNewProject` to apply the edits to a copy and leave the original untouched. Poll `GET /v1/projects/{projectId}/remix-actions` for status.
+
+        Parameters
+        ----------
+        project_id : str
+            The project id (e.g. `vg_proj_...`).
+
+        remix_actions : typing.Sequence[RemixAction]
+            Ordered list of edits to apply. Each runs asynchronously as its own remix action.
+
+        save_as_new_project : typing.Optional[bool]
+            When true, the project is duplicated first and the edits are applied to the copy, leaving the original untouched. The response's `projectId` is the copy. Defaults to false (edits the project in place).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        RemixProjectResponse
+            Remix actions accepted.
+
+        Examples
+        --------
+        from videogen import RemixAction_SetBackgroundMusic, VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.projects.remix_project(
+            project_id="projectId",
+            remix_actions=[RemixAction_SetBackgroundMusic()],
+        )
+        """
+        _response = self._raw_client.remix_project(
+            project_id,
+            remix_actions=remix_actions,
+            save_as_new_project=save_as_new_project,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def list_project_remix_actions(
+        self, project_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ListRemixActionsResponse:
+        """
+        Returns every remix action applied to a project (via `POST /v1/projects/{projectId}/remix` or as a post-workflow step), most recent first, with each action's status and progress.
+
+        Parameters
+        ----------
+        project_id : str
+            The project id (e.g. `vg_proj_...`).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ListRemixActionsResponse
+            Remix actions for the project.
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.projects.list_project_remix_actions(
+            project_id="projectId",
+        )
+        """
+        _response = self._raw_client.list_project_remix_actions(project_id, request_options=request_options)
+        return _response.data
+
 
 class AsyncProjectsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -219,7 +305,7 @@ class AsyncProjectsClient:
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
 
         self_only : typing.Optional[bool]
-            When true, returns only projects created by the API key's owner workspace. When false (default), returns all projects accessible to the team.
+            When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -382,4 +468,103 @@ class AsyncProjectsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get_project_export(project_id, export_id, request_options=request_options)
+        return _response.data
+
+    async def remix_project(
+        self,
+        project_id: str,
+        *,
+        remix_actions: typing.Sequence[RemixAction],
+        save_as_new_project: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> RemixProjectResponse:
+        """
+        Applies an ordered list of edits (background music, logo overlay, caption visibility/style) to a project. Each action runs asynchronously as its own remix action; the response returns one remix action id per action in order. Set `saveAsNewProject` to apply the edits to a copy and leave the original untouched. Poll `GET /v1/projects/{projectId}/remix-actions` for status.
+
+        Parameters
+        ----------
+        project_id : str
+            The project id (e.g. `vg_proj_...`).
+
+        remix_actions : typing.Sequence[RemixAction]
+            Ordered list of edits to apply. Each runs asynchronously as its own remix action.
+
+        save_as_new_project : typing.Optional[bool]
+            When true, the project is duplicated first and the edits are applied to the copy, leaving the original untouched. The response's `projectId` is the copy. Defaults to false (edits the project in place).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        RemixProjectResponse
+            Remix actions accepted.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi, RemixAction_SetBackgroundMusic
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.projects.remix_project(
+                project_id="projectId",
+                remix_actions=[RemixAction_SetBackgroundMusic()],
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.remix_project(
+            project_id,
+            remix_actions=remix_actions,
+            save_as_new_project=save_as_new_project,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def list_project_remix_actions(
+        self, project_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> ListRemixActionsResponse:
+        """
+        Returns every remix action applied to a project (via `POST /v1/projects/{projectId}/remix` or as a post-workflow step), most recent first, with each action's status and progress.
+
+        Parameters
+        ----------
+        project_id : str
+            The project id (e.g. `vg_proj_...`).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ListRemixActionsResponse
+            Remix actions for the project.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.projects.list_project_remix_actions(
+                project_id="projectId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_project_remix_actions(project_id, request_options=request_options)
         return _response.data

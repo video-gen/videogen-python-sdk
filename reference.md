@@ -27,7 +27,7 @@ Creates a project and generates a narrated video from a prompt or script. Return
 <dd>
 
 ```python
-from videogen import VideoGenApi
+from videogen import VideoGenApi, WorkflowVisualStyle
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -37,6 +37,9 @@ client = VideoGenApi(
 
 client.workflows.add_visuals_narrations_and_captions_to_script(
     script="script",
+    visual_style=WorkflowVisualStyle(
+        type="STOCK",
+    ),
 )
 
 ```
@@ -61,7 +64,87 @@ client.workflows.add_visuals_narrations_and_captions_to_script(
 <dl>
 <dd>
 
+**visual_style:** `WorkflowVisualStyle` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **aspect_ratio:** `typing.Optional[AspectRatio]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**visual_pacing:** `typing.Optional[VisualPacing]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**language:** `typing.Optional[str]` — Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**voice_id:** `typing.Optional[str]` — Voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). A default voice is used when omitted. Any voice may be used here, including voices where `supportsDirectToolExecution` is false.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**voice_speed:** `typing.Optional[float]` — Speech rate multiplier. Defaults to the voice's default speed.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**avatar_presenter_id:** `typing.Optional[str]` — Optional avatar presenter id from `GET /v1/resources/avatar-presenters` (e.g. `vg_pres_...`). When set, the narration is delivered by a talking-head presenter avatar. Pass your `voiceId` to that endpoint to list presenters sorted by best match for the voice. Omit for a standard voiceover with no presenter.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**featured_b_roll_file_ids:** `typing.Optional[typing.List[str]]` — Optional file ids of images or videos to feature as b-roll (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`. Only image and video files are accepted.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**caption_style:** `typing.Optional[WorkflowCaptionStyle]` — Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**logo_file_id:** `typing.Optional[str]` — Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**remix_actions:** `typing.Optional[typing.List[RemixAction]]` — Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
     
 </dd>
 </dl>
@@ -108,7 +191,7 @@ Creates a project from an uploaded voiceover file and generates a video with mat
 <dd>
 
 ```python
-from videogen import VideoGenApi
+from videogen import VideoGenApi, WorkflowVisualStyle
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -118,6 +201,9 @@ client = VideoGenApi(
 
 client.workflows.add_visuals_and_captions_to_voiceover(
     file_id="fileId",
+    visual_style=WorkflowVisualStyle(
+        type="STOCK",
+    ),
 )
 
 ```
@@ -142,7 +228,55 @@ client.workflows.add_visuals_and_captions_to_voiceover(
 <dl>
 <dd>
 
+**visual_style:** `WorkflowVisualStyle` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **aspect_ratio:** `typing.Optional[AspectRatio]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**visual_pacing:** `typing.Optional[VisualPacing]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**language:** `typing.Optional[str]` — Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**caption_style:** `typing.Optional[WorkflowCaptionStyle]` — Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**logo_file_id:** `typing.Optional[str]` — Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**remix_actions:** `typing.Optional[typing.List[RemixAction]]` — Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
     
 </dd>
 </dl>
@@ -216,6 +350,179 @@ client.workflows.add_narration_transitions_and_captions_to_slideshow(
 <dd>
 
 **file_id:** `str` — Opaque file id of an uploaded PDF or PowerPoint file (e.g. `vg_file_...`). Upload the file first via `POST /v1/files/upload`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**slide_scripts:** `typing.Optional[typing.List[str]]` — Optional per-slide narration, in slide order, applied by index: each slide uses its matching entry, and an empty string makes that slide silent. If you provide fewer entries than slides, the remaining slides are silent; extra entries are ignored. Omit this field entirely to narrate each slide from its speaker notes in the uploaded file. To guarantee no narration on any slide, pass an empty array.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**aspect_ratio:** `typing.Optional[AspectRatio]` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**language:** `typing.Optional[str]` — Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**voice_id:** `typing.Optional[str]` — Voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). A default voice is used when omitted. Any voice may be used here, including voices where `supportsDirectToolExecution` is false.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**voice_speed:** `typing.Optional[float]` — Speech rate multiplier. Defaults to the voice's default speed.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**avatar_presenter_id:** `typing.Optional[str]` — Optional avatar presenter id from `GET /v1/resources/avatar-presenters` (e.g. `vg_pres_...`). When set, the narration is delivered by a talking-head presenter avatar. Pass your `voiceId` to that endpoint to list presenters sorted by best match for the voice. Omit for a standard voiceover with no presenter.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**caption_style:** `typing.Optional[WorkflowCaptionStyle]` — Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**logo_file_id:** `typing.Optional[str]` — Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**remix_actions:** `typing.Optional[typing.List[RemixAction]]` — Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">generate_scenes_from_storyboard</a>(...) -> StartWorkflowRunResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates a project from an ordered list of scenes and generates one section per scene. Each scene is generated from its prompt as either a still image or a video clip; the scenes are then assembled into a single video. Returns immediately with a workflow run id; poll or subscribe to webhooks for completion.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi, GenerateStoryboardScene
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.generate_scenes_from_storyboard(
+    scenes=[
+        GenerateStoryboardScene(
+            prompt="prompt",
+        )
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**scenes:** `typing.List[GenerateStoryboardScene]` — Ordered list of scenes. Each scene becomes one section in the final video, in this order.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**default_generation:** `typing.Optional[SceneGeneration]` — Default generation applied to scenes that don't set their own `generation`. Defaults to AI_IMAGE with no extra style.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**default_duration_seconds:** `typing.Optional[int]` — Default per-scene duration in seconds for scenes that don't set their own `durationSeconds`. Defaults to 5. For AI_VIDEO scenes this must be a whole number between 1 and 15.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**quality:** `typing.Optional[GenerateScenesFromStoryboardRequestQuality]` — Generation quality tier for every scene. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Defaults to STANDARD. LOW is not supported for AI_VIDEO scenes: the request is rejected if any scene is generated as a video at LOW quality.
     
 </dd>
 </dl>
@@ -429,7 +736,7 @@ client.projects.list_projects()
 <dl>
 <dd>
 
-**self_only:** `typing.Optional[bool]` — When true, returns only projects created by the API key's owner workspace. When false (default), returns all projects accessible to the team.
+**self_only:** `typing.Optional[bool]` — When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
     
 </dd>
 </dl>
@@ -685,6 +992,171 @@ client.projects.get_project_export(
 </dl>
 </details>
 
+<details><summary><code>client.projects.<a href="src/videogen/projects/client.py">remix_project</a>(...) -> RemixProjectResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Applies an ordered list of edits (background music, logo overlay, caption visibility/style) to a project. Each action runs asynchronously as its own remix action; the response returns one remix action id per action in order. Set `saveAsNewProject` to apply the edits to a copy and leave the original untouched. Poll `GET /v1/projects/{projectId}/remix-actions` for status.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi, RemixAction_SetBackgroundMusic
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.projects.remix_project(
+    project_id="projectId",
+    remix_actions=[
+        RemixAction_SetBackgroundMusic()
+    ],
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**project_id:** `str` — The project id (e.g. `vg_proj_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**remix_actions:** `typing.List[RemixAction]` — Ordered list of edits to apply. Each runs asynchronously as its own remix action.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**save_as_new_project:** `typing.Optional[bool]` — When true, the project is duplicated first and the edits are applied to the copy, leaving the original untouched. The response's `projectId` is the copy. Defaults to false (edits the project in place).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.projects.<a href="src/videogen/projects/client.py">list_project_remix_actions</a>(...) -> ListRemixActionsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns every remix action applied to a project (via `POST /v1/projects/{projectId}/remix` or as a post-workflow step), most recent first, with each action's status and progress.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.projects.list_project_remix_actions(
+    project_id="projectId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**project_id:** `str` — The project id (e.g. `vg_proj_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Tools
 <details><summary><code>client.tools.<a href="src/videogen/tools/client.py">generate_image</a>(...) -> StartToolExecutionResponse</code></summary>
 <dl>
@@ -820,7 +1292,7 @@ client.tools.generate_image(
 <dl>
 <dd>
 
-Generate a video clip from a text prompt, optionally guided by reference images or an input video. At least one of `prompt`, `imageFileIds`, or `videoFileId` must be provided.
+Generate a video clip from a text prompt, optionally guided by reference images, videos, and audio. At least one of `prompt`, `imageFileIds`, `videoFileIds`, or `audioFileIds` must be provided.
 </dd>
 </dl>
 </dd>
@@ -869,7 +1341,7 @@ client.tools.generate_video_clip(
 <dl>
 <dd>
 
-**prompt:** `typing.Optional[str]` — Text prompt describing the video to generate. Optional when reference images or a video are provided.
+**prompt:** `typing.Optional[str]` — Text prompt describing the video to generate. Optional when reference media is provided. Describe the video in plain language; any reference media you provide is incorporated automatically.
     
 </dd>
 </dl>
@@ -877,7 +1349,7 @@ client.tools.generate_video_clip(
 <dl>
 <dd>
 
-**image_file_ids:** `typing.Optional[typing.List[str]]` — Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model animates or uses these images as guidance.
+**image_file_ids:** `typing.Optional[typing.List[str]]` — Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the images are animated or used as visual guidance for the generated video.
     
 </dd>
 </dl>
@@ -885,7 +1357,15 @@ client.tools.generate_video_clip(
 <dl>
 <dd>
 
-**video_file_id:** `typing.Optional[str]` — Optional file id of a source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here. When provided, the model restyles or transforms the input video.
+**video_file_ids:** `typing.Optional[typing.List[str]]` — Optional file ids of reference videos (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. They are used as motion or style guidance for the generated video.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**audio_file_ids:** `typing.Optional[typing.List[str]]` — Optional file ids of reference audio clips (e.g. `["vg_file_..."]`) used for native lip-sync and soundtrack. Upload files first via `POST /v1/files/upload`, then pass the returned ids here.
     
 </dd>
 </dl>
@@ -2455,7 +2935,7 @@ client.files.archive_file(
 <dl>
 <dd>
 
-Enable public preview for a file. Works for any file type. Copies the file to a permanent public URL (`staticPublicPreviewSource`) and, for video and audio, registers a public embed playback id (`publicPlaybackId`) for use with `@videogen/player`. If the file is not yet on the streaming provider, the endpoint starts the upload and polls briefly; otherwise the Mux asset-ready webhook finishes creating the embed playback id. Returns the updated file.
+Enable public preview for a file. Works for any file type. Copies the file to a permanent public URL (`staticPublicPreviewSource`) and, for video and audio, registers a public embed playback id (`publicPlaybackId`) for use with `@videogen/player`. If streaming playback is still processing, the endpoint polls briefly and background processing finishes creating the embed playback id. Returns the updated file.
 </dd>
 </dl>
 </dd>
@@ -2589,6 +3069,599 @@ client.files.disable_public_preview(
 </dl>
 </details>
 
+## Entities
+<details><summary><code>client.entities.<a href="src/videogen/entities/client.py">list_entities</a>(...) -> ListEntitiesResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List the actors and visual styles available to your team, most recently updated first. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.entities.list_entities()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**entity_type:** `typing.Optional[ListEntitiesRequestEntityType]` — When provided, returns only entities of this type. Omit to return all entities.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/videogen/entities/client.py">create_entity</a>(...) -> Entity</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new actor or visual style. Attach reference images with `POST /v1/entities/{entityId}/references`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.entities.create_entity(
+    entity_type="ACTOR",
+    name="name",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**entity_type:** `CreateEntityRequestEntityType` — ACTOR features a consistent character; VISUAL_STYLE guides the look of generated images.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `str` — Display name.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — Optional description.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/videogen/entities/client.py">get_entity</a>(...) -> Entity</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve a single entity by its id, including its reference images.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.entities.get_entity(
+    entity_id="entityId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**entity_id:** `str` — The entity id (e.g. `vg_enti_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/videogen/entities/client.py">update_entity</a>(...) -> Entity</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update an entity's name or description. Provide at least one field.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.entities.update_entity(
+    entity_id="entityId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**entity_id:** `str` — The entity id (e.g. `vg_enti_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**name:** `typing.Optional[str]` — New display name. Omit to leave unchanged.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — New description. Omit to leave unchanged.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/videogen/entities/client.py">archive_entity</a>(...) -> EntityArchiveResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Archive an entity. Archived entities no longer appear in `GET /v1/entities` and can't be attached to new workflows.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.entities.archive_entity(
+    entity_id="entityId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**entity_id:** `str` — The entity id (e.g. `vg_enti_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/videogen/entities/client.py">add_entity_reference</a>(...) -> Entity</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Attach an image file as a reference for the entity. Upload the image first via `POST /v1/files/upload`. Returns the updated entity.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.entities.add_entity_reference(
+    entity_id="entityId",
+    file_id="fileId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**entity_id:** `str` — The entity id (e.g. `vg_enti_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**file_id:** `str` — The file id (e.g. `vg_file_...`) of an image to attach as a reference.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**description:** `typing.Optional[str]` — Optional description of the reference.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**is_default:** `typing.Optional[bool]` — When true, make this the entity's primary reference (used for its thumbnail).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.entities.<a href="src/videogen/entities/client.py">remove_entity_reference</a>(...) -> Entity</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Detach a reference image from the entity. Returns the updated entity.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.entities.remove_entity_reference(
+    entity_id="entityId",
+    file_id="fileId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**entity_id:** `str` — The entity id (e.g. `vg_enti_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**file_id:** `str` — The file id (e.g. `vg_file_...`) of the reference to remove.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Text
 <details><summary><code>client.text.<a href="src/videogen/text/client.py">generate_text</a>(...) -> GenerateTextResponse</code></summary>
 <dl>
@@ -2602,7 +3675,7 @@ client.files.disable_public_preview(
 <dl>
 <dd>
 
-Generate text from a prompt using a fast, general-purpose language model. Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
+Generate text from a prompt using a general-purpose language model. Choose a quality tier with `model` (`LOW`, `STANDARD`, or `HIGH`). Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
 </dd>
 </dl>
 </dd>
@@ -2659,7 +3732,7 @@ client.text.generate_text(
 <dl>
 <dd>
 
-**model:** `typing.Optional[GenerateTextRequestModel]` — Model tier. `fast` is quickest and cheapest; `smart` is higher quality. Defaults to `fast`.
+**model:** `typing.Optional[GenerateTextRequestModel]` — Model quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is highest quality. Defaults to `STANDARD`.
     
 </dd>
 </dl>
@@ -2708,7 +3781,7 @@ client.text.generate_text(
 <dl>
 <dd>
 
-List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint or to a script/slideshow workflow. Pass a reference `voiceId` to return presenters sorted by best match for that voice. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 </dd>
 </dl>
 </dd>
@@ -2756,6 +3829,14 @@ client.resources.list_avatar_presenters()
 <dd>
 
 **cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**voice_id:** `typing.Optional[str]` — Optional reference voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). When provided, avatar presenters are returned sorted by best match for that voice (best first). Omit to return presenters in the default catalogue order.
     
 </dd>
 </dl>

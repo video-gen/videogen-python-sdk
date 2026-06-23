@@ -12,6 +12,11 @@ if typing.TYPE_CHECKING:
     from .avatar_presenter import AvatarPresenter
     from .avatar_presenter_displayable_gender import AvatarPresenterDisplayableGender
     from .avatar_presenter_list_response import AvatarPresenterListResponse
+    from .entity import Entity
+    from .entity_actor_config import EntityActorConfig
+    from .entity_archive_response import EntityArchiveResponse
+    from .entity_entity_type import EntityEntityType
+    from .entity_reference import EntityReference
     from .executed_tool import ExecutedTool
     from .executed_tool_status import ExecutedToolStatus
     from .export_project_quality import ExportProjectQuality
@@ -23,16 +28,40 @@ if typing.TYPE_CHECKING:
     from .file_upload_response import FileUploadResponse
     from .file_upload_webhook_event_name import FileUploadWebhookEventName
     from .file_upload_webhook_payload import FileUploadWebhookPayload
+    from .generate_storyboard_scene import GenerateStoryboardScene
     from .generate_text_response import GenerateTextResponse
     from .get_files_response import GetFilesResponse
     from .image_asset_request import ImageAssetRequest
     from .image_model_mode import ImageModelMode
+    from .list_entities_response import ListEntitiesResponse
     from .list_projects_response import ListProjectsResponse
+    from .list_remix_actions_response import ListRemixActionsResponse
     from .project_export import ProjectExport
     from .project_export_status import ProjectExportStatus
     from .project_response import ProjectResponse
     from .project_response_status import ProjectResponseStatus
     from .pronunciation_replacement import PronunciationReplacement
+    from .remix_action import (
+        RemixAction,
+        RemixAction_DisableCaptions,
+        RemixAction_EnableCaptions,
+        RemixAction_SetBackgroundMusic,
+        RemixAction_SetLogo,
+        RemixAction_VideoEditorAgent,
+    )
+    from .remix_action_disable_captions import RemixActionDisableCaptions
+    from .remix_action_enable_captions import RemixActionEnableCaptions
+    from .remix_action_run import RemixActionRun
+    from .remix_action_set_background_music import RemixActionSetBackgroundMusic
+    from .remix_action_set_logo import RemixActionSetLogo
+    from .remix_action_set_logo_position import RemixActionSetLogoPosition
+    from .remix_action_status import RemixActionStatus
+    from .remix_action_type import RemixActionType
+    from .remix_action_video_editor_agent import RemixActionVideoEditorAgent
+    from .remix_action_video_editor_agent_mode import RemixActionVideoEditorAgentMode
+    from .remix_project_response import RemixProjectResponse
+    from .scene_generation import SceneGeneration
+    from .scene_generation_type import SceneGenerationType
     from .search_files_response import SearchFilesResponse
     from .search_files_result import SearchFilesResult
     from .start_tool_execution_response import StartToolExecutionResponse
@@ -49,15 +78,24 @@ if typing.TYPE_CHECKING:
     from .tts_voice_list_response import TtsVoiceListResponse
     from .video_asset_request import VideoAssetRequest
     from .video_model_mode import VideoModelMode
+    from .visual_pacing import VisualPacing
     from .watermark_mode import WatermarkMode
     from .webhook_endpoint import WebhookEndpoint
     from .webhook_endpoint_list_response import WebhookEndpointListResponse
     from .webhook_event_name import WebhookEventName
+    from .workflow_caption_background_style import WorkflowCaptionBackgroundStyle
+    from .workflow_caption_background_style_type import WorkflowCaptionBackgroundStyleType
+    from .workflow_caption_style import WorkflowCaptionStyle
+    from .workflow_caption_style_text_justification import WorkflowCaptionStyleTextJustification
+    from .workflow_caption_style_vertical_alignment import WorkflowCaptionStyleVerticalAlignment
+    from .workflow_rgb_color import WorkflowRgbColor
     from .workflow_run import WorkflowRun
     from .workflow_run_status import WorkflowRunStatus
     from .workflow_run_webhook_event_name import WorkflowRunWebhookEventName
     from .workflow_run_webhook_payload import WorkflowRunWebhookPayload
     from .workflow_type import WorkflowType
+    from .workflow_visual_style import WorkflowVisualStyle
+    from .workflow_visual_style_type import WorkflowVisualStyleType
 _dynamic_imports: typing.Dict[str, str] = {
     "ApiError": ".api_error",
     "ApiErrorRequirement": ".api_error_requirement",
@@ -65,6 +103,11 @@ _dynamic_imports: typing.Dict[str, str] = {
     "AvatarPresenter": ".avatar_presenter",
     "AvatarPresenterDisplayableGender": ".avatar_presenter_displayable_gender",
     "AvatarPresenterListResponse": ".avatar_presenter_list_response",
+    "Entity": ".entity",
+    "EntityActorConfig": ".entity_actor_config",
+    "EntityArchiveResponse": ".entity_archive_response",
+    "EntityEntityType": ".entity_entity_type",
+    "EntityReference": ".entity_reference",
     "ExecutedTool": ".executed_tool",
     "ExecutedToolStatus": ".executed_tool_status",
     "ExportProjectQuality": ".export_project_quality",
@@ -76,16 +119,38 @@ _dynamic_imports: typing.Dict[str, str] = {
     "FileUploadResponse": ".file_upload_response",
     "FileUploadWebhookEventName": ".file_upload_webhook_event_name",
     "FileUploadWebhookPayload": ".file_upload_webhook_payload",
+    "GenerateStoryboardScene": ".generate_storyboard_scene",
     "GenerateTextResponse": ".generate_text_response",
     "GetFilesResponse": ".get_files_response",
     "ImageAssetRequest": ".image_asset_request",
     "ImageModelMode": ".image_model_mode",
+    "ListEntitiesResponse": ".list_entities_response",
     "ListProjectsResponse": ".list_projects_response",
+    "ListRemixActionsResponse": ".list_remix_actions_response",
     "ProjectExport": ".project_export",
     "ProjectExportStatus": ".project_export_status",
     "ProjectResponse": ".project_response",
     "ProjectResponseStatus": ".project_response_status",
     "PronunciationReplacement": ".pronunciation_replacement",
+    "RemixAction": ".remix_action",
+    "RemixActionDisableCaptions": ".remix_action_disable_captions",
+    "RemixActionEnableCaptions": ".remix_action_enable_captions",
+    "RemixActionRun": ".remix_action_run",
+    "RemixActionSetBackgroundMusic": ".remix_action_set_background_music",
+    "RemixActionSetLogo": ".remix_action_set_logo",
+    "RemixActionSetLogoPosition": ".remix_action_set_logo_position",
+    "RemixActionStatus": ".remix_action_status",
+    "RemixActionType": ".remix_action_type",
+    "RemixActionVideoEditorAgent": ".remix_action_video_editor_agent",
+    "RemixActionVideoEditorAgentMode": ".remix_action_video_editor_agent_mode",
+    "RemixAction_DisableCaptions": ".remix_action",
+    "RemixAction_EnableCaptions": ".remix_action",
+    "RemixAction_SetBackgroundMusic": ".remix_action",
+    "RemixAction_SetLogo": ".remix_action",
+    "RemixAction_VideoEditorAgent": ".remix_action",
+    "RemixProjectResponse": ".remix_project_response",
+    "SceneGeneration": ".scene_generation",
+    "SceneGenerationType": ".scene_generation_type",
     "SearchFilesResponse": ".search_files_response",
     "SearchFilesResult": ".search_files_result",
     "StartToolExecutionResponse": ".start_tool_execution_response",
@@ -102,15 +167,24 @@ _dynamic_imports: typing.Dict[str, str] = {
     "TtsVoiceListResponse": ".tts_voice_list_response",
     "VideoAssetRequest": ".video_asset_request",
     "VideoModelMode": ".video_model_mode",
+    "VisualPacing": ".visual_pacing",
     "WatermarkMode": ".watermark_mode",
     "WebhookEndpoint": ".webhook_endpoint",
     "WebhookEndpointListResponse": ".webhook_endpoint_list_response",
     "WebhookEventName": ".webhook_event_name",
+    "WorkflowCaptionBackgroundStyle": ".workflow_caption_background_style",
+    "WorkflowCaptionBackgroundStyleType": ".workflow_caption_background_style_type",
+    "WorkflowCaptionStyle": ".workflow_caption_style",
+    "WorkflowCaptionStyleTextJustification": ".workflow_caption_style_text_justification",
+    "WorkflowCaptionStyleVerticalAlignment": ".workflow_caption_style_vertical_alignment",
+    "WorkflowRgbColor": ".workflow_rgb_color",
     "WorkflowRun": ".workflow_run",
     "WorkflowRunStatus": ".workflow_run_status",
     "WorkflowRunWebhookEventName": ".workflow_run_webhook_event_name",
     "WorkflowRunWebhookPayload": ".workflow_run_webhook_payload",
     "WorkflowType": ".workflow_type",
+    "WorkflowVisualStyle": ".workflow_visual_style",
+    "WorkflowVisualStyleType": ".workflow_visual_style_type",
 }
 
 
@@ -142,6 +216,11 @@ __all__ = [
     "AvatarPresenter",
     "AvatarPresenterDisplayableGender",
     "AvatarPresenterListResponse",
+    "Entity",
+    "EntityActorConfig",
+    "EntityArchiveResponse",
+    "EntityEntityType",
+    "EntityReference",
     "ExecutedTool",
     "ExecutedToolStatus",
     "ExportProjectQuality",
@@ -153,16 +232,38 @@ __all__ = [
     "FileUploadResponse",
     "FileUploadWebhookEventName",
     "FileUploadWebhookPayload",
+    "GenerateStoryboardScene",
     "GenerateTextResponse",
     "GetFilesResponse",
     "ImageAssetRequest",
     "ImageModelMode",
+    "ListEntitiesResponse",
     "ListProjectsResponse",
+    "ListRemixActionsResponse",
     "ProjectExport",
     "ProjectExportStatus",
     "ProjectResponse",
     "ProjectResponseStatus",
     "PronunciationReplacement",
+    "RemixAction",
+    "RemixActionDisableCaptions",
+    "RemixActionEnableCaptions",
+    "RemixActionRun",
+    "RemixActionSetBackgroundMusic",
+    "RemixActionSetLogo",
+    "RemixActionSetLogoPosition",
+    "RemixActionStatus",
+    "RemixActionType",
+    "RemixActionVideoEditorAgent",
+    "RemixActionVideoEditorAgentMode",
+    "RemixAction_DisableCaptions",
+    "RemixAction_EnableCaptions",
+    "RemixAction_SetBackgroundMusic",
+    "RemixAction_SetLogo",
+    "RemixAction_VideoEditorAgent",
+    "RemixProjectResponse",
+    "SceneGeneration",
+    "SceneGenerationType",
     "SearchFilesResponse",
     "SearchFilesResult",
     "StartToolExecutionResponse",
@@ -179,13 +280,22 @@ __all__ = [
     "TtsVoiceListResponse",
     "VideoAssetRequest",
     "VideoModelMode",
+    "VisualPacing",
     "WatermarkMode",
     "WebhookEndpoint",
     "WebhookEndpointListResponse",
     "WebhookEventName",
+    "WorkflowCaptionBackgroundStyle",
+    "WorkflowCaptionBackgroundStyleType",
+    "WorkflowCaptionStyle",
+    "WorkflowCaptionStyleTextJustification",
+    "WorkflowCaptionStyleVerticalAlignment",
+    "WorkflowRgbColor",
     "WorkflowRun",
     "WorkflowRunStatus",
     "WorkflowRunWebhookEventName",
     "WorkflowRunWebhookPayload",
     "WorkflowType",
+    "WorkflowVisualStyle",
+    "WorkflowVisualStyleType",
 ]

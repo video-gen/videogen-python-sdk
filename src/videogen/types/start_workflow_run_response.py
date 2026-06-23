@@ -28,6 +28,14 @@ class StartWorkflowRunResponse(UniversalBaseModel):
         FieldMetadata(alias="projectUrl"),
         pydantic.Field(alias="projectUrl", description="URL to view the project in the VideoGen app."),
     ]
+    remix_action_ids: typing_extensions.Annotated[
+        typing.List[str],
+        FieldMetadata(alias="remixActionIds"),
+        pydantic.Field(
+            alias="remixActionIds",
+            description="Opaque remix action ids (e.g. `vg_rmix_...`), one per `remixActions` entry in request order. Empty when no remix actions were requested. Each runs after the video is built; poll `GET /v1/projects/{projectId}/remix-actions`.",
+        ),
+    ]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

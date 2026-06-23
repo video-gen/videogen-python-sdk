@@ -118,7 +118,8 @@ class RawToolsClient:
         quality: GenerateVideoClipRequestQuality,
         prompt: typing.Optional[str] = OMIT,
         image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
-        video_file_id: typing.Optional[str] = OMIT,
+        video_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
+        audio_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         generate_audio: typing.Optional[bool] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         watermark_mode: typing.Optional[WatermarkMode] = OMIT,
@@ -127,7 +128,7 @@ class RawToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartToolExecutionResponse]:
         """
-        Generate a video clip from a text prompt, optionally guided by reference images or an input video. At least one of `prompt`, `imageFileIds`, or `videoFileId` must be provided.
+        Generate a video clip from a text prompt, optionally guided by reference images, videos, and audio. At least one of `prompt`, `imageFileIds`, `videoFileIds`, or `audioFileIds` must be provided.
 
         Parameters
         ----------
@@ -135,13 +136,16 @@ class RawToolsClient:
             Video generation quality tier. STANDARD is fastest; HIGH is slowest and highest quality.
 
         prompt : typing.Optional[str]
-            Text prompt describing the video to generate. Optional when reference images or a video are provided.
+            Text prompt describing the video to generate. Optional when reference media is provided. Describe the video in plain language; any reference media you provide is incorporated automatically.
 
         image_file_ids : typing.Optional[typing.Sequence[str]]
-            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model animates or uses these images as guidance.
+            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the images are animated or used as visual guidance for the generated video.
 
-        video_file_id : typing.Optional[str]
-            Optional file id of a source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here. When provided, the model restyles or transforms the input video.
+        video_file_ids : typing.Optional[typing.Sequence[str]]
+            Optional file ids of reference videos (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. They are used as motion or style guidance for the generated video.
+
+        audio_file_ids : typing.Optional[typing.Sequence[str]]
+            Optional file ids of reference audio clips (e.g. `["vg_file_..."]`) used for native lip-sync and soundtrack. Upload files first via `POST /v1/files/upload`, then pass the returned ids here.
 
         generate_audio : typing.Optional[bool]
             When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
@@ -171,7 +175,8 @@ class RawToolsClient:
             json={
                 "prompt": prompt,
                 "imageFileIds": image_file_ids,
-                "videoFileId": video_file_id,
+                "videoFileIds": video_file_ids,
+                "audioFileIds": audio_file_ids,
                 "generateAudio": generate_audio,
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
@@ -1089,7 +1094,8 @@ class AsyncRawToolsClient:
         quality: GenerateVideoClipRequestQuality,
         prompt: typing.Optional[str] = OMIT,
         image_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
-        video_file_id: typing.Optional[str] = OMIT,
+        video_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
+        audio_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         generate_audio: typing.Optional[bool] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         watermark_mode: typing.Optional[WatermarkMode] = OMIT,
@@ -1098,7 +1104,7 @@ class AsyncRawToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartToolExecutionResponse]:
         """
-        Generate a video clip from a text prompt, optionally guided by reference images or an input video. At least one of `prompt`, `imageFileIds`, or `videoFileId` must be provided.
+        Generate a video clip from a text prompt, optionally guided by reference images, videos, and audio. At least one of `prompt`, `imageFileIds`, `videoFileIds`, or `audioFileIds` must be provided.
 
         Parameters
         ----------
@@ -1106,13 +1112,16 @@ class AsyncRawToolsClient:
             Video generation quality tier. STANDARD is fastest; HIGH is slowest and highest quality.
 
         prompt : typing.Optional[str]
-            Text prompt describing the video to generate. Optional when reference images or a video are provided.
+            Text prompt describing the video to generate. Optional when reference media is provided. Describe the video in plain language; any reference media you provide is incorporated automatically.
 
         image_file_ids : typing.Optional[typing.Sequence[str]]
-            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the model animates or uses these images as guidance.
+            Optional file ids of reference images (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. When provided, the images are animated or used as visual guidance for the generated video.
 
-        video_file_id : typing.Optional[str]
-            Optional file id of a source video (e.g. `vg_file_...`). Upload a file first via `POST /v1/files/upload`, then pass the returned id here. When provided, the model restyles or transforms the input video.
+        video_file_ids : typing.Optional[typing.Sequence[str]]
+            Optional file ids of reference videos (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`, then pass the returned ids here. They are used as motion or style guidance for the generated video.
+
+        audio_file_ids : typing.Optional[typing.Sequence[str]]
+            Optional file ids of reference audio clips (e.g. `["vg_file_..."]`) used for native lip-sync and soundtrack. Upload files first via `POST /v1/files/upload`, then pass the returned ids here.
 
         generate_audio : typing.Optional[bool]
             When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
@@ -1142,7 +1151,8 @@ class AsyncRawToolsClient:
             json={
                 "prompt": prompt,
                 "imageFileIds": image_file_ids,
-                "videoFileId": video_file_id,
+                "videoFileIds": video_file_ids,
+                "audioFileIds": audio_file_ids,
                 "generateAudio": generate_audio,
                 "aspectRatio": convert_and_respect_annotation_metadata(
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"

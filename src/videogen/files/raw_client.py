@@ -338,7 +338,7 @@ class RawFilesClient:
         self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[StorageFile]:
         """
-        Enable public preview for a file. Works for any file type. Copies the file to a permanent public URL (`staticPublicPreviewSource`) and, for video and audio, registers a public embed playback id (`publicPlaybackId`) for use with `@videogen/player`. If the file is not yet on the streaming provider, the endpoint starts the upload and polls briefly; otherwise the Mux asset-ready webhook finishes creating the embed playback id. Returns the updated file.
+        Enable public preview for a file. Works for any file type. Copies the file to a permanent public URL (`staticPublicPreviewSource`) and, for video and audio, registers a public embed playback id (`publicPlaybackId`) for use with `@videogen/player`. If streaming playback is still processing, the endpoint polls briefly and background processing finishes creating the embed playback id. Returns the updated file.
 
         Parameters
         ----------
@@ -738,7 +738,7 @@ class AsyncRawFilesClient:
         self, file_id: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[StorageFile]:
         """
-        Enable public preview for a file. Works for any file type. Copies the file to a permanent public URL (`staticPublicPreviewSource`) and, for video and audio, registers a public embed playback id (`publicPlaybackId`) for use with `@videogen/player`. If the file is not yet on the streaming provider, the endpoint starts the upload and polls briefly; otherwise the Mux asset-ready webhook finishes creating the embed playback id. Returns the updated file.
+        Enable public preview for a file. Works for any file type. Copies the file to a permanent public URL (`staticPublicPreviewSource`) and, for video and audio, registers a public embed playback id (`publicPlaybackId`) for use with `@videogen/player`. If streaming playback is still processing, the endpoint polls briefly and background processing finishes creating the embed playback id. Returns the updated file.
 
         Parameters
         ----------

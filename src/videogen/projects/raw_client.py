@@ -10,11 +10,15 @@ from ..core.jsonable_encoder import encode_path_param
 from ..core.parse_error import ParsingError
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
+from ..core.serialization import convert_and_respect_annotation_metadata
 from ..types.export_project_quality import ExportProjectQuality
 from ..types.export_project_response import ExportProjectResponse
 from ..types.list_projects_response import ListProjectsResponse
+from ..types.list_remix_actions_response import ListRemixActionsResponse
 from ..types.project_export import ProjectExport
 from ..types.project_response import ProjectResponse
+from ..types.remix_action import RemixAction
+from ..types.remix_project_response import RemixProjectResponse
 from pydantic import ValidationError
 
 # this is used as the default value for optional parameters
@@ -45,7 +49,7 @@ class RawProjectsClient:
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
 
         self_only : typing.Optional[bool]
-            When true, returns only projects created by the API key's owner workspace. When false (default), returns all projects accessible to the team.
+            When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -229,6 +233,113 @@ class RawProjectsClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def remix_project(
+        self,
+        project_id: str,
+        *,
+        remix_actions: typing.Sequence[RemixAction],
+        save_as_new_project: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[RemixProjectResponse]:
+        """
+        Applies an ordered list of edits (background music, logo overlay, caption visibility/style) to a project. Each action runs asynchronously as its own remix action; the response returns one remix action id per action in order. Set `saveAsNewProject` to apply the edits to a copy and leave the original untouched. Poll `GET /v1/projects/{projectId}/remix-actions` for status.
+
+        Parameters
+        ----------
+        project_id : str
+            The project id (e.g. `vg_proj_...`).
+
+        remix_actions : typing.Sequence[RemixAction]
+            Ordered list of edits to apply. Each runs asynchronously as its own remix action.
+
+        save_as_new_project : typing.Optional[bool]
+            When true, the project is duplicated first and the edits are applied to the copy, leaving the original untouched. The response's `projectId` is the copy. Defaults to false (edits the project in place).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[RemixProjectResponse]
+            Remix actions accepted.
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/projects/{encode_path_param(project_id)}/remix",
+            method="POST",
+            json={
+                "remixActions": convert_and_respect_annotation_metadata(
+                    object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
+                ),
+                "saveAsNewProject": save_as_new_project,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    RemixProjectResponse,
+                    parse_obj_as(
+                        type_=RemixProjectResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def list_project_remix_actions(
+        self, project_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[ListRemixActionsResponse]:
+        """
+        Returns every remix action applied to a project (via `POST /v1/projects/{projectId}/remix` or as a post-workflow step), most recent first, with each action's status and progress.
+
+        Parameters
+        ----------
+        project_id : str
+            The project id (e.g. `vg_proj_...`).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ListRemixActionsResponse]
+            Remix actions for the project.
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v1/projects/{encode_path_param(project_id)}/remix-actions",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ListRemixActionsResponse,
+                    parse_obj_as(
+                        type_=ListRemixActionsResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawProjectsClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -254,7 +365,7 @@ class AsyncRawProjectsClient:
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
 
         self_only : typing.Optional[bool]
-            When true, returns only projects created by the API key's owner workspace. When false (default), returns all projects accessible to the team.
+            When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -425,6 +536,113 @@ class AsyncRawProjectsClient:
                     ProjectExport,
                     parse_obj_as(
                         type_=ProjectExport,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def remix_project(
+        self,
+        project_id: str,
+        *,
+        remix_actions: typing.Sequence[RemixAction],
+        save_as_new_project: typing.Optional[bool] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[RemixProjectResponse]:
+        """
+        Applies an ordered list of edits (background music, logo overlay, caption visibility/style) to a project. Each action runs asynchronously as its own remix action; the response returns one remix action id per action in order. Set `saveAsNewProject` to apply the edits to a copy and leave the original untouched. Poll `GET /v1/projects/{projectId}/remix-actions` for status.
+
+        Parameters
+        ----------
+        project_id : str
+            The project id (e.g. `vg_proj_...`).
+
+        remix_actions : typing.Sequence[RemixAction]
+            Ordered list of edits to apply. Each runs asynchronously as its own remix action.
+
+        save_as_new_project : typing.Optional[bool]
+            When true, the project is duplicated first and the edits are applied to the copy, leaving the original untouched. The response's `projectId` is the copy. Defaults to false (edits the project in place).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[RemixProjectResponse]
+            Remix actions accepted.
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/projects/{encode_path_param(project_id)}/remix",
+            method="POST",
+            json={
+                "remixActions": convert_and_respect_annotation_metadata(
+                    object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
+                ),
+                "saveAsNewProject": save_as_new_project,
+            },
+            headers={
+                "content-type": "application/json",
+            },
+            request_options=request_options,
+            omit=OMIT,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    RemixProjectResponse,
+                    parse_obj_as(
+                        type_=RemixProjectResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def list_project_remix_actions(
+        self, project_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[ListRemixActionsResponse]:
+        """
+        Returns every remix action applied to a project (via `POST /v1/projects/{projectId}/remix` or as a post-workflow step), most recent first, with each action's status and progress.
+
+        Parameters
+        ----------
+        project_id : str
+            The project id (e.g. `vg_proj_...`).
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ListRemixActionsResponse]
+            Remix actions for the project.
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v1/projects/{encode_path_param(project_id)}/remix-actions",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ListRemixActionsResponse,
+                    parse_obj_as(
+                        type_=ListRemixActionsResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

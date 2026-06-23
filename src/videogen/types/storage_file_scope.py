@@ -2,4 +2,4 @@
 
 import typing
 
-StorageFileScope = typing.Union[typing.Literal["GLOBAL", "PROJECT", "EXPORT", "TEMPORARY"], typing.Any]
+StorageFileScope = typing.Union[typing.Literal["GLOBAL", "PROJECT", "EXPORT", "TEMPORARY", "ENTITY"], typing.Any]

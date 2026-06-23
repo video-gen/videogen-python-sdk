@@ -23,10 +23,11 @@ class RawResourcesClient:
         *,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
+        voice_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[AvatarPresenterListResponse]:
         """
-        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint or to a script/slideshow workflow. Pass a reference `voiceId` to return presenters sorted by best match for that voice. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
@@ -35,6 +36,9 @@ class RawResourcesClient:
 
         cursor : typing.Optional[str]
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
+        voice_id : typing.Optional[str]
+            Optional reference voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). When provided, avatar presenters are returned sorted by best match for that voice (best first). Omit to return presenters in the default catalogue order.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -50,6 +54,7 @@ class RawResourcesClient:
             params={
                 "limit": limit,
                 "cursor": cursor,
+                "voiceId": voice_id,
             },
             request_options=request_options,
         )
@@ -141,10 +146,11 @@ class AsyncRawResourcesClient:
         *,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
+        voice_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[AvatarPresenterListResponse]:
         """
-        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint or to a script/slideshow workflow. Pass a reference `voiceId` to return presenters sorted by best match for that voice. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
@@ -153,6 +159,9 @@ class AsyncRawResourcesClient:
 
         cursor : typing.Optional[str]
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
+        voice_id : typing.Optional[str]
+            Optional reference voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). When provided, avatar presenters are returned sorted by best match for that voice (best first). Omit to return presenters in the default catalogue order.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -168,6 +177,7 @@ class AsyncRawResourcesClient:
             params={
                 "limit": limit,
                 "cursor": cursor,
+                "voiceId": voice_id,
             },
             request_options=request_options,
         )

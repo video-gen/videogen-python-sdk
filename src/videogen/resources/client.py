@@ -29,10 +29,11 @@ class ResourcesClient:
         *,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
+        voice_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AvatarPresenterListResponse:
         """
-        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint or to a script/slideshow workflow. Pass a reference `voiceId` to return presenters sorted by best match for that voice. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
@@ -41,6 +42,9 @@ class ResourcesClient:
 
         cursor : typing.Optional[str]
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
+        voice_id : typing.Optional[str]
+            Optional reference voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). When provided, avatar presenters are returned sorted by best match for that voice (best first). Omit to return presenters in the default catalogue order.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -59,7 +63,9 @@ class ResourcesClient:
         )
         client.resources.list_avatar_presenters()
         """
-        _response = self._raw_client.list_avatar_presenters(limit=limit, cursor=cursor, request_options=request_options)
+        _response = self._raw_client.list_avatar_presenters(
+            limit=limit, cursor=cursor, voice_id=voice_id, request_options=request_options
+        )
         return _response.data
 
     def list_tts_voices(
@@ -130,10 +136,11 @@ class AsyncResourcesClient:
         *,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
+        voice_id: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AvatarPresenterListResponse:
         """
-        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint or to a script/slideshow workflow. Pass a reference `voiceId` to return presenters sorted by best match for that voice. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
 
         Parameters
         ----------
@@ -142,6 +149,9 @@ class AsyncResourcesClient:
 
         cursor : typing.Optional[str]
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+
+        voice_id : typing.Optional[str]
+            Optional reference voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). When provided, avatar presenters are returned sorted by best match for that voice (best first). Omit to return presenters in the default catalogue order.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -169,7 +179,7 @@ class AsyncResourcesClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.list_avatar_presenters(
-            limit=limit, cursor=cursor, request_options=request_options
+            limit=limit, cursor=cursor, voice_id=voice_id, request_options=request_options
         )
         return _response.data
 
