@@ -9,12 +9,12 @@ from ..types.generate_storyboard_scene import GenerateStoryboardScene
 from ..types.remix_action import RemixAction
 from ..types.scene_generation import SceneGeneration
 from ..types.start_workflow_run_response import StartWorkflowRunResponse
+from ..types.storyboard_to_video_request_quality import StoryboardToVideoRequestQuality
 from ..types.visual_pacing import VisualPacing
 from ..types.workflow_caption_style import WorkflowCaptionStyle
 from ..types.workflow_run import WorkflowRun
 from ..types.workflow_visual_style import WorkflowVisualStyle
 from .raw_client import AsyncRawWorkflowsClient, RawWorkflowsClient
-from .types.generate_scenes_from_storyboard_request_quality import GenerateScenesFromStoryboardRequestQuality
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -35,7 +35,7 @@ class WorkflowsClient:
         """
         return self._raw_client
 
-    def add_visuals_narrations_and_captions_to_script(
+    def script_to_video(
         self,
         *,
         script: str,
@@ -47,8 +47,7 @@ class WorkflowsClient:
         voice_speed: typing.Optional[float] = OMIT,
         avatar_presenter_id: typing.Optional[str] = OMIT,
         featured_b_roll_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
-        caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
-        logo_file_id: typing.Optional[str] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
         remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
@@ -81,14 +80,100 @@ class WorkflowsClient:
         featured_b_roll_file_ids : typing.Optional[typing.Sequence[str]]
             Optional file ids of images or videos to feature as b-roll (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`. Only image and video files are accepted.
 
-        caption_style : typing.Optional[WorkflowCaptionStyle]
-            Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
-
-        logo_file_id : typing.Optional[str]
-            Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
+        workflow_agent_context : typing.Optional[str]
+            Optional production notes for the AI that builds the video — visual direction that should not appear in the spoken narration (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; keep the narration itself in `script`.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `SET_BACKGROUND_MUSIC` to add a music bed, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartWorkflowRunResponse
+            Workflow run accepted.
+
+        Examples
+        --------
+        from videogen import VideoGenApi, WorkflowVisualStyle
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.workflows.script_to_video(
+            script="script",
+            visual_style=WorkflowVisualStyle(
+                type="STOCK",
+            ),
+        )
+        """
+        _response = self._raw_client.script_to_video(
+            script=script,
+            visual_style=visual_style,
+            aspect_ratio=aspect_ratio,
+            visual_pacing=visual_pacing,
+            language=language,
+            voice_id=voice_id,
+            voice_speed=voice_speed,
+            avatar_presenter_id=avatar_presenter_id,
+            featured_b_roll_file_ids=featured_b_roll_file_ids,
+            workflow_agent_context=workflow_agent_context,
+            remix_actions=remix_actions,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def add_visuals_narrations_and_captions_to_script(
+        self,
+        *,
+        script: str,
+        visual_style: WorkflowVisualStyle,
+        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        language: typing.Optional[str] = OMIT,
+        voice_id: typing.Optional[str] = OMIT,
+        voice_speed: typing.Optional[float] = OMIT,
+        avatar_presenter_id: typing.Optional[str] = OMIT,
+        featured_b_roll_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
+        remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartWorkflowRunResponse:
+        """
+        Legacy alias for `POST /v1/workflows/script-to-video`. Use that endpoint instead.
+
+        Parameters
+        ----------
+        script : str
+            The narration script, used verbatim. This exact text is narrated and turned into a video — it is not rewritten or expanded.
+
+        visual_style : WorkflowVisualStyle
+
+        aspect_ratio : typing.Optional[AspectRatio]
+
+        visual_pacing : typing.Optional[VisualPacing]
+
+        language : typing.Optional[str]
+            Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
+
+        voice_id : typing.Optional[str]
+            Voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). A default voice is used when omitted. Any voice may be used here, including voices where `supportsDirectToolExecution` is false.
+
+        voice_speed : typing.Optional[float]
+            Speech rate multiplier. Defaults to the voice's default speed.
+
+        avatar_presenter_id : typing.Optional[str]
+            Optional avatar presenter id from `GET /v1/resources/avatar-presenters` (e.g. `vg_pres_...`). When set, the narration is delivered by a talking-head presenter avatar. Pass your `voiceId` to that endpoint to list presenters sorted by best match for the voice. Omit for a standard voiceover with no presenter.
+
+        featured_b_roll_file_ids : typing.Optional[typing.Sequence[str]]
+            Optional file ids of images or videos to feature as b-roll (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`. Only image and video files are accepted.
+
+        workflow_agent_context : typing.Optional[str]
+            Optional production notes for the AI that builds the video — visual direction that should not appear in the spoken narration (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; keep the narration itself in `script`.
+
+        remix_actions : typing.Optional[typing.Sequence[RemixAction]]
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `SET_BACKGROUND_MUSIC` to add a music bed, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -122,14 +207,13 @@ class WorkflowsClient:
             voice_speed=voice_speed,
             avatar_presenter_id=avatar_presenter_id,
             featured_b_roll_file_ids=featured_b_roll_file_ids,
-            caption_style=caption_style,
-            logo_file_id=logo_file_id,
+            workflow_agent_context=workflow_agent_context,
             remix_actions=remix_actions,
             request_options=request_options,
         )
         return _response.data
 
-    def add_visuals_and_captions_to_voiceover(
+    def voiceover_to_video(
         self,
         *,
         file_id: str,
@@ -139,6 +223,7 @@ class WorkflowsClient:
         language: typing.Optional[str] = OMIT,
         caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
         logo_file_id: typing.Optional[str] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
         remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
@@ -165,8 +250,90 @@ class WorkflowsClient:
         logo_file_id : typing.Optional[str]
             Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
 
+        workflow_agent_context : typing.Optional[str]
+            Optional production notes for the AI that builds the video — visual direction for how to illustrate the voiceover (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; does not change the uploaded voiceover audio or its transcript.
+
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartWorkflowRunResponse
+            Workflow run accepted.
+
+        Examples
+        --------
+        from videogen import VideoGenApi, WorkflowVisualStyle
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.workflows.voiceover_to_video(
+            file_id="fileId",
+            visual_style=WorkflowVisualStyle(
+                type="STOCK",
+            ),
+        )
+        """
+        _response = self._raw_client.voiceover_to_video(
+            file_id=file_id,
+            visual_style=visual_style,
+            aspect_ratio=aspect_ratio,
+            visual_pacing=visual_pacing,
+            language=language,
+            caption_style=caption_style,
+            logo_file_id=logo_file_id,
+            workflow_agent_context=workflow_agent_context,
+            remix_actions=remix_actions,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def add_visuals_and_captions_to_voiceover(
+        self,
+        *,
+        file_id: str,
+        visual_style: WorkflowVisualStyle,
+        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        language: typing.Optional[str] = OMIT,
+        caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
+        logo_file_id: typing.Optional[str] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
+        remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartWorkflowRunResponse:
+        """
+        Legacy alias for `POST /v1/workflows/voiceover-to-video`. Use that endpoint instead.
+
+        Parameters
+        ----------
+        file_id : str
+            Opaque file id of an uploaded voiceover audio file (e.g. `vg_file_...`). Upload the file first via `POST /v1/files/upload`.
+
+        visual_style : WorkflowVisualStyle
+
+        aspect_ratio : typing.Optional[AspectRatio]
+
+        visual_pacing : typing.Optional[VisualPacing]
+
+        language : typing.Optional[str]
+            Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
+
+        caption_style : typing.Optional[WorkflowCaptionStyle]
+            Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
+
+        logo_file_id : typing.Optional[str]
+            Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
+
+        workflow_agent_context : typing.Optional[str]
+            Optional production notes for the AI that builds the video — visual direction for how to illustrate the voiceover (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; does not change the uploaded voiceover audio or its transcript.
+
+        remix_actions : typing.Optional[typing.Sequence[RemixAction]]
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -198,12 +365,13 @@ class WorkflowsClient:
             language=language,
             caption_style=caption_style,
             logo_file_id=logo_file_id,
+            workflow_agent_context=workflow_agent_context,
             remix_actions=remix_actions,
             request_options=request_options,
         )
         return _response.data
 
-    def add_narration_transitions_and_captions_to_slideshow(
+    def slideshow_to_video(
         self,
         *,
         file_id: str,
@@ -250,7 +418,90 @@ class WorkflowsClient:
             Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartWorkflowRunResponse
+            Workflow run accepted.
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.workflows.slideshow_to_video(
+            file_id="fileId",
+        )
+        """
+        _response = self._raw_client.slideshow_to_video(
+            file_id=file_id,
+            slide_scripts=slide_scripts,
+            aspect_ratio=aspect_ratio,
+            language=language,
+            voice_id=voice_id,
+            voice_speed=voice_speed,
+            avatar_presenter_id=avatar_presenter_id,
+            caption_style=caption_style,
+            logo_file_id=logo_file_id,
+            remix_actions=remix_actions,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def add_narration_transitions_and_captions_to_slideshow(
+        self,
+        *,
+        file_id: str,
+        slide_scripts: typing.Optional[typing.Sequence[str]] = OMIT,
+        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        language: typing.Optional[str] = OMIT,
+        voice_id: typing.Optional[str] = OMIT,
+        voice_speed: typing.Optional[float] = OMIT,
+        avatar_presenter_id: typing.Optional[str] = OMIT,
+        caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
+        logo_file_id: typing.Optional[str] = OMIT,
+        remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartWorkflowRunResponse:
+        """
+        Legacy alias for `POST /v1/workflows/slideshow-to-video`. Use that endpoint instead.
+
+        Parameters
+        ----------
+        file_id : str
+            Opaque file id of an uploaded PDF or PowerPoint file (e.g. `vg_file_...`). Upload the file first via `POST /v1/files/upload`.
+
+        slide_scripts : typing.Optional[typing.Sequence[str]]
+            Optional per-slide narration, in slide order, applied by index: each slide uses its matching entry, and an empty string makes that slide silent. If you provide fewer entries than slides, the remaining slides are silent; extra entries are ignored. Omit this field entirely to narrate each slide from its speaker notes in the uploaded file. To guarantee no narration on any slide, pass an empty array.
+
+        aspect_ratio : typing.Optional[AspectRatio]
+
+        language : typing.Optional[str]
+            Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
+
+        voice_id : typing.Optional[str]
+            Voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). A default voice is used when omitted. Any voice may be used here, including voices where `supportsDirectToolExecution` is false.
+
+        voice_speed : typing.Optional[float]
+            Speech rate multiplier. Defaults to the voice's default speed.
+
+        avatar_presenter_id : typing.Optional[str]
+            Optional avatar presenter id from `GET /v1/resources/avatar-presenters` (e.g. `vg_pres_...`). When set, the narration is delivered by a talking-head presenter avatar. Pass your `voiceId` to that endpoint to list presenters sorted by best match for the voice. Omit for a standard voiceover with no presenter.
+
+        caption_style : typing.Optional[WorkflowCaptionStyle]
+            Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
+
+        logo_file_id : typing.Optional[str]
+            Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
+
+        remix_actions : typing.Optional[typing.Sequence[RemixAction]]
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -286,14 +537,15 @@ class WorkflowsClient:
         )
         return _response.data
 
-    def generate_scenes_from_storyboard(
+    def storyboard_to_video(
         self,
         *,
         scenes: typing.Sequence[GenerateStoryboardScene],
         default_generation: typing.Optional[SceneGeneration] = OMIT,
         default_duration_seconds: typing.Optional[int] = OMIT,
-        quality: typing.Optional[GenerateScenesFromStoryboardRequestQuality] = OMIT,
+        quality: typing.Optional[StoryboardToVideoRequestQuality] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
         """
@@ -310,10 +562,80 @@ class WorkflowsClient:
         default_duration_seconds : typing.Optional[int]
             Default per-scene duration in seconds for scenes that don't set their own `durationSeconds`. Defaults to 5. For AI_VIDEO scenes this must be a whole number between 1 and 15.
 
-        quality : typing.Optional[GenerateScenesFromStoryboardRequestQuality]
+        quality : typing.Optional[StoryboardToVideoRequestQuality]
             Generation quality tier for every scene. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Defaults to STANDARD. LOW is not supported for AI_VIDEO scenes: the request is rejected if any scene is generated as a video at LOW quality.
 
         aspect_ratio : typing.Optional[AspectRatio]
+
+        workflow_agent_context : typing.Optional[str]
+            Optional storyboard-wide production notes for the AI that builds the video (e.g. recurring characters or props, a consistent setting, or overall staging guidance). Applies across every scene; per-scene direction goes in each scene's `prompt`.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartWorkflowRunResponse
+            Workflow run accepted.
+
+        Examples
+        --------
+        from videogen import GenerateStoryboardScene, VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.workflows.storyboard_to_video(
+            scenes=[
+                GenerateStoryboardScene(
+                    prompt="prompt",
+                )
+            ],
+        )
+        """
+        _response = self._raw_client.storyboard_to_video(
+            scenes=scenes,
+            default_generation=default_generation,
+            default_duration_seconds=default_duration_seconds,
+            quality=quality,
+            aspect_ratio=aspect_ratio,
+            workflow_agent_context=workflow_agent_context,
+            request_options=request_options,
+        )
+        return _response.data
+
+    def generate_scenes_from_storyboard(
+        self,
+        *,
+        scenes: typing.Sequence[GenerateStoryboardScene],
+        default_generation: typing.Optional[SceneGeneration] = OMIT,
+        default_duration_seconds: typing.Optional[int] = OMIT,
+        quality: typing.Optional[StoryboardToVideoRequestQuality] = OMIT,
+        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartWorkflowRunResponse:
+        """
+        Legacy alias for `POST /v1/workflows/storyboard-to-video`. Use that endpoint instead.
+
+        Parameters
+        ----------
+        scenes : typing.Sequence[GenerateStoryboardScene]
+            Ordered list of scenes. Each scene becomes one section in the final video, in this order.
+
+        default_generation : typing.Optional[SceneGeneration]
+            Default generation applied to scenes that don't set their own `generation`. Defaults to AI_IMAGE with no extra style.
+
+        default_duration_seconds : typing.Optional[int]
+            Default per-scene duration in seconds for scenes that don't set their own `durationSeconds`. Defaults to 5. For AI_VIDEO scenes this must be a whole number between 1 and 15.
+
+        quality : typing.Optional[StoryboardToVideoRequestQuality]
+            Generation quality tier for every scene. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Defaults to STANDARD. LOW is not supported for AI_VIDEO scenes: the request is rejected if any scene is generated as a video at LOW quality.
+
+        aspect_ratio : typing.Optional[AspectRatio]
+
+        workflow_agent_context : typing.Optional[str]
+            Optional storyboard-wide production notes for the AI that builds the video (e.g. recurring characters or props, a consistent setting, or overall staging guidance). Applies across every scene; per-scene direction goes in each scene's `prompt`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -344,6 +666,7 @@ class WorkflowsClient:
             default_duration_seconds=default_duration_seconds,
             quality=quality,
             aspect_ratio=aspect_ratio,
+            workflow_agent_context=workflow_agent_context,
             request_options=request_options,
         )
         return _response.data
@@ -426,7 +749,7 @@ class AsyncWorkflowsClient:
         """
         return self._raw_client
 
-    async def add_visuals_narrations_and_captions_to_script(
+    async def script_to_video(
         self,
         *,
         script: str,
@@ -438,8 +761,7 @@ class AsyncWorkflowsClient:
         voice_speed: typing.Optional[float] = OMIT,
         avatar_presenter_id: typing.Optional[str] = OMIT,
         featured_b_roll_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
-        caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
-        logo_file_id: typing.Optional[str] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
         remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
@@ -472,14 +794,108 @@ class AsyncWorkflowsClient:
         featured_b_roll_file_ids : typing.Optional[typing.Sequence[str]]
             Optional file ids of images or videos to feature as b-roll (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`. Only image and video files are accepted.
 
-        caption_style : typing.Optional[WorkflowCaptionStyle]
-            Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
-
-        logo_file_id : typing.Optional[str]
-            Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
+        workflow_agent_context : typing.Optional[str]
+            Optional production notes for the AI that builds the video — visual direction that should not appear in the spoken narration (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; keep the narration itself in `script`.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `SET_BACKGROUND_MUSIC` to add a music bed, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartWorkflowRunResponse
+            Workflow run accepted.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi, WorkflowVisualStyle
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.workflows.script_to_video(
+                script="script",
+                visual_style=WorkflowVisualStyle(
+                    type="STOCK",
+                ),
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.script_to_video(
+            script=script,
+            visual_style=visual_style,
+            aspect_ratio=aspect_ratio,
+            visual_pacing=visual_pacing,
+            language=language,
+            voice_id=voice_id,
+            voice_speed=voice_speed,
+            avatar_presenter_id=avatar_presenter_id,
+            featured_b_roll_file_ids=featured_b_roll_file_ids,
+            workflow_agent_context=workflow_agent_context,
+            remix_actions=remix_actions,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def add_visuals_narrations_and_captions_to_script(
+        self,
+        *,
+        script: str,
+        visual_style: WorkflowVisualStyle,
+        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        language: typing.Optional[str] = OMIT,
+        voice_id: typing.Optional[str] = OMIT,
+        voice_speed: typing.Optional[float] = OMIT,
+        avatar_presenter_id: typing.Optional[str] = OMIT,
+        featured_b_roll_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
+        remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartWorkflowRunResponse:
+        """
+        Legacy alias for `POST /v1/workflows/script-to-video`. Use that endpoint instead.
+
+        Parameters
+        ----------
+        script : str
+            The narration script, used verbatim. This exact text is narrated and turned into a video — it is not rewritten or expanded.
+
+        visual_style : WorkflowVisualStyle
+
+        aspect_ratio : typing.Optional[AspectRatio]
+
+        visual_pacing : typing.Optional[VisualPacing]
+
+        language : typing.Optional[str]
+            Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
+
+        voice_id : typing.Optional[str]
+            Voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). A default voice is used when omitted. Any voice may be used here, including voices where `supportsDirectToolExecution` is false.
+
+        voice_speed : typing.Optional[float]
+            Speech rate multiplier. Defaults to the voice's default speed.
+
+        avatar_presenter_id : typing.Optional[str]
+            Optional avatar presenter id from `GET /v1/resources/avatar-presenters` (e.g. `vg_pres_...`). When set, the narration is delivered by a talking-head presenter avatar. Pass your `voiceId` to that endpoint to list presenters sorted by best match for the voice. Omit for a standard voiceover with no presenter.
+
+        featured_b_roll_file_ids : typing.Optional[typing.Sequence[str]]
+            Optional file ids of images or videos to feature as b-roll (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`. Only image and video files are accepted.
+
+        workflow_agent_context : typing.Optional[str]
+            Optional production notes for the AI that builds the video — visual direction that should not appear in the spoken narration (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; keep the narration itself in `script`.
+
+        remix_actions : typing.Optional[typing.Sequence[RemixAction]]
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `SET_BACKGROUND_MUSIC` to add a music bed, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -521,14 +937,13 @@ class AsyncWorkflowsClient:
             voice_speed=voice_speed,
             avatar_presenter_id=avatar_presenter_id,
             featured_b_roll_file_ids=featured_b_roll_file_ids,
-            caption_style=caption_style,
-            logo_file_id=logo_file_id,
+            workflow_agent_context=workflow_agent_context,
             remix_actions=remix_actions,
             request_options=request_options,
         )
         return _response.data
 
-    async def add_visuals_and_captions_to_voiceover(
+    async def voiceover_to_video(
         self,
         *,
         file_id: str,
@@ -538,6 +953,7 @@ class AsyncWorkflowsClient:
         language: typing.Optional[str] = OMIT,
         caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
         logo_file_id: typing.Optional[str] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
         remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
@@ -564,8 +980,98 @@ class AsyncWorkflowsClient:
         logo_file_id : typing.Optional[str]
             Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
 
+        workflow_agent_context : typing.Optional[str]
+            Optional production notes for the AI that builds the video — visual direction for how to illustrate the voiceover (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; does not change the uploaded voiceover audio or its transcript.
+
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartWorkflowRunResponse
+            Workflow run accepted.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi, WorkflowVisualStyle
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.workflows.voiceover_to_video(
+                file_id="fileId",
+                visual_style=WorkflowVisualStyle(
+                    type="STOCK",
+                ),
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.voiceover_to_video(
+            file_id=file_id,
+            visual_style=visual_style,
+            aspect_ratio=aspect_ratio,
+            visual_pacing=visual_pacing,
+            language=language,
+            caption_style=caption_style,
+            logo_file_id=logo_file_id,
+            workflow_agent_context=workflow_agent_context,
+            remix_actions=remix_actions,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def add_visuals_and_captions_to_voiceover(
+        self,
+        *,
+        file_id: str,
+        visual_style: WorkflowVisualStyle,
+        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        language: typing.Optional[str] = OMIT,
+        caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
+        logo_file_id: typing.Optional[str] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
+        remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartWorkflowRunResponse:
+        """
+        Legacy alias for `POST /v1/workflows/voiceover-to-video`. Use that endpoint instead.
+
+        Parameters
+        ----------
+        file_id : str
+            Opaque file id of an uploaded voiceover audio file (e.g. `vg_file_...`). Upload the file first via `POST /v1/files/upload`.
+
+        visual_style : WorkflowVisualStyle
+
+        aspect_ratio : typing.Optional[AspectRatio]
+
+        visual_pacing : typing.Optional[VisualPacing]
+
+        language : typing.Optional[str]
+            Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
+
+        caption_style : typing.Optional[WorkflowCaptionStyle]
+            Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
+
+        logo_file_id : typing.Optional[str]
+            Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
+
+        workflow_agent_context : typing.Optional[str]
+            Optional production notes for the AI that builds the video — visual direction for how to illustrate the voiceover (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; does not change the uploaded voiceover audio or its transcript.
+
+        remix_actions : typing.Optional[typing.Sequence[RemixAction]]
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -605,12 +1111,13 @@ class AsyncWorkflowsClient:
             language=language,
             caption_style=caption_style,
             logo_file_id=logo_file_id,
+            workflow_agent_context=workflow_agent_context,
             remix_actions=remix_actions,
             request_options=request_options,
         )
         return _response.data
 
-    async def add_narration_transitions_and_captions_to_slideshow(
+    async def slideshow_to_video(
         self,
         *,
         file_id: str,
@@ -657,7 +1164,98 @@ class AsyncWorkflowsClient:
             Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartWorkflowRunResponse
+            Workflow run accepted.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.workflows.slideshow_to_video(
+                file_id="fileId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.slideshow_to_video(
+            file_id=file_id,
+            slide_scripts=slide_scripts,
+            aspect_ratio=aspect_ratio,
+            language=language,
+            voice_id=voice_id,
+            voice_speed=voice_speed,
+            avatar_presenter_id=avatar_presenter_id,
+            caption_style=caption_style,
+            logo_file_id=logo_file_id,
+            remix_actions=remix_actions,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def add_narration_transitions_and_captions_to_slideshow(
+        self,
+        *,
+        file_id: str,
+        slide_scripts: typing.Optional[typing.Sequence[str]] = OMIT,
+        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        language: typing.Optional[str] = OMIT,
+        voice_id: typing.Optional[str] = OMIT,
+        voice_speed: typing.Optional[float] = OMIT,
+        avatar_presenter_id: typing.Optional[str] = OMIT,
+        caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
+        logo_file_id: typing.Optional[str] = OMIT,
+        remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartWorkflowRunResponse:
+        """
+        Legacy alias for `POST /v1/workflows/slideshow-to-video`. Use that endpoint instead.
+
+        Parameters
+        ----------
+        file_id : str
+            Opaque file id of an uploaded PDF or PowerPoint file (e.g. `vg_file_...`). Upload the file first via `POST /v1/files/upload`.
+
+        slide_scripts : typing.Optional[typing.Sequence[str]]
+            Optional per-slide narration, in slide order, applied by index: each slide uses its matching entry, and an empty string makes that slide silent. If you provide fewer entries than slides, the remaining slides are silent; extra entries are ignored. Omit this field entirely to narrate each slide from its speaker notes in the uploaded file. To guarantee no narration on any slide, pass an empty array.
+
+        aspect_ratio : typing.Optional[AspectRatio]
+
+        language : typing.Optional[str]
+            Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
+
+        voice_id : typing.Optional[str]
+            Voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). A default voice is used when omitted. Any voice may be used here, including voices where `supportsDirectToolExecution` is false.
+
+        voice_speed : typing.Optional[float]
+            Speech rate multiplier. Defaults to the voice's default speed.
+
+        avatar_presenter_id : typing.Optional[str]
+            Optional avatar presenter id from `GET /v1/resources/avatar-presenters` (e.g. `vg_pres_...`). When set, the narration is delivered by a talking-head presenter avatar. Pass your `voiceId` to that endpoint to list presenters sorted by best match for the voice. Omit for a standard voiceover with no presenter.
+
+        caption_style : typing.Optional[WorkflowCaptionStyle]
+            Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
+
+        logo_file_id : typing.Optional[str]
+            Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
+
+        remix_actions : typing.Optional[typing.Sequence[RemixAction]]
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -701,14 +1299,15 @@ class AsyncWorkflowsClient:
         )
         return _response.data
 
-    async def generate_scenes_from_storyboard(
+    async def storyboard_to_video(
         self,
         *,
         scenes: typing.Sequence[GenerateStoryboardScene],
         default_generation: typing.Optional[SceneGeneration] = OMIT,
         default_duration_seconds: typing.Optional[int] = OMIT,
-        quality: typing.Optional[GenerateScenesFromStoryboardRequestQuality] = OMIT,
+        quality: typing.Optional[StoryboardToVideoRequestQuality] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
         """
@@ -725,10 +1324,88 @@ class AsyncWorkflowsClient:
         default_duration_seconds : typing.Optional[int]
             Default per-scene duration in seconds for scenes that don't set their own `durationSeconds`. Defaults to 5. For AI_VIDEO scenes this must be a whole number between 1 and 15.
 
-        quality : typing.Optional[GenerateScenesFromStoryboardRequestQuality]
+        quality : typing.Optional[StoryboardToVideoRequestQuality]
             Generation quality tier for every scene. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Defaults to STANDARD. LOW is not supported for AI_VIDEO scenes: the request is rejected if any scene is generated as a video at LOW quality.
 
         aspect_ratio : typing.Optional[AspectRatio]
+
+        workflow_agent_context : typing.Optional[str]
+            Optional storyboard-wide production notes for the AI that builds the video (e.g. recurring characters or props, a consistent setting, or overall staging guidance). Applies across every scene; per-scene direction goes in each scene's `prompt`.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        StartWorkflowRunResponse
+            Workflow run accepted.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi, GenerateStoryboardScene
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.workflows.storyboard_to_video(
+                scenes=[
+                    GenerateStoryboardScene(
+                        prompt="prompt",
+                    )
+                ],
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.storyboard_to_video(
+            scenes=scenes,
+            default_generation=default_generation,
+            default_duration_seconds=default_duration_seconds,
+            quality=quality,
+            aspect_ratio=aspect_ratio,
+            workflow_agent_context=workflow_agent_context,
+            request_options=request_options,
+        )
+        return _response.data
+
+    async def generate_scenes_from_storyboard(
+        self,
+        *,
+        scenes: typing.Sequence[GenerateStoryboardScene],
+        default_generation: typing.Optional[SceneGeneration] = OMIT,
+        default_duration_seconds: typing.Optional[int] = OMIT,
+        quality: typing.Optional[StoryboardToVideoRequestQuality] = OMIT,
+        aspect_ratio: typing.Optional[AspectRatio] = OMIT,
+        workflow_agent_context: typing.Optional[str] = OMIT,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> StartWorkflowRunResponse:
+        """
+        Legacy alias for `POST /v1/workflows/storyboard-to-video`. Use that endpoint instead.
+
+        Parameters
+        ----------
+        scenes : typing.Sequence[GenerateStoryboardScene]
+            Ordered list of scenes. Each scene becomes one section in the final video, in this order.
+
+        default_generation : typing.Optional[SceneGeneration]
+            Default generation applied to scenes that don't set their own `generation`. Defaults to AI_IMAGE with no extra style.
+
+        default_duration_seconds : typing.Optional[int]
+            Default per-scene duration in seconds for scenes that don't set their own `durationSeconds`. Defaults to 5. For AI_VIDEO scenes this must be a whole number between 1 and 15.
+
+        quality : typing.Optional[StoryboardToVideoRequestQuality]
+            Generation quality tier for every scene. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Defaults to STANDARD. LOW is not supported for AI_VIDEO scenes: the request is rejected if any scene is generated as a video at LOW quality.
+
+        aspect_ratio : typing.Optional[AspectRatio]
+
+        workflow_agent_context : typing.Optional[str]
+            Optional storyboard-wide production notes for the AI that builds the video (e.g. recurring characters or props, a consistent setting, or overall staging guidance). Applies across every scene; per-scene direction goes in each scene's `prompt`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -767,6 +1444,7 @@ class AsyncWorkflowsClient:
             default_duration_seconds=default_duration_seconds,
             quality=quality,
             aspect_ratio=aspect_ratio,
+            workflow_agent_context=workflow_agent_context,
             request_options=request_options,
         )
         return _response.data

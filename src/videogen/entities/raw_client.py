@@ -34,7 +34,7 @@ class RawEntitiesClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ListEntitiesResponse]:
         """
-        List the actors and visual styles available to your team, most recently updated first. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List the actors and visual styles available to your team, most recently updated first. Cursor-paginated; see the [Pagination](/pagination) guide.
 
         Parameters
         ----------
@@ -42,10 +42,10 @@ class RawEntitiesClient:
             When provided, returns only entities of this type. Omit to return all entities.
 
         limit : typing.Optional[int]
-            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
 
         cursor : typing.Optional[str]
-            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -429,7 +429,7 @@ class AsyncRawEntitiesClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ListEntitiesResponse]:
         """
-        List the actors and visual styles available to your team, most recently updated first. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List the actors and visual styles available to your team, most recently updated first. Cursor-paginated; see the [Pagination](/pagination) guide.
 
         Parameters
         ----------
@@ -437,10 +437,10 @@ class AsyncRawEntitiesClient:
             When provided, returns only entities of this type. Omit to return all entities.
 
         limit : typing.Optional[int]
-            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
 
         cursor : typing.Optional[str]
-            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

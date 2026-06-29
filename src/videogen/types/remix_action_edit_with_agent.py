@@ -6,10 +6,10 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
-from .remix_action_video_editor_agent_mode import RemixActionVideoEditorAgentMode
+from .remix_action_edit_with_agent_mode import RemixActionEditWithAgentMode
 
 
-class RemixActionVideoEditorAgent(UniversalBaseModel):
+class RemixActionEditWithAgent(UniversalBaseModel):
     """
     Apply an open-ended, natural-language edit to the project. An editing agent interprets the prompt, makes the changes, validates them, and visually checks the result. Well suited to tasks like replacing placeholder copy with your own text.
     """
@@ -19,7 +19,7 @@ class RemixActionVideoEditorAgent(UniversalBaseModel):
     A natural-language description of the edit to make (e.g. "Replace the headline with 'Summer Sale - 40% off' and update the subtitle to match").
     """
 
-    mode: typing.Optional[RemixActionVideoEditorAgentMode] = pydantic.Field(default=None)
+    mode: typing.Optional[RemixActionEditWithAgentMode] = pydantic.Field(default=None)
     """
     Editing strategy. `MINOR_EDIT` (default) makes targeted changes while keeping the structure. `RETHINK` re-storyboards the video: it selects which scenes to keep and their order, then edits each in parallel.
     """

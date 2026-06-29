@@ -38,15 +38,15 @@ class FilesClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> GetFilesResponse:
         """
-        List files in your account, including generated assets and uploads. Files are returned most recently updated first. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List files in your account, including generated assets and uploads. Files are returned most recently updated first. Cursor-paginated; see the [Pagination](/pagination) guide.
 
         Parameters
         ----------
         limit : typing.Optional[int]
-            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
 
         cursor : typing.Optional[str]
-            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -343,15 +343,15 @@ class AsyncFilesClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> GetFilesResponse:
         """
-        List files in your account, including generated assets and uploads. Files are returned most recently updated first. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List files in your account, including generated assets and uploads. Files are returned most recently updated first. Cursor-paginated; see the [Pagination](/pagination) guide.
 
         Parameters
         ----------
         limit : typing.Optional[int]
-            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
 
         cursor : typing.Optional[str]
-            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

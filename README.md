@@ -47,7 +47,7 @@ client = VideoGenApi(
     token="<token>",
 )
 
-client.workflows.add_visuals_narrations_and_captions_to_script(
+client.workflows.script_to_video(
     script="script",
     visual_style=WorkflowVisualStyle(
         type="STOCK",
@@ -83,7 +83,7 @@ client = AsyncVideoGenApi(
 
 
 async def main() -> None:
-    await client.workflows.add_visuals_narrations_and_captions_to_script(
+    await client.workflows.script_to_video(
         script="script",
         visual_style=WorkflowVisualStyle(
             type="STOCK",
@@ -103,7 +103,7 @@ will be thrown.
 from videogen.core.api_error import ApiError
 
 try:
-    client.workflows.add_visuals_narrations_and_captions_to_script(...)
+    client.workflows.script_to_video(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
@@ -120,7 +120,7 @@ The `.with_raw_response` property returns a "raw" client that can be used to acc
 from videogen import VideoGenApi
 
 client = VideoGenApi(...)
-response = client.workflows.with_raw_response.add_visuals_narrations_and_captions_to_script(...)
+response = client.workflows.with_raw_response.script_to_video(...)
 print(response.headers)  # access the response headers
 print(response.status_code)  # access the response status code
 print(response.data)  # access the underlying object
@@ -141,7 +141,7 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.workflows.add_visuals_narrations_and_captions_to_script(..., request_options={
+client.workflows.script_to_video(..., request_options={
     "max_retries": 1
 })
 ```
@@ -156,7 +156,7 @@ from videogen import VideoGenApi
 client = VideoGenApi(..., timeout=20.0)
 
 # Override timeout for a specific method
-client.workflows.add_visuals_narrations_and_captions_to_script(..., request_options={
+client.workflows.script_to_video(..., request_options={
     "timeout_in_seconds": 1
 })
 ```

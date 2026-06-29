@@ -43,13 +43,17 @@ if typing.TYPE_CHECKING:
     from .pronunciation_replacement import PronunciationReplacement
     from .remix_action import (
         RemixAction,
+        RemixAction_AddTransitions,
         RemixAction_DisableCaptions,
+        RemixAction_EditWithAgent,
         RemixAction_EnableCaptions,
         RemixAction_SetBackgroundMusic,
         RemixAction_SetLogo,
-        RemixAction_VideoEditorAgent,
     )
+    from .remix_action_add_transitions import RemixActionAddTransitions
     from .remix_action_disable_captions import RemixActionDisableCaptions
+    from .remix_action_edit_with_agent import RemixActionEditWithAgent
+    from .remix_action_edit_with_agent_mode import RemixActionEditWithAgentMode
     from .remix_action_enable_captions import RemixActionEnableCaptions
     from .remix_action_run import RemixActionRun
     from .remix_action_set_background_music import RemixActionSetBackgroundMusic
@@ -57,18 +61,21 @@ if typing.TYPE_CHECKING:
     from .remix_action_set_logo_position import RemixActionSetLogoPosition
     from .remix_action_status import RemixActionStatus
     from .remix_action_type import RemixActionType
-    from .remix_action_video_editor_agent import RemixActionVideoEditorAgent
-    from .remix_action_video_editor_agent_mode import RemixActionVideoEditorAgentMode
     from .remix_project_response import RemixProjectResponse
+    from .remix_transition_style import RemixTransitionStyle
     from .scene_generation import SceneGeneration
     from .scene_generation_type import SceneGenerationType
+    from .script_to_video_request import ScriptToVideoRequest
     from .search_files_response import SearchFilesResponse
     from .search_files_result import SearchFilesResult
+    from .slideshow_to_video_request import SlideshowToVideoRequest
     from .start_tool_execution_response import StartToolExecutionResponse
     from .start_workflow_run_response import StartWorkflowRunResponse
     from .storage_file import StorageFile
     from .storage_file_scope import StorageFileScope
     from .storage_file_type import StorageFileType
+    from .storyboard_to_video_request import StoryboardToVideoRequest
+    from .storyboard_to_video_request_quality import StoryboardToVideoRequestQuality
     from .tool_execution_webhook_event_name import ToolExecutionWebhookEventName
     from .tool_execution_webhook_payload import ToolExecutionWebhookPayload
     from .tool_success_result import ToolSuccessResult
@@ -79,6 +86,7 @@ if typing.TYPE_CHECKING:
     from .video_asset_request import VideoAssetRequest
     from .video_model_mode import VideoModelMode
     from .visual_pacing import VisualPacing
+    from .voiceover_to_video_request import VoiceoverToVideoRequest
     from .watermark_mode import WatermarkMode
     from .webhook_endpoint import WebhookEndpoint
     from .webhook_endpoint_list_response import WebhookEndpointListResponse
@@ -133,7 +141,10 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ProjectResponseStatus": ".project_response_status",
     "PronunciationReplacement": ".pronunciation_replacement",
     "RemixAction": ".remix_action",
+    "RemixActionAddTransitions": ".remix_action_add_transitions",
     "RemixActionDisableCaptions": ".remix_action_disable_captions",
+    "RemixActionEditWithAgent": ".remix_action_edit_with_agent",
+    "RemixActionEditWithAgentMode": ".remix_action_edit_with_agent_mode",
     "RemixActionEnableCaptions": ".remix_action_enable_captions",
     "RemixActionRun": ".remix_action_run",
     "RemixActionSetBackgroundMusic": ".remix_action_set_background_music",
@@ -141,23 +152,27 @@ _dynamic_imports: typing.Dict[str, str] = {
     "RemixActionSetLogoPosition": ".remix_action_set_logo_position",
     "RemixActionStatus": ".remix_action_status",
     "RemixActionType": ".remix_action_type",
-    "RemixActionVideoEditorAgent": ".remix_action_video_editor_agent",
-    "RemixActionVideoEditorAgentMode": ".remix_action_video_editor_agent_mode",
+    "RemixAction_AddTransitions": ".remix_action",
     "RemixAction_DisableCaptions": ".remix_action",
+    "RemixAction_EditWithAgent": ".remix_action",
     "RemixAction_EnableCaptions": ".remix_action",
     "RemixAction_SetBackgroundMusic": ".remix_action",
     "RemixAction_SetLogo": ".remix_action",
-    "RemixAction_VideoEditorAgent": ".remix_action",
     "RemixProjectResponse": ".remix_project_response",
+    "RemixTransitionStyle": ".remix_transition_style",
     "SceneGeneration": ".scene_generation",
     "SceneGenerationType": ".scene_generation_type",
+    "ScriptToVideoRequest": ".script_to_video_request",
     "SearchFilesResponse": ".search_files_response",
     "SearchFilesResult": ".search_files_result",
+    "SlideshowToVideoRequest": ".slideshow_to_video_request",
     "StartToolExecutionResponse": ".start_tool_execution_response",
     "StartWorkflowRunResponse": ".start_workflow_run_response",
     "StorageFile": ".storage_file",
     "StorageFileScope": ".storage_file_scope",
     "StorageFileType": ".storage_file_type",
+    "StoryboardToVideoRequest": ".storyboard_to_video_request",
+    "StoryboardToVideoRequestQuality": ".storyboard_to_video_request_quality",
     "ToolExecutionWebhookEventName": ".tool_execution_webhook_event_name",
     "ToolExecutionWebhookPayload": ".tool_execution_webhook_payload",
     "ToolSuccessResult": ".tool_success_result",
@@ -168,6 +183,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "VideoAssetRequest": ".video_asset_request",
     "VideoModelMode": ".video_model_mode",
     "VisualPacing": ".visual_pacing",
+    "VoiceoverToVideoRequest": ".voiceover_to_video_request",
     "WatermarkMode": ".watermark_mode",
     "WebhookEndpoint": ".webhook_endpoint",
     "WebhookEndpointListResponse": ".webhook_endpoint_list_response",
@@ -246,7 +262,10 @@ __all__ = [
     "ProjectResponseStatus",
     "PronunciationReplacement",
     "RemixAction",
+    "RemixActionAddTransitions",
     "RemixActionDisableCaptions",
+    "RemixActionEditWithAgent",
+    "RemixActionEditWithAgentMode",
     "RemixActionEnableCaptions",
     "RemixActionRun",
     "RemixActionSetBackgroundMusic",
@@ -254,23 +273,27 @@ __all__ = [
     "RemixActionSetLogoPosition",
     "RemixActionStatus",
     "RemixActionType",
-    "RemixActionVideoEditorAgent",
-    "RemixActionVideoEditorAgentMode",
+    "RemixAction_AddTransitions",
     "RemixAction_DisableCaptions",
+    "RemixAction_EditWithAgent",
     "RemixAction_EnableCaptions",
     "RemixAction_SetBackgroundMusic",
     "RemixAction_SetLogo",
-    "RemixAction_VideoEditorAgent",
     "RemixProjectResponse",
+    "RemixTransitionStyle",
     "SceneGeneration",
     "SceneGenerationType",
+    "ScriptToVideoRequest",
     "SearchFilesResponse",
     "SearchFilesResult",
+    "SlideshowToVideoRequest",
     "StartToolExecutionResponse",
     "StartWorkflowRunResponse",
     "StorageFile",
     "StorageFileScope",
     "StorageFileType",
+    "StoryboardToVideoRequest",
+    "StoryboardToVideoRequestQuality",
     "ToolExecutionWebhookEventName",
     "ToolExecutionWebhookPayload",
     "ToolSuccessResult",
@@ -281,6 +304,7 @@ __all__ = [
     "VideoAssetRequest",
     "VideoModelMode",
     "VisualPacing",
+    "VoiceoverToVideoRequest",
     "WatermarkMode",
     "WebhookEndpoint",
     "WebhookEndpointListResponse",

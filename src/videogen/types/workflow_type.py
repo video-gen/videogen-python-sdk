@@ -3,11 +3,5 @@
 import typing
 
 WorkflowType = typing.Union[
-    typing.Literal[
-        "ADD_VISUALS_NARRATIONS_AND_CAPTIONS_TO_SCRIPT",
-        "ADD_VISUALS_AND_CAPTIONS_TO_VOICEOVER",
-        "ADD_NARRATION_TRANSITIONS_AND_CAPTIONS_TO_SLIDESHOW",
-        "GENERATE_SCENES_FROM_STORYBOARD",
-    ],
-    typing.Any,
+    typing.Literal["SCRIPT_TO_VIDEO", "VOICEOVER_TO_VIDEO", "SLIDESHOW_TO_VIDEO", "STORYBOARD_TO_VIDEO"], typing.Any
 ]

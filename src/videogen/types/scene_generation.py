@@ -3,7 +3,9 @@
 import typing
 
 import pydantic
+import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
+from ..core.serialization import FieldMetadata
 from .scene_generation_type import SceneGenerationType
 
 
@@ -17,10 +19,14 @@ class SceneGeneration(UniversalBaseModel):
     AI_IMAGE generates a still image. AI_VIDEO generates a video clip.
     """
 
-    style: typing.Optional[str] = pydantic.Field(default=None)
-    """
-    Either a style id from the AI styles reference (e.g. `WATERCOLOR`) or free-form text describing a custom style, appended to the scene prompt. No extra style is applied when omitted.
-    """
+    ai_style: typing_extensions.Annotated[
+        typing.Optional[str],
+        FieldMetadata(alias="aiStyle"),
+        pydantic.Field(
+            alias="aiStyle",
+            description="A free-form description of the look, appended to the scene prompt (e.g. `loose watercolor illustration with visible brushstrokes`). See the AI styles reference for example descriptions of the app's default styles. No extra style is applied when omitted.",
+        ),
+    ] = None
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

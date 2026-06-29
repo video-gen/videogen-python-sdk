@@ -45,7 +45,7 @@ class ToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
-        Generate an image from a text prompt, optionally guided by one or more reference images. When reference images are provided, the prompt describes the desired transformation.
+        Generate an image from a text prompt, optionally guided by one or more reference images. When reference images are provided, the prompt describes the desired transformation. VideoGen automatically routes each request to the most effective state-of-the-art image model for your prompt, reference images, and quality tier, so you don't pick a model.
 
         Parameters
         ----------
@@ -110,6 +110,7 @@ class ToolsClient:
         video_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         audio_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         generate_audio: typing.Optional[bool] = OMIT,
+        duration_seconds: typing.Optional[int] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
@@ -117,7 +118,7 @@ class ToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
-        Generate a video clip from a text prompt, optionally guided by reference images, videos, and audio. At least one of `prompt`, `imageFileIds`, `videoFileIds`, or `audioFileIds` must be provided.
+        Generate a single short video clip (up to 15 seconds) from a text prompt, optionally guided by reference images, videos, and audio. At least one of `prompt`, `imageFileIds`, `videoFileIds`, or `audioFileIds` must be provided. VideoGen automatically routes each request to the most effective state-of-the-art video model for your inputs and settings, so you don't pick a model. This endpoint returns one standalone clip. For longer, higher-quality, professionally edited videos with narration, captions, music, and multiple scenes, use a video workflow such as [Script to video](/workflows) (`POST /v1/workflows/script-to-video`) instead.
 
         Parameters
         ----------
@@ -138,6 +139,9 @@ class ToolsClient:
 
         generate_audio : typing.Optional[bool]
             When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
+
+        duration_seconds : typing.Optional[int]
+            Desired clip length in seconds. A whole number between 1 and 15. Defaults to 6 when omitted. This endpoint produces a single short clip. For longer, multi-scene, professionally edited videos, use a video workflow such as `POST /v1/workflows/script-to-video`.
 
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
@@ -176,6 +180,7 @@ class ToolsClient:
             video_file_ids=video_file_ids,
             audio_file_ids=audio_file_ids,
             generate_audio=generate_audio,
+            duration_seconds=duration_seconds,
             aspect_ratio=aspect_ratio,
             watermark_mode=watermark_mode,
             num_results=num_results,
@@ -267,13 +272,15 @@ class ToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
-        Generate a sound effect from a text description. Optionally control the duration and prompt influence.
+        Generate a sound effect from a text description. Optionally control the duration and prompt influence. VideoGen automatically routes each request to the most effective state-of-the-art sound effect model for your prompt and settings, so you don't pick a model.
 
         Parameters
         ----------
         prompt : str
+            A text description of the sound effect to generate.
 
         duration_seconds : typing.Optional[float]
+            Desired length of the sound effect in seconds, between 1 and 30. Defaults to about 10 seconds when omitted.
 
         prompt_influence : typing.Optional[float]
 
@@ -316,21 +323,17 @@ class ToolsClient:
         self,
         *,
         prompt: str,
-        duration_seconds: typing.Optional[float] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
-        Generate an instrumental music track from a text description. The returned track is approximately 30 seconds long.
+        Generate an instrumental music track from a text description. The returned track is approximately 30 seconds long. VideoGen automatically routes each request to the most effective state-of-the-art music model for your prompt, so you don't pick a model.
 
         Parameters
         ----------
         prompt : str
             A text description of the music to generate. Include genre, mood, instrumentation, and tempo for best results.
-
-        duration_seconds : typing.Optional[float]
-            Desired track length in seconds. Currently informational — output tracks are approximately 30 seconds regardless of this value.
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -359,7 +362,6 @@ class ToolsClient:
         """
         _response = self._raw_client.generate_music(
             prompt=prompt,
-            duration_seconds=duration_seconds,
             num_results=num_results,
             is_output_temporary=is_output_temporary,
             request_options=request_options,
@@ -838,7 +840,7 @@ class AsyncToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
-        Generate an image from a text prompt, optionally guided by one or more reference images. When reference images are provided, the prompt describes the desired transformation.
+        Generate an image from a text prompt, optionally guided by one or more reference images. When reference images are provided, the prompt describes the desired transformation. VideoGen automatically routes each request to the most effective state-of-the-art image model for your prompt, reference images, and quality tier, so you don't pick a model.
 
         Parameters
         ----------
@@ -911,6 +913,7 @@ class AsyncToolsClient:
         video_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         audio_file_ids: typing.Optional[typing.Sequence[str]] = OMIT,
         generate_audio: typing.Optional[bool] = OMIT,
+        duration_seconds: typing.Optional[int] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         watermark_mode: typing.Optional[WatermarkMode] = OMIT,
         num_results: typing.Optional[int] = OMIT,
@@ -918,7 +921,7 @@ class AsyncToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
-        Generate a video clip from a text prompt, optionally guided by reference images, videos, and audio. At least one of `prompt`, `imageFileIds`, `videoFileIds`, or `audioFileIds` must be provided.
+        Generate a single short video clip (up to 15 seconds) from a text prompt, optionally guided by reference images, videos, and audio. At least one of `prompt`, `imageFileIds`, `videoFileIds`, or `audioFileIds` must be provided. VideoGen automatically routes each request to the most effective state-of-the-art video model for your inputs and settings, so you don't pick a model. This endpoint returns one standalone clip. For longer, higher-quality, professionally edited videos with narration, captions, music, and multiple scenes, use a video workflow such as [Script to video](/workflows) (`POST /v1/workflows/script-to-video`) instead.
 
         Parameters
         ----------
@@ -939,6 +942,9 @@ class AsyncToolsClient:
 
         generate_audio : typing.Optional[bool]
             When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
+
+        duration_seconds : typing.Optional[int]
+            Desired clip length in seconds. A whole number between 1 and 15. Defaults to 6 when omitted. This endpoint produces a single short clip. For longer, multi-scene, professionally edited videos, use a video workflow such as `POST /v1/workflows/script-to-video`.
 
         aspect_ratio : typing.Optional[AspectRatio]
             Aspect ratio for the generated video. Defaults to 16:9 when omitted.
@@ -985,6 +991,7 @@ class AsyncToolsClient:
             video_file_ids=video_file_ids,
             audio_file_ids=audio_file_ids,
             generate_audio=generate_audio,
+            duration_seconds=duration_seconds,
             aspect_ratio=aspect_ratio,
             watermark_mode=watermark_mode,
             num_results=num_results,
@@ -1084,13 +1091,15 @@ class AsyncToolsClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
-        Generate a sound effect from a text description. Optionally control the duration and prompt influence.
+        Generate a sound effect from a text description. Optionally control the duration and prompt influence. VideoGen automatically routes each request to the most effective state-of-the-art sound effect model for your prompt and settings, so you don't pick a model.
 
         Parameters
         ----------
         prompt : str
+            A text description of the sound effect to generate.
 
         duration_seconds : typing.Optional[float]
+            Desired length of the sound effect in seconds, between 1 and 30. Defaults to about 10 seconds when omitted.
 
         prompt_influence : typing.Optional[float]
 
@@ -1141,21 +1150,17 @@ class AsyncToolsClient:
         self,
         *,
         prompt: str,
-        duration_seconds: typing.Optional[float] = OMIT,
         num_results: typing.Optional[int] = OMIT,
         is_output_temporary: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartToolExecutionResponse:
         """
-        Generate an instrumental music track from a text description. The returned track is approximately 30 seconds long.
+        Generate an instrumental music track from a text description. The returned track is approximately 30 seconds long. VideoGen automatically routes each request to the most effective state-of-the-art music model for your prompt, so you don't pick a model.
 
         Parameters
         ----------
         prompt : str
             A text description of the music to generate. Include genre, mood, instrumentation, and tempo for best results.
-
-        duration_seconds : typing.Optional[float]
-            Desired track length in seconds. Currently informational — output tracks are approximately 30 seconds regardless of this value.
 
         num_results : typing.Optional[int]
             Number of output results to generate. Defaults to 1.
@@ -1192,7 +1197,6 @@ class AsyncToolsClient:
         """
         _response = await self._raw_client.generate_music(
             prompt=prompt,
-            duration_seconds=duration_seconds,
             num_results=num_results,
             is_output_temporary=is_output_temporary,
             request_options=request_options,

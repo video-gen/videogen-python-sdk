@@ -24,7 +24,7 @@ class WorkflowVisualStyle(UniversalBaseModel):
         FieldMetadata(alias="aiStyle"),
         pydantic.Field(
             alias="aiStyle",
-            description="Only applies when type is AI_IMAGE. Either a style id from the AI styles reference (e.g. `PHOTO`) or free-form text describing a custom style. Required when type is AI_IMAGE.",
+            description="Only applies when type is AI_IMAGE. A free-form description of the look applied to every generated image (e.g. `vintage 1970s film photography, warm grain`). See the AI styles reference for example descriptions of the app's default styles. Required when type is AI_IMAGE.",
         ),
     ] = None
     entity_id: typing_extensions.Annotated[

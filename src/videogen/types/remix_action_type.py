@@ -3,6 +3,8 @@
 import typing
 
 RemixActionType = typing.Union[
-    typing.Literal["SET_BACKGROUND_MUSIC", "SET_LOGO", "ENABLE_CAPTIONS", "DISABLE_CAPTIONS", "VIDEO_EDITOR_AGENT"],
+    typing.Literal[
+        "SET_BACKGROUND_MUSIC", "SET_LOGO", "ENABLE_CAPTIONS", "DISABLE_CAPTIONS", "ADD_TRANSITIONS", "EDIT_WITH_AGENT"
+    ],
     typing.Any,
 ]

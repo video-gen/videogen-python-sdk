@@ -27,15 +27,15 @@ class RawResourcesClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[AvatarPresenterListResponse]:
         """
-        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint or to a script/slideshow workflow. Pass a reference `voiceId` to return presenters sorted by best match for that voice. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint or to a script/slideshow workflow. Pass a reference `voiceId` to return presenters sorted by best match for that voice. Cursor-paginated; see the [Pagination](/pagination) guide.
 
         Parameters
         ----------
         limit : typing.Optional[int]
-            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
 
         cursor : typing.Optional[str]
-            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         voice_id : typing.Optional[str]
             Optional reference voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). When provided, avatar presenters are returned sorted by best match for that voice (best first). Omit to return presenters in the default catalogue order.
@@ -86,15 +86,15 @@ class RawResourcesClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[TtsVoiceListResponse]:
         """
-        List available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint. Cursor-paginated; see the [Pagination](/pagination) guide.
 
         Parameters
         ----------
         limit : typing.Optional[int]
-            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
 
         cursor : typing.Optional[str]
-            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         include_deprecated_voices : typing.Optional[bool]
             When true, includes voices that are deprecated but still callable. Defaults to false.
@@ -150,15 +150,15 @@ class AsyncRawResourcesClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[AvatarPresenterListResponse]:
         """
-        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint or to a script/slideshow workflow. Pass a reference `voiceId` to return presenters sorted by best match for that voice. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint or to a script/slideshow workflow. Pass a reference `voiceId` to return presenters sorted by best match for that voice. Cursor-paginated; see the [Pagination](/pagination) guide.
 
         Parameters
         ----------
         limit : typing.Optional[int]
-            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
 
         cursor : typing.Optional[str]
-            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         voice_id : typing.Optional[str]
             Optional reference voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). When provided, avatar presenters are returned sorted by best match for that voice (best first). Omit to return presenters in the default catalogue order.
@@ -209,15 +209,15 @@ class AsyncRawResourcesClient:
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[TtsVoiceListResponse]:
         """
-        List available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        List available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint. Cursor-paginated; see the [Pagination](/pagination) guide.
 
         Parameters
         ----------
         limit : typing.Optional[int]
-            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
 
         cursor : typing.Optional[str]
-            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         include_deprecated_voices : typing.Optional[bool]
             When true, includes voices that are deprecated but still callable. Defaults to false.

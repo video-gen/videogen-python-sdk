@@ -1,6 +1,6 @@
 # Reference
 ## Workflows
-<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">add_visuals_narrations_and_captions_to_script</a>(...) -> StartWorkflowRunResponse</code></summary>
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">script_to_video</a>(...) -> StartWorkflowRunResponse</code></summary>
 <dl>
 <dd>
 
@@ -13,6 +13,82 @@
 <dd>
 
 Creates a project and generates a narrated video from a prompt or script. Returns immediately with a workflow run id; poll or subscribe to webhooks for completion.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi, WorkflowVisualStyle
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.script_to_video(
+    script="script",
+    visual_style=WorkflowVisualStyle(
+        type="STOCK",
+    ),
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ScriptToVideoRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">add_visuals_narrations_and_captions_to_script</a>(...) -> StartWorkflowRunResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Legacy alias for `POST /v1/workflows/script-to-video`. Use that endpoint instead.
 </dd>
 </dl>
 </dd>
@@ -56,7 +132,7 @@ client.workflows.add_visuals_narrations_and_captions_to_script(
 <dl>
 <dd>
 
-**script:** `str` — The narration script, used verbatim. This exact text is narrated and turned into a video — it is not rewritten or expanded.
+**request:** `ScriptToVideoRequest` 
     
 </dd>
 </dl>
@@ -64,87 +140,75 @@ client.workflows.add_visuals_narrations_and_captions_to_script(
 <dl>
 <dd>
 
-**visual_style:** `WorkflowVisualStyle` 
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
 </dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">voiceover_to_video</a>(...) -> StartWorkflowRunResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
 
 <dl>
 <dd>
 
-**aspect_ratio:** `typing.Optional[AspectRatio]` 
-    
+<dl>
+<dd>
+
+Creates a project from an uploaded voiceover file and generates a video with matching b-roll. Upload the voiceover via the files API first.
 </dd>
 </dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
 
 <dl>
 <dd>
 
-**visual_pacing:** `typing.Optional[VisualPacing]` 
-    
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi, WorkflowVisualStyle
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.voiceover_to_video(
+    file_id="fileId",
+    visual_style=WorkflowVisualStyle(
+        type="STOCK",
+    ),
+)
+
+```
 </dd>
 </dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
 
 <dl>
 <dd>
 
-**language:** `typing.Optional[str]` — Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
-    
-</dd>
-</dl>
-
 <dl>
 <dd>
 
-**voice_id:** `typing.Optional[str]` — Voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). A default voice is used when omitted. Any voice may be used here, including voices where `supportsDirectToolExecution` is false.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**voice_speed:** `typing.Optional[float]` — Speech rate multiplier. Defaults to the voice's default speed.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**avatar_presenter_id:** `typing.Optional[str]` — Optional avatar presenter id from `GET /v1/resources/avatar-presenters` (e.g. `vg_pres_...`). When set, the narration is delivered by a talking-head presenter avatar. Pass your `voiceId` to that endpoint to list presenters sorted by best match for the voice. Omit for a standard voiceover with no presenter.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**featured_b_roll_file_ids:** `typing.Optional[typing.List[str]]` — Optional file ids of images or videos to feature as b-roll (e.g. `["vg_file_..."]`). Upload files first via `POST /v1/files/upload`. Only image and video files are accepted.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**caption_style:** `typing.Optional[WorkflowCaptionStyle]` — Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**logo_file_id:** `typing.Optional[str]` — Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**remix_actions:** `typing.Optional[typing.List[RemixAction]]` — Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
+**request:** `VoiceoverToVideoRequest` 
     
 </dd>
 </dl>
@@ -176,7 +240,7 @@ client.workflows.add_visuals_narrations_and_captions_to_script(
 <dl>
 <dd>
 
-Creates a project from an uploaded voiceover file and generates a video with matching b-roll. Upload the voiceover via the files API first.
+Legacy alias for `POST /v1/workflows/voiceover-to-video`. Use that endpoint instead.
 </dd>
 </dl>
 </dd>
@@ -220,7 +284,7 @@ client.workflows.add_visuals_and_captions_to_voiceover(
 <dl>
 <dd>
 
-**file_id:** `str` — Opaque file id of an uploaded voiceover audio file (e.g. `vg_file_...`). Upload the file first via `POST /v1/files/upload`.
+**request:** `VoiceoverToVideoRequest` 
     
 </dd>
 </dl>
@@ -228,55 +292,72 @@ client.workflows.add_visuals_and_captions_to_voiceover(
 <dl>
 <dd>
 
-**visual_style:** `WorkflowVisualStyle` 
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
 </dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">slideshow_to_video</a>(...) -> StartWorkflowRunResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
 
 <dl>
 <dd>
 
-**aspect_ratio:** `typing.Optional[AspectRatio]` 
-    
+<dl>
+<dd>
+
+Creates a project from an uploaded PDF or PowerPoint file and generates an AI-narrated video walking through each slide. Upload the file via `POST /v1/files/upload` first.
 </dd>
 </dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
 
 <dl>
 <dd>
 
-**visual_pacing:** `typing.Optional[VisualPacing]` 
-    
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.slideshow_to_video(
+    file_id="fileId",
+)
+
+```
 </dd>
 </dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
 
 <dl>
 <dd>
 
-**language:** `typing.Optional[str]` — Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
-    
-</dd>
-</dl>
-
 <dl>
 <dd>
 
-**caption_style:** `typing.Optional[WorkflowCaptionStyle]` — Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**logo_file_id:** `typing.Optional[str]` — Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**remix_actions:** `typing.Optional[typing.List[RemixAction]]` — Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
+**request:** `SlideshowToVideoRequest` 
     
 </dd>
 </dl>
@@ -308,7 +389,7 @@ client.workflows.add_visuals_and_captions_to_voiceover(
 <dl>
 <dd>
 
-Creates a project from an uploaded PDF or PowerPoint file and generates an AI-narrated video walking through each slide. Upload the file via `POST /v1/files/upload` first.
+Legacy alias for `POST /v1/workflows/slideshow-to-video`. Use that endpoint instead.
 </dd>
 </dl>
 </dd>
@@ -349,7 +430,7 @@ client.workflows.add_narration_transitions_and_captions_to_slideshow(
 <dl>
 <dd>
 
-**file_id:** `str` — Opaque file id of an uploaded PDF or PowerPoint file (e.g. `vg_file_...`). Upload the file first via `POST /v1/files/upload`.
+**request:** `SlideshowToVideoRequest` 
     
 </dd>
 </dl>
@@ -357,71 +438,76 @@ client.workflows.add_narration_transitions_and_captions_to_slideshow(
 <dl>
 <dd>
 
-**slide_scripts:** `typing.Optional[typing.List[str]]` — Optional per-slide narration, in slide order, applied by index: each slide uses its matching entry, and an empty string makes that slide silent. If you provide fewer entries than slides, the remaining slides are silent; extra entries are ignored. Omit this field entirely to narrate each slide from its speaker notes in the uploaded file. To guarantee no narration on any slide, pass an empty array.
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
 </dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">storyboard_to_video</a>(...) -> StartWorkflowRunResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
 
 <dl>
 <dd>
 
-**aspect_ratio:** `typing.Optional[AspectRatio]` 
-    
+<dl>
+<dd>
+
+Creates a project from an ordered list of scenes and generates one section per scene. Each scene is generated from its prompt as either a still image or a video clip; the scenes are then assembled into a single video. Returns immediately with a workflow run id; poll or subscribe to webhooks for completion.
 </dd>
 </dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
 
 <dl>
 <dd>
 
-**language:** `typing.Optional[str]` — Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
-    
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi, GenerateStoryboardScene
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.storyboard_to_video(
+    scenes=[
+        GenerateStoryboardScene(
+            prompt="prompt",
+        )
+    ],
+)
+
+```
 </dd>
 </dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
 
 <dl>
 <dd>
 
-**voice_id:** `typing.Optional[str]` — Voice id from `GET /v1/resources/tts-voices` (e.g. `vg_voic_...`). A default voice is used when omitted. Any voice may be used here, including voices where `supportsDirectToolExecution` is false.
-    
-</dd>
-</dl>
-
 <dl>
 <dd>
 
-**voice_speed:** `typing.Optional[float]` — Speech rate multiplier. Defaults to the voice's default speed.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**avatar_presenter_id:** `typing.Optional[str]` — Optional avatar presenter id from `GET /v1/resources/avatar-presenters` (e.g. `vg_pres_...`). When set, the narration is delivered by a talking-head presenter avatar. Pass your `voiceId` to that endpoint to list presenters sorted by best match for the voice. Omit for a standard voiceover with no presenter.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**caption_style:** `typing.Optional[WorkflowCaptionStyle]` — Caption styling. Omit to use the default style with captions shown. Pass an object to override individual style fields (any omitted field uses the default). Pass `null` to hide captions entirely.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**logo_file_id:** `typing.Optional[str]` — Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**remix_actions:** `typing.Optional[typing.List[RemixAction]]` — Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Use this for background music, logo overlays, or caption changes beyond `captionStyle`.
+**request:** `StoryboardToVideoRequest` 
     
 </dd>
 </dl>
@@ -453,7 +539,7 @@ client.workflows.add_narration_transitions_and_captions_to_slideshow(
 <dl>
 <dd>
 
-Creates a project from an ordered list of scenes and generates one section per scene. Each scene is generated from its prompt as either a still image or a video clip; the scenes are then assembled into a single video. Returns immediately with a workflow run id; poll or subscribe to webhooks for completion.
+Legacy alias for `POST /v1/workflows/storyboard-to-video`. Use that endpoint instead.
 </dd>
 </dl>
 </dd>
@@ -498,39 +584,7 @@ client.workflows.generate_scenes_from_storyboard(
 <dl>
 <dd>
 
-**scenes:** `typing.List[GenerateStoryboardScene]` — Ordered list of scenes. Each scene becomes one section in the final video, in this order.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**default_generation:** `typing.Optional[SceneGeneration]` — Default generation applied to scenes that don't set their own `generation`. Defaults to AI_IMAGE with no extra style.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**default_duration_seconds:** `typing.Optional[int]` — Default per-scene duration in seconds for scenes that don't set their own `durationSeconds`. Defaults to 5. For AI_VIDEO scenes this must be a whole number between 1 and 15.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**quality:** `typing.Optional[GenerateScenesFromStoryboardRequestQuality]` — Generation quality tier for every scene. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Defaults to STANDARD. LOW is not supported for AI_VIDEO scenes: the request is rejected if any scene is generated as a video at LOW quality.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**aspect_ratio:** `typing.Optional[AspectRatio]` 
+**request:** `StoryboardToVideoRequest` 
     
 </dd>
 </dl>
@@ -681,7 +735,7 @@ client.workflows.cancel_workflow_run(
 <dl>
 <dd>
 
-Returns API-created projects, most recently updated first. Dashboard projects are excluded. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all API-created projects for the team are returned. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+Returns projects, most recently updated first. By default only API-created projects are included; pass `includeUiProjects=true` to also include dashboard-created projects. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all matching projects for the team are returned. Cursor-paginated; see the [Pagination](/pagination) guide.
 </dd>
 </dl>
 </dd>
@@ -720,7 +774,7 @@ client.projects.list_projects()
 <dl>
 <dd>
 
-**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -728,7 +782,7 @@ client.projects.list_projects()
 <dl>
 <dd>
 
-**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -737,6 +791,14 @@ client.projects.list_projects()
 <dd>
 
 **self_only:** `typing.Optional[bool]` — When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**include_ui_projects:** `typing.Optional[bool]` — When true, includes dashboard-created projects in addition to API-created projects. When false (default), returns only API-created projects.
     
 </dd>
 </dl>
@@ -1170,7 +1232,7 @@ client.projects.list_project_remix_actions(
 <dl>
 <dd>
 
-Generate an image from a text prompt, optionally guided by one or more reference images. When reference images are provided, the prompt describes the desired transformation.
+Generate an image from a text prompt, optionally guided by one or more reference images. When reference images are provided, the prompt describes the desired transformation. VideoGen automatically routes each request to the most effective state-of-the-art image model for your prompt, reference images, and quality tier, so you don't pick a model.
 </dd>
 </dl>
 </dd>
@@ -1292,7 +1354,7 @@ client.tools.generate_image(
 <dl>
 <dd>
 
-Generate a video clip from a text prompt, optionally guided by reference images, videos, and audio. At least one of `prompt`, `imageFileIds`, `videoFileIds`, or `audioFileIds` must be provided.
+Generate a single short video clip (up to 15 seconds) from a text prompt, optionally guided by reference images, videos, and audio. At least one of `prompt`, `imageFileIds`, `videoFileIds`, or `audioFileIds` must be provided. VideoGen automatically routes each request to the most effective state-of-the-art video model for your inputs and settings, so you don't pick a model. This endpoint returns one standalone clip. For longer, higher-quality, professionally edited videos with narration, captions, music, and multiple scenes, use a video workflow such as [Script to video](/workflows) (`POST /v1/workflows/script-to-video`) instead.
 </dd>
 </dl>
 </dd>
@@ -1374,6 +1436,14 @@ client.tools.generate_video_clip(
 <dd>
 
 **generate_audio:** `typing.Optional[bool]` — When true, the generated video is guaranteed to include audio. When false, audio may still be present. Defaults to false.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**duration_seconds:** `typing.Optional[int]` — Desired clip length in seconds. A whole number between 1 and 15. Defaults to 6 when omitted. This endpoint produces a single short clip. For longer, multi-scene, professionally edited videos, use a video workflow such as `POST /v1/workflows/script-to-video`.
     
 </dd>
 </dl>
@@ -1566,7 +1636,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-Generate a sound effect from a text description. Optionally control the duration and prompt influence.
+Generate a sound effect from a text description. Optionally control the duration and prompt influence. VideoGen automatically routes each request to the most effective state-of-the-art sound effect model for your prompt and settings, so you don't pick a model.
 </dd>
 </dl>
 </dd>
@@ -1607,7 +1677,7 @@ client.tools.generate_sound_effect(
 <dl>
 <dd>
 
-**prompt:** `str` 
+**prompt:** `str` — A text description of the sound effect to generate.
     
 </dd>
 </dl>
@@ -1615,7 +1685,7 @@ client.tools.generate_sound_effect(
 <dl>
 <dd>
 
-**duration_seconds:** `typing.Optional[float]` 
+**duration_seconds:** `typing.Optional[float]` — Desired length of the sound effect in seconds, between 1 and 30. Defaults to about 10 seconds when omitted.
     
 </dd>
 </dl>
@@ -1671,7 +1741,7 @@ client.tools.generate_sound_effect(
 <dl>
 <dd>
 
-Generate an instrumental music track from a text description. The returned track is approximately 30 seconds long.
+Generate an instrumental music track from a text description. The returned track is approximately 30 seconds long. VideoGen automatically routes each request to the most effective state-of-the-art music model for your prompt, so you don't pick a model.
 </dd>
 </dl>
 </dd>
@@ -1713,14 +1783,6 @@ client.tools.generate_music(
 <dd>
 
 **prompt:** `str` — A text description of the music to generate. Include genre, mood, instrumentation, and tempo for best results.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**duration_seconds:** `typing.Optional[float]` — Desired track length in seconds. Currently informational — output tracks are approximately 30 seconds regardless of this value.
     
 </dd>
 </dl>
@@ -2459,7 +2521,7 @@ client.tools.get_tool_execution_info(
 <dl>
 <dd>
 
-List files in your account, including generated assets and uploads. Files are returned most recently updated first. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+List files in your account, including generated assets and uploads. Files are returned most recently updated first. Cursor-paginated; see the [Pagination](/pagination) guide.
 </dd>
 </dl>
 </dd>
@@ -2498,7 +2560,7 @@ client.files.get_files()
 <dl>
 <dd>
 
-**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -2506,7 +2568,7 @@ client.files.get_files()
 <dl>
 <dd>
 
-**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -3082,7 +3144,7 @@ client.files.disable_public_preview(
 <dl>
 <dd>
 
-List the actors and visual styles available to your team, most recently updated first. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+List the actors and visual styles available to your team, most recently updated first. Cursor-paginated; see the [Pagination](/pagination) guide.
 </dd>
 </dl>
 </dd>
@@ -3129,7 +3191,7 @@ client.entities.list_entities()
 <dl>
 <dd>
 
-**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -3137,7 +3199,7 @@ client.entities.list_entities()
 <dl>
 <dd>
 
-**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -3781,7 +3843,7 @@ client.text.generate_text(
 <dl>
 <dd>
 
-List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint or to a script/slideshow workflow. Pass a reference `voiceId` to return presenters sorted by best match for that voice. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+List available avatar presenters. Pass an `avatarPresenterId` from the response to the avatar video endpoint or to a script/slideshow workflow. Pass a reference `voiceId` to return presenters sorted by best match for that voice. Cursor-paginated; see the [Pagination](/pagination) guide.
 </dd>
 </dl>
 </dd>
@@ -3820,7 +3882,7 @@ client.resources.list_avatar_presenters()
 <dl>
 <dd>
 
-**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -3828,7 +3890,7 @@ client.resources.list_avatar_presenters()
 <dl>
 <dd>
 
-**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -3868,7 +3930,7 @@ client.resources.list_avatar_presenters()
 <dl>
 <dd>
 
-List available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+List available text-to-speech voices. Pass a `voiceId` from the response to the text-to-speech endpoint. Cursor-paginated; see the [Pagination](/pagination) guide.
 </dd>
 </dl>
 </dd>
@@ -3907,7 +3969,7 @@ client.resources.list_tts_voices()
 <dl>
 <dd>
 
-**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -3915,7 +3977,7 @@ client.resources.list_tts_voices()
 <dl>
 <dd>
 
-**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -3956,7 +4018,7 @@ client.resources.list_tts_voices()
 <dl>
 <dd>
 
-List configured webhook endpoints for your account. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+List configured webhook endpoints for your account. Cursor-paginated; see the [Pagination](/pagination) guide.
 </dd>
 </dl>
 </dd>
@@ -3995,7 +4057,7 @@ client.webhooks.list_webhook_endpoints()
 <dl>
 <dd>
 
-**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200.
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -4003,7 +4065,7 @@ client.webhooks.list_webhook_endpoints()
 <dl>
 <dd>
 
-**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
     
 </dd>
 </dl>
@@ -4035,7 +4097,7 @@ client.webhooks.list_webhook_endpoints()
 <dl>
 <dd>
 
-Register a new webhook endpoint to receive `tool_execution.*` and `file.*` events. The signing secret is only returned in this response. Store it securely.
+Register a new webhook endpoint to receive `tool_execution.*`, `workflow_run.*`, and `file.*` events. The signing secret is only returned in this response. Store it securely.
 </dd>
 </dl>
 </dd>

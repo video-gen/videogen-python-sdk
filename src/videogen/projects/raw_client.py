@@ -35,21 +35,25 @@ class RawProjectsClient:
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         self_only: typing.Optional[bool] = None,
+        include_ui_projects: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ListProjectsResponse]:
         """
-        Returns API-created projects, most recently updated first. Dashboard projects are excluded. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all API-created projects for the team are returned. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        Returns projects, most recently updated first. By default only API-created projects are included; pass `includeUiProjects=true` to also include dashboard-created projects. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all matching projects for the team are returned. Cursor-paginated; see the [Pagination](/pagination) guide.
 
         Parameters
         ----------
         limit : typing.Optional[int]
-            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
 
         cursor : typing.Optional[str]
-            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         self_only : typing.Optional[bool]
             When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
+
+        include_ui_projects : typing.Optional[bool]
+            When true, includes dashboard-created projects in addition to API-created projects. When false (default), returns only API-created projects.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -57,7 +61,7 @@ class RawProjectsClient:
         Returns
         -------
         HttpResponse[ListProjectsResponse]
-            List of API-created projects.
+            Paginated list of projects.
         """
         _response = self._client_wrapper.httpx_client.request(
             "v1/projects",
@@ -66,6 +70,7 @@ class RawProjectsClient:
                 "limit": limit,
                 "cursor": cursor,
                 "selfOnly": self_only,
+                "includeUiProjects": include_ui_projects,
             },
             request_options=request_options,
         )
@@ -351,21 +356,25 @@ class AsyncRawProjectsClient:
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         self_only: typing.Optional[bool] = None,
+        include_ui_projects: typing.Optional[bool] = None,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ListProjectsResponse]:
         """
-        Returns API-created projects, most recently updated first. Dashboard projects are excluded. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all API-created projects for the team are returned. Paginated; pass `nextCursor` from the previous response as `cursor` to fetch the next page.
+        Returns projects, most recently updated first. By default only API-created projects are included; pass `includeUiProjects=true` to also include dashboard-created projects. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all matching projects for the team are returned. Cursor-paginated; see the [Pagination](/pagination) guide.
 
         Parameters
         ----------
         limit : typing.Optional[int]
-            Maximum number of items to return in the page. Defaults to 50; capped at 200.
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
 
         cursor : typing.Optional[str]
-            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified.
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         self_only : typing.Optional[bool]
             When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
+
+        include_ui_projects : typing.Optional[bool]
+            When true, includes dashboard-created projects in addition to API-created projects. When false (default), returns only API-created projects.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -373,7 +382,7 @@ class AsyncRawProjectsClient:
         Returns
         -------
         AsyncHttpResponse[ListProjectsResponse]
-            List of API-created projects.
+            Paginated list of projects.
         """
         _response = await self._client_wrapper.httpx_client.request(
             "v1/projects",
@@ -382,6 +391,7 @@ class AsyncRawProjectsClient:
                 "limit": limit,
                 "cursor": cursor,
                 "selfOnly": self_only,
+                "includeUiProjects": include_ui_projects,
             },
             request_options=request_options,
         )
