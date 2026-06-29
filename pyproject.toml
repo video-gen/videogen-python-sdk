@@ -57,6 +57,7 @@ httpx-aiohttp = { version = "0.1.8", optional = true, python = ">=3.9"}
 pydantic = ">= 1.9.2"
 pydantic-core = ">=2.18.2,<2.44.0"
 typing_extensions = ">= 4.0.0"
+standardwebhooks = ">=1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "==1.13.0"
