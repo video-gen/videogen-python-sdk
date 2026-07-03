@@ -15,9 +15,11 @@ from ..types.aspect_ratio import AspectRatio
 from ..types.generate_storyboard_scene import GenerateStoryboardScene
 from ..types.remix_action import RemixAction
 from ..types.scene_generation import SceneGeneration
+from ..types.script_to_video_request_quality import ScriptToVideoRequestQuality
 from ..types.start_workflow_run_response import StartWorkflowRunResponse
 from ..types.storyboard_to_video_request_quality import StoryboardToVideoRequestQuality
 from ..types.visual_pacing import VisualPacing
+from ..types.voiceover_to_video_request_quality import VoiceoverToVideoRequestQuality
 from ..types.workflow_caption_style import WorkflowCaptionStyle
 from ..types.workflow_run import WorkflowRun
 from ..types.workflow_visual_style import WorkflowVisualStyle
@@ -38,6 +40,7 @@ class RawWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[ScriptToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         voice_id: typing.Optional[str] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -60,6 +63,9 @@ class RawWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[ScriptToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -102,6 +108,7 @@ class RawWorkflowsClient:
                     object_=visual_style, annotation=WorkflowVisualStyle, direction="write"
                 ),
                 "visualPacing": visual_pacing,
+                "quality": quality,
                 "language": language,
                 "voiceId": voice_id,
                 "voiceSpeed": voice_speed,
@@ -111,9 +118,6 @@ class RawWorkflowsClient:
                 "remixActions": convert_and_respect_annotation_metadata(
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -144,6 +148,7 @@ class RawWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[ScriptToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         voice_id: typing.Optional[str] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -166,6 +171,9 @@ class RawWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[ScriptToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -208,6 +216,7 @@ class RawWorkflowsClient:
                     object_=visual_style, annotation=WorkflowVisualStyle, direction="write"
                 ),
                 "visualPacing": visual_pacing,
+                "quality": quality,
                 "language": language,
                 "voiceId": voice_id,
                 "voiceSpeed": voice_speed,
@@ -217,9 +226,6 @@ class RawWorkflowsClient:
                 "remixActions": convert_and_respect_annotation_metadata(
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -250,6 +256,7 @@ class RawWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[VoiceoverToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
         logo_file_id: typing.Optional[str] = OMIT,
@@ -270,6 +277,9 @@ class RawWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[VoiceoverToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -306,6 +316,7 @@ class RawWorkflowsClient:
                     object_=visual_style, annotation=WorkflowVisualStyle, direction="write"
                 ),
                 "visualPacing": visual_pacing,
+                "quality": quality,
                 "language": language,
                 "captionStyle": convert_and_respect_annotation_metadata(
                     object_=caption_style, annotation=typing.Optional[WorkflowCaptionStyle], direction="write"
@@ -315,9 +326,6 @@ class RawWorkflowsClient:
                 "remixActions": convert_and_respect_annotation_metadata(
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -348,6 +356,7 @@ class RawWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[VoiceoverToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
         logo_file_id: typing.Optional[str] = OMIT,
@@ -368,6 +377,9 @@ class RawWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[VoiceoverToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -404,6 +416,7 @@ class RawWorkflowsClient:
                     object_=visual_style, annotation=WorkflowVisualStyle, direction="write"
                 ),
                 "visualPacing": visual_pacing,
+                "quality": quality,
                 "language": language,
                 "captionStyle": convert_and_respect_annotation_metadata(
                     object_=caption_style, annotation=typing.Optional[WorkflowCaptionStyle], direction="write"
@@ -413,9 +426,6 @@ class RawWorkflowsClient:
                 "remixActions": convert_and_respect_annotation_metadata(
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -517,9 +527,6 @@ class RawWorkflowsClient:
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -620,9 +627,6 @@ class RawWorkflowsClient:
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -703,9 +707,6 @@ class RawWorkflowsClient:
                 ),
                 "workflowAgentContext": workflow_agent_context,
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -785,9 +786,6 @@ class RawWorkflowsClient:
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
                 "workflowAgentContext": workflow_agent_context,
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -905,6 +903,7 @@ class AsyncRawWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[ScriptToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         voice_id: typing.Optional[str] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -927,6 +926,9 @@ class AsyncRawWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[ScriptToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -969,6 +971,7 @@ class AsyncRawWorkflowsClient:
                     object_=visual_style, annotation=WorkflowVisualStyle, direction="write"
                 ),
                 "visualPacing": visual_pacing,
+                "quality": quality,
                 "language": language,
                 "voiceId": voice_id,
                 "voiceSpeed": voice_speed,
@@ -978,9 +981,6 @@ class AsyncRawWorkflowsClient:
                 "remixActions": convert_and_respect_annotation_metadata(
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -1011,6 +1011,7 @@ class AsyncRawWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[ScriptToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         voice_id: typing.Optional[str] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -1033,6 +1034,9 @@ class AsyncRawWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[ScriptToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -1075,6 +1079,7 @@ class AsyncRawWorkflowsClient:
                     object_=visual_style, annotation=WorkflowVisualStyle, direction="write"
                 ),
                 "visualPacing": visual_pacing,
+                "quality": quality,
                 "language": language,
                 "voiceId": voice_id,
                 "voiceSpeed": voice_speed,
@@ -1084,9 +1089,6 @@ class AsyncRawWorkflowsClient:
                 "remixActions": convert_and_respect_annotation_metadata(
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -1117,6 +1119,7 @@ class AsyncRawWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[VoiceoverToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
         logo_file_id: typing.Optional[str] = OMIT,
@@ -1137,6 +1140,9 @@ class AsyncRawWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[VoiceoverToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -1173,6 +1179,7 @@ class AsyncRawWorkflowsClient:
                     object_=visual_style, annotation=WorkflowVisualStyle, direction="write"
                 ),
                 "visualPacing": visual_pacing,
+                "quality": quality,
                 "language": language,
                 "captionStyle": convert_and_respect_annotation_metadata(
                     object_=caption_style, annotation=typing.Optional[WorkflowCaptionStyle], direction="write"
@@ -1182,9 +1189,6 @@ class AsyncRawWorkflowsClient:
                 "remixActions": convert_and_respect_annotation_metadata(
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -1215,6 +1219,7 @@ class AsyncRawWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[VoiceoverToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
         logo_file_id: typing.Optional[str] = OMIT,
@@ -1235,6 +1240,9 @@ class AsyncRawWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[VoiceoverToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -1271,6 +1279,7 @@ class AsyncRawWorkflowsClient:
                     object_=visual_style, annotation=WorkflowVisualStyle, direction="write"
                 ),
                 "visualPacing": visual_pacing,
+                "quality": quality,
                 "language": language,
                 "captionStyle": convert_and_respect_annotation_metadata(
                     object_=caption_style, annotation=typing.Optional[WorkflowCaptionStyle], direction="write"
@@ -1280,9 +1289,6 @@ class AsyncRawWorkflowsClient:
                 "remixActions": convert_and_respect_annotation_metadata(
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -1384,9 +1390,6 @@ class AsyncRawWorkflowsClient:
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -1487,9 +1490,6 @@ class AsyncRawWorkflowsClient:
                     object_=remix_actions, annotation=typing.Sequence[RemixAction], direction="write"
                 ),
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -1570,9 +1570,6 @@ class AsyncRawWorkflowsClient:
                 ),
                 "workflowAgentContext": workflow_agent_context,
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -1652,9 +1649,6 @@ class AsyncRawWorkflowsClient:
                     object_=aspect_ratio, annotation=AspectRatio, direction="write"
                 ),
                 "workflowAgentContext": workflow_agent_context,
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,

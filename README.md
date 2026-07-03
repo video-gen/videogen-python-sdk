@@ -41,17 +41,38 @@ A full reference for this library is available [here](https://github.com/video-g
 Instantiate and use the client with the following:
 
 ```python
-from videogen import VideoGenApi, WorkflowVisualStyle
+from videogen import VideoGenApi, WorkflowVisualStyle, RemixAction_EnableCaptions, WorkflowCaptionStyle, WorkflowRgbColor, RemixAction_SetBackgroundMusic
 
 client = VideoGenApi(
     token="<token>",
 )
 
 client.workflows.script_to_video(
-    script="script",
+    script="Staying hydrated keeps your body and mind running at their best. Drinking enough water boosts your energy, focus, and mood. Keep a water bottle nearby and sip throughout the day.",
     visual_style=WorkflowVisualStyle(
-        type="STOCK",
+        type="AI_IMAGE",
+        ai_style="loose watercolor illustration with visible brushstrokes and soft color bleeds",
     ),
+    visual_pacing="MEDIUM",
+    quality="HIGH",
+    remix_actions=[
+        RemixAction_EnableCaptions(
+            caption_style=WorkflowCaptionStyle(
+                font_name="Inter",
+                font_weight=700,
+                text_color=WorkflowRgbColor(
+                    red=255,
+                    green=255,
+                    blue=255,
+                ),
+                vertical_alignment="BOTTOM",
+            ),
+        ),
+        RemixAction_SetBackgroundMusic(
+            file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
+            volume=0.25,
+        )
+    ],
 )
 ```
 
@@ -84,10 +105,31 @@ client = AsyncVideoGenApi(
 
 async def main() -> None:
     await client.workflows.script_to_video(
-        script="script",
+        script="Staying hydrated keeps your body and mind running at their best. Drinking enough water boosts your energy, focus, and mood. Keep a water bottle nearby and sip throughout the day.",
         visual_style=WorkflowVisualStyle(
-            type="STOCK",
+            type="AI_IMAGE",
+            ai_style="loose watercolor illustration with visible brushstrokes and soft color bleeds",
         ),
+        visual_pacing="MEDIUM",
+        quality="HIGH",
+        remix_actions=[
+            RemixAction_EnableCaptions(
+                caption_style=WorkflowCaptionStyle(
+                    font_name="Inter",
+                    font_weight=700,
+                    text_color=WorkflowRgbColor(
+                        red=255,
+                        green=255,
+                        blue=255,
+                    ),
+                    vertical_alignment="BOTTOM",
+                ),
+            ),
+            RemixAction_SetBackgroundMusic(
+                file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
+                volume=0.25,
+            )
+        ],
     )
 
 
@@ -132,11 +174,21 @@ The SDK is instrumented with automatic retries with exponential backoff. A reque
 as the request is deemed retryable and the number of retry attempts has not grown larger than the configured
 retry limit (default: 2).
 
-A request is deemed retryable when any of the following HTTP status codes is returned:
+Which status codes are retried depends on the `retryStatusCodes` generator configuration:
 
+**`legacy`** (current default): retries on
 - [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
+- [409](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409) (Conflict)
 - [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
-- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) (Internal Server Errors)
+- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) (All server errors, including 500)
+
+**`recommended`**: retries on
+- [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
+- [409](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409) (Conflict)
+- [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
+- [502](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502) (Bad Gateway)
+- [503](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) (Service Unavailable)
+- [504](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) (Gateway Timeout)
 
 Use the `max_retries` request option to configure this behavior.
 

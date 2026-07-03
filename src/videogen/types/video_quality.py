@@ -2,4 +2,4 @@
 
 import typing
 
-VideoModelMode = typing.Union[typing.Literal["STANDARD", "HIGH"], typing.Any]
+VideoQuality = typing.Union[typing.Literal["STANDARD", "HIGH"], typing.Any]

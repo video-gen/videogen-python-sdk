@@ -32,7 +32,7 @@ if typing.TYPE_CHECKING:
     from .generate_text_response import GenerateTextResponse
     from .get_files_response import GetFilesResponse
     from .image_asset_request import ImageAssetRequest
-    from .image_model_mode import ImageModelMode
+    from .image_quality import ImageQuality
     from .list_entities_response import ListEntitiesResponse
     from .list_projects_response import ListProjectsResponse
     from .list_remix_actions_response import ListRemixActionsResponse
@@ -44,17 +44,23 @@ if typing.TYPE_CHECKING:
     from .remix_action import (
         RemixAction,
         RemixAction_AddTransitions,
+        RemixAction_CleanUpTranscript,
+        RemixAction_ConvertImagesToVideos,
         RemixAction_DisableCaptions,
         RemixAction_EditWithAgent,
         RemixAction_EnableCaptions,
+        RemixAction_ResizeProject,
         RemixAction_SetBackgroundMusic,
         RemixAction_SetLogo,
     )
     from .remix_action_add_transitions import RemixActionAddTransitions
+    from .remix_action_clean_up_transcript import RemixActionCleanUpTranscript
+    from .remix_action_convert_images_to_videos import RemixActionConvertImagesToVideos
     from .remix_action_disable_captions import RemixActionDisableCaptions
     from .remix_action_edit_with_agent import RemixActionEditWithAgent
     from .remix_action_edit_with_agent_mode import RemixActionEditWithAgentMode
     from .remix_action_enable_captions import RemixActionEnableCaptions
+    from .remix_action_resize_project import RemixActionResizeProject
     from .remix_action_run import RemixActionRun
     from .remix_action_set_background_music import RemixActionSetBackgroundMusic
     from .remix_action_set_logo import RemixActionSetLogo
@@ -66,6 +72,7 @@ if typing.TYPE_CHECKING:
     from .scene_generation import SceneGeneration
     from .scene_generation_type import SceneGenerationType
     from .script_to_video_request import ScriptToVideoRequest
+    from .script_to_video_request_quality import ScriptToVideoRequestQuality
     from .search_files_response import SearchFilesResponse
     from .search_files_result import SearchFilesResult
     from .slideshow_to_video_request import SlideshowToVideoRequest
@@ -84,9 +91,10 @@ if typing.TYPE_CHECKING:
     from .tts_voice_display_gender import TtsVoiceDisplayGender
     from .tts_voice_list_response import TtsVoiceListResponse
     from .video_asset_request import VideoAssetRequest
-    from .video_model_mode import VideoModelMode
+    from .video_quality import VideoQuality
     from .visual_pacing import VisualPacing
     from .voiceover_to_video_request import VoiceoverToVideoRequest
+    from .voiceover_to_video_request_quality import VoiceoverToVideoRequestQuality
     from .watermark_mode import WatermarkMode
     from .webhook_endpoint import WebhookEndpoint
     from .webhook_endpoint_list_response import WebhookEndpointListResponse
@@ -131,7 +139,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "GenerateTextResponse": ".generate_text_response",
     "GetFilesResponse": ".get_files_response",
     "ImageAssetRequest": ".image_asset_request",
-    "ImageModelMode": ".image_model_mode",
+    "ImageQuality": ".image_quality",
     "ListEntitiesResponse": ".list_entities_response",
     "ListProjectsResponse": ".list_projects_response",
     "ListRemixActionsResponse": ".list_remix_actions_response",
@@ -142,10 +150,13 @@ _dynamic_imports: typing.Dict[str, str] = {
     "PronunciationReplacement": ".pronunciation_replacement",
     "RemixAction": ".remix_action",
     "RemixActionAddTransitions": ".remix_action_add_transitions",
+    "RemixActionCleanUpTranscript": ".remix_action_clean_up_transcript",
+    "RemixActionConvertImagesToVideos": ".remix_action_convert_images_to_videos",
     "RemixActionDisableCaptions": ".remix_action_disable_captions",
     "RemixActionEditWithAgent": ".remix_action_edit_with_agent",
     "RemixActionEditWithAgentMode": ".remix_action_edit_with_agent_mode",
     "RemixActionEnableCaptions": ".remix_action_enable_captions",
+    "RemixActionResizeProject": ".remix_action_resize_project",
     "RemixActionRun": ".remix_action_run",
     "RemixActionSetBackgroundMusic": ".remix_action_set_background_music",
     "RemixActionSetLogo": ".remix_action_set_logo",
@@ -153,9 +164,12 @@ _dynamic_imports: typing.Dict[str, str] = {
     "RemixActionStatus": ".remix_action_status",
     "RemixActionType": ".remix_action_type",
     "RemixAction_AddTransitions": ".remix_action",
+    "RemixAction_CleanUpTranscript": ".remix_action",
+    "RemixAction_ConvertImagesToVideos": ".remix_action",
     "RemixAction_DisableCaptions": ".remix_action",
     "RemixAction_EditWithAgent": ".remix_action",
     "RemixAction_EnableCaptions": ".remix_action",
+    "RemixAction_ResizeProject": ".remix_action",
     "RemixAction_SetBackgroundMusic": ".remix_action",
     "RemixAction_SetLogo": ".remix_action",
     "RemixProjectResponse": ".remix_project_response",
@@ -163,6 +177,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "SceneGeneration": ".scene_generation",
     "SceneGenerationType": ".scene_generation_type",
     "ScriptToVideoRequest": ".script_to_video_request",
+    "ScriptToVideoRequestQuality": ".script_to_video_request_quality",
     "SearchFilesResponse": ".search_files_response",
     "SearchFilesResult": ".search_files_result",
     "SlideshowToVideoRequest": ".slideshow_to_video_request",
@@ -181,9 +196,10 @@ _dynamic_imports: typing.Dict[str, str] = {
     "TtsVoiceDisplayGender": ".tts_voice_display_gender",
     "TtsVoiceListResponse": ".tts_voice_list_response",
     "VideoAssetRequest": ".video_asset_request",
-    "VideoModelMode": ".video_model_mode",
+    "VideoQuality": ".video_quality",
     "VisualPacing": ".visual_pacing",
     "VoiceoverToVideoRequest": ".voiceover_to_video_request",
+    "VoiceoverToVideoRequestQuality": ".voiceover_to_video_request_quality",
     "WatermarkMode": ".watermark_mode",
     "WebhookEndpoint": ".webhook_endpoint",
     "WebhookEndpointListResponse": ".webhook_endpoint_list_response",
@@ -252,7 +268,7 @@ __all__ = [
     "GenerateTextResponse",
     "GetFilesResponse",
     "ImageAssetRequest",
-    "ImageModelMode",
+    "ImageQuality",
     "ListEntitiesResponse",
     "ListProjectsResponse",
     "ListRemixActionsResponse",
@@ -263,10 +279,13 @@ __all__ = [
     "PronunciationReplacement",
     "RemixAction",
     "RemixActionAddTransitions",
+    "RemixActionCleanUpTranscript",
+    "RemixActionConvertImagesToVideos",
     "RemixActionDisableCaptions",
     "RemixActionEditWithAgent",
     "RemixActionEditWithAgentMode",
     "RemixActionEnableCaptions",
+    "RemixActionResizeProject",
     "RemixActionRun",
     "RemixActionSetBackgroundMusic",
     "RemixActionSetLogo",
@@ -274,9 +293,12 @@ __all__ = [
     "RemixActionStatus",
     "RemixActionType",
     "RemixAction_AddTransitions",
+    "RemixAction_CleanUpTranscript",
+    "RemixAction_ConvertImagesToVideos",
     "RemixAction_DisableCaptions",
     "RemixAction_EditWithAgent",
     "RemixAction_EnableCaptions",
+    "RemixAction_ResizeProject",
     "RemixAction_SetBackgroundMusic",
     "RemixAction_SetLogo",
     "RemixProjectResponse",
@@ -284,6 +306,7 @@ __all__ = [
     "SceneGeneration",
     "SceneGenerationType",
     "ScriptToVideoRequest",
+    "ScriptToVideoRequestQuality",
     "SearchFilesResponse",
     "SearchFilesResult",
     "SlideshowToVideoRequest",
@@ -302,9 +325,10 @@ __all__ = [
     "TtsVoiceDisplayGender",
     "TtsVoiceListResponse",
     "VideoAssetRequest",
-    "VideoModelMode",
+    "VideoQuality",
     "VisualPacing",
     "VoiceoverToVideoRequest",
+    "VoiceoverToVideoRequestQuality",
     "WatermarkMode",
     "WebhookEndpoint",
     "WebhookEndpointListResponse",

@@ -102,8 +102,8 @@ class WebhooksClient:
             token="YOUR_TOKEN",
         )
         client.webhooks.create_webhook_endpoint(
-            url="url",
-            events=["tool_execution.succeeded"],
+            url="https://webhooks.myapp.com/videogen",
+            events=["tool_execution.succeeded", "tool_execution.failed"],
         )
         """
         _response = self._raw_client.create_webhook_endpoint(
@@ -248,8 +248,8 @@ class AsyncWebhooksClient:
 
         async def main() -> None:
             await client.webhooks.create_webhook_endpoint(
-                url="url",
-                events=["tool_execution.succeeded"],
+                url="https://webhooks.myapp.com/videogen",
+                events=["tool_execution.succeeded", "tool_execution.failed"],
             )
 
 

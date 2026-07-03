@@ -85,8 +85,8 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.generate_image(
-            prompt="A serene Japanese garden with cherry blossoms at golden hour",
-            quality="LOW",
+            prompt="A serene mountain landscape at sunrise with vibrant colors and mist",
+            quality="STANDARD",
         )
         """
         _response = self._raw_client.generate_image(
@@ -170,7 +170,10 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.generate_video_clip(
+            prompt="A serene mountain landscape at sunrise with a flowing river and birds flying",
             quality="STANDARD",
+            generate_audio=True,
+            duration_seconds=6,
         )
         """
         _response = self._raw_client.generate_video_clip(
@@ -193,7 +196,7 @@ class ToolsClient:
         self,
         *,
         tts_text: str,
-        voice_id: typing.Optional[str] = OMIT,
+        voice_id: str,
         speech_language_code: typing.Optional[str] = OMIT,
         pronunciation_replacements: typing.Optional[typing.Sequence[PronunciationReplacement]] = OMIT,
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
@@ -209,8 +212,8 @@ class ToolsClient:
         ----------
         tts_text : str
 
-        voice_id : typing.Optional[str]
-            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null. Only voices with `supportsDirectToolExecution` set to true are accepted.
+        voice_id : str
+            Voice id from `GET /v1/resources/tts-voices`. Only voices with `supportsDirectToolExecution` set to true are accepted.
 
         speech_language_code : typing.Optional[str]
             ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
@@ -245,7 +248,8 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.text_to_speech(
-            tts_text="ttsText",
+            tts_text="Welcome to VideoGen, your AI-powered video creation assistant.",
+            voice_id="vg_voic_7t1wdka3tmk",
         )
         """
         _response = self._raw_client.text_to_speech(
@@ -306,7 +310,7 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.generate_sound_effect(
-            prompt="prompt",
+            prompt="Create a short, high-quality thunderclap sound effect with a deep rumble and sharp crack",
         )
         """
         _response = self._raw_client.generate_sound_effect(
@@ -357,7 +361,7 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.generate_music(
-            prompt="prompt",
+            prompt="Calm ambient piano with soft pads for a product demo intro",
         )
         """
         _response = self._raw_client.generate_music(
@@ -413,8 +417,8 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.generate_avatar(
-            avatar_presenter_id="avatarPresenterId",
-            audio_storage_file_id="audioStorageFileId",
+            avatar_presenter_id="vg_pres_a1ua8slxzfi",
+            audio_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
         )
         """
         _response = self._raw_client.generate_avatar(
@@ -468,7 +472,7 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.vectorize_image(
-            image_storage_file_id="imageStorageFileId",
+            image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
         )
         """
         _response = self._raw_client.vectorize_image(
@@ -521,7 +525,7 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.remove_image_background(
-            image_storage_file_id="imageStorageFileId",
+            image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
         )
         """
         _response = self._raw_client.remove_image_background(
@@ -574,7 +578,7 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.remove_video_background(
-            video_storage_file_id="videoStorageFileId",
+            video_storage_file_id="vg_file_jzosm31OGi-bPE1eb3qLnA",
         )
         """
         _response = self._raw_client.remove_video_background(
@@ -627,7 +631,7 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.upscale_image(
-            image_storage_file_id="imageStorageFileId",
+            image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
         )
         """
         _response = self._raw_client.upscale_image(
@@ -680,7 +684,7 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.upscale_video(
-            video_storage_file_id="videoStorageFileId",
+            video_storage_file_id="vg_file_jzosm31OGi-bPE1eb3qLnA",
         )
         """
         _response = self._raw_client.upscale_video(
@@ -733,7 +737,7 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.image3d_effect(
-            image_storage_file_id="imageStorageFileId",
+            image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
         )
         """
         _response = self._raw_client.image3d_effect(
@@ -772,7 +776,7 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.cancel_tool_execution(
-            tool_execution_id="toolExecutionId",
+            tool_execution_id="vg_tool_ccm3abc123defcm3xyz789ghi",
         )
         """
         _response = self._raw_client.cancel_tool_execution(tool_execution_id, request_options=request_options)
@@ -805,7 +809,7 @@ class ToolsClient:
             token="YOUR_TOKEN",
         )
         client.tools.get_tool_execution_info(
-            tool_execution_id="toolExecutionId",
+            tool_execution_id="vg_tool_ccm3abc123defcm3xyz789ghi",
         )
         """
         _response = self._raw_client.get_tool_execution_info(tool_execution_id, request_options=request_options)
@@ -885,8 +889,8 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.generate_image(
-                prompt="A serene Japanese garden with cherry blossoms at golden hour",
-                quality="LOW",
+                prompt="A serene mountain landscape at sunrise with vibrant colors and mist",
+                quality="STANDARD",
             )
 
 
@@ -978,7 +982,10 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.generate_video_clip(
+                prompt="A serene mountain landscape at sunrise with a flowing river and birds flying",
                 quality="STANDARD",
+                generate_audio=True,
+                duration_seconds=6,
             )
 
 
@@ -1004,7 +1011,7 @@ class AsyncToolsClient:
         self,
         *,
         tts_text: str,
-        voice_id: typing.Optional[str] = OMIT,
+        voice_id: str,
         speech_language_code: typing.Optional[str] = OMIT,
         pronunciation_replacements: typing.Optional[typing.Sequence[PronunciationReplacement]] = OMIT,
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
@@ -1020,8 +1027,8 @@ class AsyncToolsClient:
         ----------
         tts_text : str
 
-        voice_id : typing.Optional[str]
-            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null. Only voices with `supportsDirectToolExecution` set to true are accepted.
+        voice_id : str
+            Voice id from `GET /v1/resources/tts-voices`. Only voices with `supportsDirectToolExecution` set to true are accepted.
 
         speech_language_code : typing.Optional[str]
             ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
@@ -1061,7 +1068,8 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.text_to_speech(
-                tts_text="ttsText",
+                tts_text="Welcome to VideoGen, your AI-powered video creation assistant.",
+                voice_id="vg_voic_7t1wdka3tmk",
             )
 
 
@@ -1130,7 +1138,7 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.generate_sound_effect(
-                prompt="prompt",
+                prompt="Create a short, high-quality thunderclap sound effect with a deep rumble and sharp crack",
             )
 
 
@@ -1189,7 +1197,7 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.generate_music(
-                prompt="prompt",
+                prompt="Calm ambient piano with soft pads for a product demo intro",
             )
 
 
@@ -1253,8 +1261,8 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.generate_avatar(
-                avatar_presenter_id="avatarPresenterId",
-                audio_storage_file_id="audioStorageFileId",
+                avatar_presenter_id="vg_pres_a1ua8slxzfi",
+                audio_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
             )
 
 
@@ -1316,7 +1324,7 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.vectorize_image(
-                image_storage_file_id="imageStorageFileId",
+                image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
             )
 
 
@@ -1377,7 +1385,7 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.remove_image_background(
-                image_storage_file_id="imageStorageFileId",
+                image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
             )
 
 
@@ -1438,7 +1446,7 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.remove_video_background(
-                video_storage_file_id="videoStorageFileId",
+                video_storage_file_id="vg_file_jzosm31OGi-bPE1eb3qLnA",
             )
 
 
@@ -1499,7 +1507,7 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.upscale_image(
-                image_storage_file_id="imageStorageFileId",
+                image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
             )
 
 
@@ -1560,7 +1568,7 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.upscale_video(
-                video_storage_file_id="videoStorageFileId",
+                video_storage_file_id="vg_file_jzosm31OGi-bPE1eb3qLnA",
             )
 
 
@@ -1621,7 +1629,7 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.image3d_effect(
-                image_storage_file_id="imageStorageFileId",
+                image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
             )
 
 
@@ -1668,7 +1676,7 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.cancel_tool_execution(
-                tool_execution_id="toolExecutionId",
+                tool_execution_id="vg_tool_ccm3abc123defcm3xyz789ghi",
             )
 
 
@@ -1709,7 +1717,7 @@ class AsyncToolsClient:
 
         async def main() -> None:
             await client.tools.get_tool_execution_info(
-                tool_execution_id="toolExecutionId",
+                tool_execution_id="vg_tool_ccm3abc123defcm3xyz789ghi",
             )
 
 

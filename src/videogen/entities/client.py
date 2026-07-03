@@ -112,8 +112,9 @@ class EntitiesClient:
             token="YOUR_TOKEN",
         )
         client.entities.create_entity(
-            entity_type="ACTOR",
-            name="name",
+            entity_type="VISUAL_STYLE",
+            name="Pastel watercolor",
+            description="Soft pastel watercolor look for lifestyle clips.",
         )
         """
         _response = self._raw_client.create_entity(
@@ -146,7 +147,7 @@ class EntitiesClient:
             token="YOUR_TOKEN",
         )
         client.entities.get_entity(
-            entity_id="entityId",
+            entity_id="vg_enti_a1b2c3d4e5f6",
         )
         """
         _response = self._raw_client.get_entity(entity_id, request_options=request_options)
@@ -190,7 +191,9 @@ class EntitiesClient:
             token="YOUR_TOKEN",
         )
         client.entities.update_entity(
-            entity_id="entityId",
+            entity_id="vg_enti_a1b2c3d4e5f6",
+            name="Maya the presenter",
+            description="Friendly on-camera host for product explainers and demos.",
         )
         """
         _response = self._raw_client.update_entity(
@@ -225,7 +228,7 @@ class EntitiesClient:
             token="YOUR_TOKEN",
         )
         client.entities.archive_entity(
-            entity_id="entityId",
+            entity_id="vg_enti_a1b2c3d4e5f6",
         )
         """
         _response = self._raw_client.archive_entity(entity_id, request_options=request_options)
@@ -273,8 +276,10 @@ class EntitiesClient:
             token="YOUR_TOKEN",
         )
         client.entities.add_entity_reference(
-            entity_id="entityId",
-            file_id="fileId",
+            entity_id="vg_enti_a1b2c3d4e5f6",
+            file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
+            description="Side profile, studio lighting.",
+            is_default=False,
         )
         """
         _response = self._raw_client.add_entity_reference(
@@ -312,8 +317,8 @@ class EntitiesClient:
             token="YOUR_TOKEN",
         )
         client.entities.remove_entity_reference(
-            entity_id="entityId",
-            file_id="fileId",
+            entity_id="vg_enti_a1b2c3d4e5f6",
+            file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
         )
         """
         _response = self._raw_client.remove_entity_reference(
@@ -432,8 +437,9 @@ class AsyncEntitiesClient:
 
         async def main() -> None:
             await client.entities.create_entity(
-                entity_type="ACTOR",
-                name="name",
+                entity_type="VISUAL_STYLE",
+                name="Pastel watercolor",
+                description="Soft pastel watercolor look for lifestyle clips.",
             )
 
 
@@ -474,7 +480,7 @@ class AsyncEntitiesClient:
 
         async def main() -> None:
             await client.entities.get_entity(
-                entity_id="entityId",
+                entity_id="vg_enti_a1b2c3d4e5f6",
             )
 
 
@@ -526,7 +532,9 @@ class AsyncEntitiesClient:
 
         async def main() -> None:
             await client.entities.update_entity(
-                entity_id="entityId",
+                entity_id="vg_enti_a1b2c3d4e5f6",
+                name="Maya the presenter",
+                description="Friendly on-camera host for product explainers and demos.",
             )
 
 
@@ -569,7 +577,7 @@ class AsyncEntitiesClient:
 
         async def main() -> None:
             await client.entities.archive_entity(
-                entity_id="entityId",
+                entity_id="vg_enti_a1b2c3d4e5f6",
             )
 
 
@@ -625,8 +633,10 @@ class AsyncEntitiesClient:
 
         async def main() -> None:
             await client.entities.add_entity_reference(
-                entity_id="entityId",
-                file_id="fileId",
+                entity_id="vg_enti_a1b2c3d4e5f6",
+                file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
+                description="Side profile, studio lighting.",
+                is_default=False,
             )
 
 
@@ -672,8 +682,8 @@ class AsyncEntitiesClient:
 
         async def main() -> None:
             await client.entities.remove_entity_reference(
-                entity_id="entityId",
-                file_id="fileId",
+                entity_id="vg_enti_a1b2c3d4e5f6",
+                file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
             )
 
 

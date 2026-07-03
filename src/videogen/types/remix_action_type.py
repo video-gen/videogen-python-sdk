@@ -4,7 +4,15 @@ import typing
 
 RemixActionType = typing.Union[
     typing.Literal[
-        "SET_BACKGROUND_MUSIC", "SET_LOGO", "ENABLE_CAPTIONS", "DISABLE_CAPTIONS", "ADD_TRANSITIONS", "EDIT_WITH_AGENT"
+        "SET_BACKGROUND_MUSIC",
+        "SET_LOGO",
+        "ENABLE_CAPTIONS",
+        "DISABLE_CAPTIONS",
+        "ADD_TRANSITIONS",
+        "RESIZE_PROJECT",
+        "CLEAN_UP_TRANSCRIPT",
+        "CONVERT_IMAGES_TO_VIDEOS",
+        "EDIT_WITH_AGENT",
     ],
     typing.Any,
 ]

@@ -8,15 +8,17 @@ import pydantic
 import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
+from .aspect_ratio import AspectRatio
 from .remix_action_edit_with_agent_mode import RemixActionEditWithAgentMode
 from .remix_action_set_logo_position import RemixActionSetLogoPosition
 from .remix_transition_style import RemixTransitionStyle
+from .video_quality import VideoQuality
 from .workflow_caption_style import WorkflowCaptionStyle
 
 
 class RemixAction_SetBackgroundMusic(UniversalBaseModel):
     """
-    A single edit applied to a project. Each array entry is exactly one of the six action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
+    A single edit applied to a project. Each array entry is exactly one of the action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
     """
 
     type: typing.Literal["SET_BACKGROUND_MUSIC"] = "SET_BACKGROUND_MUSIC"
@@ -37,7 +39,7 @@ class RemixAction_SetBackgroundMusic(UniversalBaseModel):
 
 class RemixAction_SetLogo(UniversalBaseModel):
     """
-    A single edit applied to a project. Each array entry is exactly one of the six action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
+    A single edit applied to a project. Each array entry is exactly one of the action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
     """
 
     type: typing.Literal["SET_LOGO"] = "SET_LOGO"
@@ -61,7 +63,7 @@ class RemixAction_SetLogo(UniversalBaseModel):
 
 class RemixAction_EnableCaptions(UniversalBaseModel):
     """
-    A single edit applied to a project. Each array entry is exactly one of the six action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
+    A single edit applied to a project. Each array entry is exactly one of the action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
     """
 
     type: typing.Literal["ENABLE_CAPTIONS"] = "ENABLE_CAPTIONS"
@@ -81,7 +83,7 @@ class RemixAction_EnableCaptions(UniversalBaseModel):
 
 class RemixAction_DisableCaptions(UniversalBaseModel):
     """
-    A single edit applied to a project. Each array entry is exactly one of the six action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
+    A single edit applied to a project. Each array entry is exactly one of the action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
     """
 
     type: typing.Literal["DISABLE_CAPTIONS"] = "DISABLE_CAPTIONS"
@@ -98,7 +100,7 @@ class RemixAction_DisableCaptions(UniversalBaseModel):
 
 class RemixAction_AddTransitions(UniversalBaseModel):
     """
-    A single edit applied to a project. Each array entry is exactly one of the six action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
+    A single edit applied to a project. Each array entry is exactly one of the action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
     """
 
     type: typing.Literal["ADD_TRANSITIONS"] = "ADD_TRANSITIONS"
@@ -123,9 +125,82 @@ class RemixAction_AddTransitions(UniversalBaseModel):
             extra = pydantic.Extra.allow
 
 
+class RemixAction_ResizeProject(UniversalBaseModel):
+    """
+    A single edit applied to a project. Each array entry is exactly one of the action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
+    """
+
+    type: typing.Literal["RESIZE_PROJECT"] = "RESIZE_PROJECT"
+    aspect_ratio: typing_extensions.Annotated[
+        AspectRatio, FieldMetadata(alias="aspectRatio"), pydantic.Field(alias="aspectRatio")
+    ]
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+class RemixAction_CleanUpTranscript(UniversalBaseModel):
+    """
+    A single edit applied to a project. Each array entry is exactly one of the action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
+    """
+
+    type: typing.Literal["CLEAN_UP_TRANSCRIPT"] = "CLEAN_UP_TRANSCRIPT"
+    remove_fillers: typing_extensions.Annotated[
+        typing.Optional[bool], FieldMetadata(alias="removeFillers"), pydantic.Field(alias="removeFillers")
+    ] = None
+    remove_pauses: typing_extensions.Annotated[
+        typing.Optional[bool], FieldMetadata(alias="removePauses"), pydantic.Field(alias="removePauses")
+    ] = None
+    filler_words: typing_extensions.Annotated[
+        typing.Optional[typing.List[str]], FieldMetadata(alias="fillerWords"), pydantic.Field(alias="fillerWords")
+    ] = None
+    min_pause_seconds: typing_extensions.Annotated[
+        typing.Optional[float], FieldMetadata(alias="minPauseSeconds"), pydantic.Field(alias="minPauseSeconds")
+    ] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+class RemixAction_ConvertImagesToVideos(UniversalBaseModel):
+    """
+    A single edit applied to a project. Each array entry is exactly one of the action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
+    """
+
+    type: typing.Literal["CONVERT_IMAGES_TO_VIDEOS"] = "CONVERT_IMAGES_TO_VIDEOS"
+    motion_prompt: typing_extensions.Annotated[
+        typing.Optional[str], FieldMetadata(alias="motionPrompt"), pydantic.Field(alias="motionPrompt")
+    ] = None
+    mute_output_videos: typing_extensions.Annotated[
+        typing.Optional[bool], FieldMetadata(alias="muteOutputVideos"), pydantic.Field(alias="muteOutputVideos")
+    ] = None
+    quality: typing.Optional[VideoQuality] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 class RemixAction_EditWithAgent(UniversalBaseModel):
     """
-    A single edit applied to a project. Each array entry is exactly one of the six action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
+    A single edit applied to a project. Each array entry is exactly one of the action types below, chosen by its `type` field; the variants are mutually-exclusive options, not fields you must all provide. Include only the actions you want.
     """
 
     type: typing.Literal["EDIT_WITH_AGENT"] = "EDIT_WITH_AGENT"
@@ -154,6 +229,9 @@ RemixAction = typing_extensions.Annotated[
         RemixAction_EnableCaptions,
         RemixAction_DisableCaptions,
         RemixAction_AddTransitions,
+        RemixAction_ResizeProject,
+        RemixAction_CleanUpTranscript,
+        RemixAction_ConvertImagesToVideos,
         RemixAction_EditWithAgent,
     ],
     pydantic.Field(discriminator="type"),

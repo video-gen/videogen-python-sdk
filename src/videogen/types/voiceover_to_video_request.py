@@ -9,6 +9,7 @@ from ..core.serialization import FieldMetadata
 from .aspect_ratio import AspectRatio
 from .remix_action import RemixAction
 from .visual_pacing import VisualPacing
+from .voiceover_to_video_request_quality import VoiceoverToVideoRequestQuality
 from .workflow_caption_style import WorkflowCaptionStyle
 from .workflow_visual_style import WorkflowVisualStyle
 
@@ -31,6 +32,11 @@ class VoiceoverToVideoRequest(UniversalBaseModel):
     visual_pacing: typing_extensions.Annotated[
         typing.Optional[VisualPacing], FieldMetadata(alias="visualPacing"), pydantic.Field(alias="visualPacing")
     ] = None
+    quality: typing.Optional[VoiceoverToVideoRequestQuality] = pydantic.Field(default=None)
+    """
+    Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
+    """
+
     language: typing.Optional[str] = pydantic.Field(default=None)
     """
     Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.

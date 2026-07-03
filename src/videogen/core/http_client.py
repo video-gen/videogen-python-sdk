@@ -125,8 +125,7 @@ def _retry_timeout_from_retries(retries: int) -> float:
 
 
 def _should_retry(response: httpx.Response) -> bool:
-    retryable_400s = [429, 408, 409]
-    return response.status_code >= 500 or response.status_code in retryable_400s
+    return response.status_code >= 500 or response.status_code in [429, 408, 409]
 
 
 _SENSITIVE_HEADERS = frozenset(
@@ -313,11 +312,12 @@ class HttpClient:
         force_multipart: typing.Optional[bool] = None,
     ) -> httpx.Response:
         base_url = self.get_base_url(base_url)
-        timeout = (
+        _timeout = (
             request_options.get("timeout_in_seconds")
             if request_options is not None and request_options.get("timeout_in_seconds") is not None
             else self.base_timeout()
         )
+        timeout = _timeout if _timeout is not None else httpx.USE_CLIENT_DEFAULT
 
         json_body, data_body = get_request_body(json=json, data=data, request_options=request_options, omit=omit)
 
@@ -473,11 +473,12 @@ class HttpClient:
         force_multipart: typing.Optional[bool] = None,
     ) -> typing.Iterator[httpx.Response]:
         base_url = self.get_base_url(base_url)
-        timeout = (
+        _timeout = (
             request_options.get("timeout_in_seconds")
             if request_options is not None and request_options.get("timeout_in_seconds") is not None
             else self.base_timeout()
         )
+        timeout = _timeout if _timeout is not None else httpx.USE_CLIENT_DEFAULT
 
         request_files: typing.Optional[RequestFiles] = (
             convert_file_dict_to_httpx_tuples(remove_omit_from_dict(remove_none_from_dict(files), omit))
@@ -602,11 +603,12 @@ class AsyncHttpClient:
         force_multipart: typing.Optional[bool] = None,
     ) -> httpx.Response:
         base_url = self.get_base_url(base_url)
-        timeout = (
+        _timeout = (
             request_options.get("timeout_in_seconds")
             if request_options is not None and request_options.get("timeout_in_seconds") is not None
             else self.base_timeout()
         )
+        timeout = _timeout if _timeout is not None else httpx.USE_CLIENT_DEFAULT
 
         request_files: typing.Optional[RequestFiles] = (
             convert_file_dict_to_httpx_tuples(remove_omit_from_dict(remove_none_from_dict(files), omit))
@@ -765,11 +767,12 @@ class AsyncHttpClient:
         force_multipart: typing.Optional[bool] = None,
     ) -> typing.AsyncIterator[httpx.Response]:
         base_url = self.get_base_url(base_url)
-        timeout = (
+        _timeout = (
             request_options.get("timeout_in_seconds")
             if request_options is not None and request_options.get("timeout_in_seconds") is not None
             else self.base_timeout()
         )
+        timeout = _timeout if _timeout is not None else httpx.USE_CLIENT_DEFAULT
 
         request_files: typing.Optional[RequestFiles] = (
             convert_file_dict_to_httpx_tuples(remove_omit_from_dict(remove_none_from_dict(files), omit))

@@ -1,7 +1,7 @@
 {
-  "cliVersion": "4.106.1",
+  "cliVersion": "5.64.3",
   "generatorName": "fernapi/fern-python-sdk",
-  "generatorVersion": "5.8.0",
+  "generatorVersion": "5.15.2",
   "generatorConfig": {
     "client_class_name": "VideoGenApi",
     "package_name": "videogen",
@@ -104,9 +104,9 @@
       }
     ]
   },
-  "originGitCommit": "92388893abedbaf9cb6ea2e5579572f920e5ac3e",
+  "originGitCommit": "492fef10ad7000c4080988eebe115769fc410c59",
   "originGitCommitIsDirty": true,
   "invokedBy": "manual",
-  "requestedVersion": "1.1.4",
-  "sdkVersion": "1.1.4"
+  "requestedVersion": "1.1.5",
+  "sdkVersion": "1.1.5"
 }

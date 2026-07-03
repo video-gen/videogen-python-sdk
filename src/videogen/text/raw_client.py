@@ -10,7 +10,7 @@ from ..core.parse_error import ParsingError
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..types.generate_text_response import GenerateTextResponse
-from .types.generate_text_request_model import GenerateTextRequestModel
+from .types.generate_text_request_quality import GenerateTextRequestQuality
 from pydantic import ValidationError
 
 # this is used as the default value for optional parameters
@@ -26,13 +26,13 @@ class RawTextClient:
         *,
         prompt: str,
         system: typing.Optional[str] = OMIT,
-        model: typing.Optional[GenerateTextRequestModel] = OMIT,
+        quality: typing.Optional[GenerateTextRequestQuality] = OMIT,
         temperature: typing.Optional[float] = OMIT,
         max_output_tokens: typing.Optional[int] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[GenerateTextResponse]:
         """
-        Generate text from a prompt using a general-purpose language model. Choose a quality tier with `model` (`LOW`, `STANDARD`, or `HIGH`). Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
+        Generate text from a prompt using a general-purpose language model. Choose a quality tier with `quality` (`LOW`, `STANDARD`, `HIGH`, or `MAX`). Synchronous: the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
 
         Parameters
         ----------
@@ -42,8 +42,8 @@ class RawTextClient:
         system : typing.Optional[str]
             Optional system instructions that steer the model's role, tone, and constraints.
 
-        model : typing.Optional[GenerateTextRequestModel]
-            Model quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is highest quality. Defaults to `STANDARD`.
+        quality : typing.Optional[GenerateTextRequestQuality]
+            Generation quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is higher quality; `MAX` is highest quality. Defaults to `STANDARD`.
 
         temperature : typing.Optional[float]
             Sampling temperature. Higher values produce more varied output. Defaults to the model's default.
@@ -65,7 +65,7 @@ class RawTextClient:
             json={
                 "prompt": prompt,
                 "system": system,
-                "model": model,
+                "quality": quality,
                 "temperature": temperature,
                 "maxOutputTokens": max_output_tokens,
             },
@@ -104,13 +104,13 @@ class AsyncRawTextClient:
         *,
         prompt: str,
         system: typing.Optional[str] = OMIT,
-        model: typing.Optional[GenerateTextRequestModel] = OMIT,
+        quality: typing.Optional[GenerateTextRequestQuality] = OMIT,
         temperature: typing.Optional[float] = OMIT,
         max_output_tokens: typing.Optional[int] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[GenerateTextResponse]:
         """
-        Generate text from a prompt using a general-purpose language model. Choose a quality tier with `model` (`LOW`, `STANDARD`, or `HIGH`). Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
+        Generate text from a prompt using a general-purpose language model. Choose a quality tier with `quality` (`LOW`, `STANDARD`, `HIGH`, or `MAX`). Synchronous: the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
 
         Parameters
         ----------
@@ -120,8 +120,8 @@ class AsyncRawTextClient:
         system : typing.Optional[str]
             Optional system instructions that steer the model's role, tone, and constraints.
 
-        model : typing.Optional[GenerateTextRequestModel]
-            Model quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is highest quality. Defaults to `STANDARD`.
+        quality : typing.Optional[GenerateTextRequestQuality]
+            Generation quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is higher quality; `MAX` is highest quality. Defaults to `STANDARD`.
 
         temperature : typing.Optional[float]
             Sampling temperature. Higher values produce more varied output. Defaults to the model's default.
@@ -143,7 +143,7 @@ class AsyncRawTextClient:
             json={
                 "prompt": prompt,
                 "system": system,
-                "model": model,
+                "quality": quality,
                 "temperature": temperature,
                 "maxOutputTokens": max_output_tokens,
             },

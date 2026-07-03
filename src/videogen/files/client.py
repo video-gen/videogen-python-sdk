@@ -106,7 +106,7 @@ class FilesClient:
             token="YOUR_TOKEN",
         )
         client.files.search_files(
-            query="query",
+            query="sunset over mountains",
         )
         """
         _response = self._raw_client.search_files(
@@ -139,7 +139,7 @@ class FilesClient:
             token="YOUR_TOKEN",
         )
         client.files.get_file(
-            file_id="fileId",
+            file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
         )
         """
         _response = self._raw_client.get_file(file_id, request_options=request_options)
@@ -183,7 +183,8 @@ class FilesClient:
             token="YOUR_TOKEN",
         )
         client.files.create_file_upload(
-            display_name="displayName",
+            type="VIDEO",
+            display_name="My Campaign Video",
         )
         """
         _response = self._raw_client.create_file_upload(
@@ -216,7 +217,7 @@ class FilesClient:
             token="YOUR_TOKEN",
         )
         client.files.hydrate_file(
-            file_id="fileId",
+            file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
         )
         """
         _response = self._raw_client.hydrate_file(file_id, request_options=request_options)
@@ -280,7 +281,7 @@ class FilesClient:
             token="YOUR_TOKEN",
         )
         client.files.enable_public_preview(
-            file_id="fileId",
+            file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
         )
         """
         _response = self._raw_client.enable_public_preview(file_id, request_options=request_options)
@@ -313,7 +314,7 @@ class FilesClient:
             token="YOUR_TOKEN",
         )
         client.files.disable_public_preview(
-            file_id="fileId",
+            file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
         )
         """
         _response = self._raw_client.disable_public_preview(file_id, request_options=request_options)
@@ -424,7 +425,7 @@ class AsyncFilesClient:
 
         async def main() -> None:
             await client.files.search_files(
-                query="query",
+                query="sunset over mountains",
             )
 
 
@@ -465,7 +466,7 @@ class AsyncFilesClient:
 
         async def main() -> None:
             await client.files.get_file(
-                file_id="fileId",
+                file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
             )
 
 
@@ -517,7 +518,8 @@ class AsyncFilesClient:
 
         async def main() -> None:
             await client.files.create_file_upload(
-                display_name="displayName",
+                type="VIDEO",
+                display_name="My Campaign Video",
             )
 
 
@@ -560,7 +562,7 @@ class AsyncFilesClient:
 
         async def main() -> None:
             await client.files.hydrate_file(
-                file_id="fileId",
+                file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
             )
 
 
@@ -642,7 +644,7 @@ class AsyncFilesClient:
 
         async def main() -> None:
             await client.files.enable_public_preview(
-                file_id="fileId",
+                file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
             )
 
 
@@ -683,7 +685,7 @@ class AsyncFilesClient:
 
         async def main() -> None:
             await client.files.disable_public_preview(
-                file_id="fileId",
+                file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
             )
 
 

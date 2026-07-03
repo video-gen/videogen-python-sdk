@@ -6,7 +6,7 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.generate_text_response import GenerateTextResponse
 from .raw_client import AsyncRawTextClient, RawTextClient
-from .types.generate_text_request_model import GenerateTextRequestModel
+from .types.generate_text_request_quality import GenerateTextRequestQuality
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -32,13 +32,13 @@ class TextClient:
         *,
         prompt: str,
         system: typing.Optional[str] = OMIT,
-        model: typing.Optional[GenerateTextRequestModel] = OMIT,
+        quality: typing.Optional[GenerateTextRequestQuality] = OMIT,
         temperature: typing.Optional[float] = OMIT,
         max_output_tokens: typing.Optional[int] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> GenerateTextResponse:
         """
-        Generate text from a prompt using a general-purpose language model. Choose a quality tier with `model` (`LOW`, `STANDARD`, or `HIGH`). Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
+        Generate text from a prompt using a general-purpose language model. Choose a quality tier with `quality` (`LOW`, `STANDARD`, `HIGH`, or `MAX`). Synchronous: the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
 
         Parameters
         ----------
@@ -48,8 +48,8 @@ class TextClient:
         system : typing.Optional[str]
             Optional system instructions that steer the model's role, tone, and constraints.
 
-        model : typing.Optional[GenerateTextRequestModel]
-            Model quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is highest quality. Defaults to `STANDARD`.
+        quality : typing.Optional[GenerateTextRequestQuality]
+            Generation quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is higher quality; `MAX` is highest quality. Defaults to `STANDARD`.
 
         temperature : typing.Optional[float]
             Sampling temperature. Higher values produce more varied output. Defaults to the model's default.
@@ -73,13 +73,15 @@ class TextClient:
             token="YOUR_TOKEN",
         )
         client.text.generate_text(
-            prompt="Write a 30-second upbeat video script about why the sky is blue.",
+            prompt="Write a concise title for a video about staying hydrated.",
+            quality="STANDARD",
+            max_output_tokens=32,
         )
         """
         _response = self._raw_client.generate_text(
             prompt=prompt,
             system=system,
-            model=model,
+            quality=quality,
             temperature=temperature,
             max_output_tokens=max_output_tokens,
             request_options=request_options,
@@ -107,13 +109,13 @@ class AsyncTextClient:
         *,
         prompt: str,
         system: typing.Optional[str] = OMIT,
-        model: typing.Optional[GenerateTextRequestModel] = OMIT,
+        quality: typing.Optional[GenerateTextRequestQuality] = OMIT,
         temperature: typing.Optional[float] = OMIT,
         max_output_tokens: typing.Optional[int] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> GenerateTextResponse:
         """
-        Generate text from a prompt using a general-purpose language model. Choose a quality tier with `model` (`LOW`, `STANDARD`, or `HIGH`). Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
+        Generate text from a prompt using a general-purpose language model. Choose a quality tier with `quality` (`LOW`, `STANDARD`, `HIGH`, or `MAX`). Synchronous: the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
 
         Parameters
         ----------
@@ -123,8 +125,8 @@ class AsyncTextClient:
         system : typing.Optional[str]
             Optional system instructions that steer the model's role, tone, and constraints.
 
-        model : typing.Optional[GenerateTextRequestModel]
-            Model quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is highest quality. Defaults to `STANDARD`.
+        quality : typing.Optional[GenerateTextRequestQuality]
+            Generation quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is higher quality; `MAX` is highest quality. Defaults to `STANDARD`.
 
         temperature : typing.Optional[float]
             Sampling temperature. Higher values produce more varied output. Defaults to the model's default.
@@ -153,7 +155,9 @@ class AsyncTextClient:
 
         async def main() -> None:
             await client.text.generate_text(
-                prompt="Write a 30-second upbeat video script about why the sky is blue.",
+                prompt="Write a concise title for a video about staying hydrated.",
+                quality="STANDARD",
+                max_output_tokens=32,
             )
 
 
@@ -162,7 +166,7 @@ class AsyncTextClient:
         _response = await self._raw_client.generate_text(
             prompt=prompt,
             system=system,
-            model=model,
+            quality=quality,
             temperature=temperature,
             max_output_tokens=max_output_tokens,
             request_options=request_options,

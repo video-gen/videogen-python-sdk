@@ -220,7 +220,7 @@ class RawToolsClient:
         self,
         *,
         tts_text: str,
-        voice_id: typing.Optional[str] = OMIT,
+        voice_id: str,
         speech_language_code: typing.Optional[str] = OMIT,
         pronunciation_replacements: typing.Optional[typing.Sequence[PronunciationReplacement]] = OMIT,
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
@@ -236,8 +236,8 @@ class RawToolsClient:
         ----------
         tts_text : str
 
-        voice_id : typing.Optional[str]
-            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null. Only voices with `supportsDirectToolExecution` set to true are accepted.
+        voice_id : str
+            Voice id from `GET /v1/resources/tts-voices`. Only voices with `supportsDirectToolExecution` set to true are accepted.
 
         speech_language_code : typing.Optional[str]
             ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
@@ -555,9 +555,6 @@ class RawToolsClient:
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -621,9 +618,6 @@ class RawToolsClient:
                 "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -689,9 +683,6 @@ class RawToolsClient:
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -755,9 +746,6 @@ class RawToolsClient:
                 "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -823,9 +811,6 @@ class RawToolsClient:
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -889,9 +874,6 @@ class RawToolsClient:
                 "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -1198,7 +1180,7 @@ class AsyncRawToolsClient:
         self,
         *,
         tts_text: str,
-        voice_id: typing.Optional[str] = OMIT,
+        voice_id: str,
         speech_language_code: typing.Optional[str] = OMIT,
         pronunciation_replacements: typing.Optional[typing.Sequence[PronunciationReplacement]] = OMIT,
         auto_expand_pronunciation_replacements: typing.Optional[bool] = OMIT,
@@ -1214,8 +1196,8 @@ class AsyncRawToolsClient:
         ----------
         tts_text : str
 
-        voice_id : typing.Optional[str]
-            Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null. Only voices with `supportsDirectToolExecution` set to true are accepted.
+        voice_id : str
+            Voice id from `GET /v1/resources/tts-voices`. Only voices with `supportsDirectToolExecution` set to true are accepted.
 
         speech_language_code : typing.Optional[str]
             ISO-639-1 language hint for pronunciation (e.g. `en`, `es`, `zh`).
@@ -1533,9 +1515,6 @@ class AsyncRawToolsClient:
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -1599,9 +1578,6 @@ class AsyncRawToolsClient:
                 "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -1667,9 +1643,6 @@ class AsyncRawToolsClient:
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -1733,9 +1706,6 @@ class AsyncRawToolsClient:
                 "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,
@@ -1801,9 +1771,6 @@ class AsyncRawToolsClient:
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
             },
-            headers={
-                "content-type": "application/json",
-            },
             request_options=request_options,
             omit=OMIT,
         )
@@ -1867,9 +1834,6 @@ class AsyncRawToolsClient:
                 "watermarkMode": watermark_mode,
                 "numResults": num_results,
                 "isOutputTemporary": is_output_temporary,
-            },
-            headers={
-                "content-type": "application/json",
             },
             request_options=request_options,
             omit=OMIT,

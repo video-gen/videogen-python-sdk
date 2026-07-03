@@ -27,7 +27,7 @@ Creates a project and generates a narrated video from a prompt or script. Return
 <dd>
 
 ```python
-from videogen import VideoGenApi, WorkflowVisualStyle
+from videogen import VideoGenApi, WorkflowVisualStyle, RemixAction_EnableCaptions, WorkflowCaptionStyle, WorkflowRgbColor, RemixAction_SetBackgroundMusic
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -36,10 +36,31 @@ client = VideoGenApi(
 )
 
 client.workflows.script_to_video(
-    script="script",
+    script="Staying hydrated keeps your body and mind running at their best. Drinking enough water boosts your energy, focus, and mood. Keep a water bottle nearby and sip throughout the day.",
     visual_style=WorkflowVisualStyle(
-        type="STOCK",
+        type="AI_IMAGE",
+        ai_style="loose watercolor illustration with visible brushstrokes and soft color bleeds",
     ),
+    visual_pacing="MEDIUM",
+    quality="HIGH",
+    remix_actions=[
+        RemixAction_EnableCaptions(
+            caption_style=WorkflowCaptionStyle(
+                font_name="Inter",
+                font_weight=700,
+                text_color=WorkflowRgbColor(
+                    red=255,
+                    green=255,
+                    blue=255,
+                ),
+                vertical_alignment="BOTTOM",
+            ),
+        ),
+        RemixAction_SetBackgroundMusic(
+            file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
+            volume=0.25,
+        )
+    ],
 )
 
 ```
@@ -179,7 +200,7 @@ Creates a project from an uploaded voiceover file and generates a video with mat
 <dd>
 
 ```python
-from videogen import VideoGenApi, WorkflowVisualStyle
+from videogen import VideoGenApi, WorkflowVisualStyle, RemixAction_SetBackgroundMusic, RemixAction_EditWithAgent
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -188,10 +209,21 @@ client = VideoGenApi(
 )
 
 client.workflows.voiceover_to_video(
-    file_id="fileId",
+    file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
     visual_style=WorkflowVisualStyle(
-        type="STOCK",
+        type="AI_IMAGE",
+        ai_style="warm cinematic photography with soft natural lighting and shallow depth of field",
     ),
+    quality="HIGH",
+    remix_actions=[
+        RemixAction_SetBackgroundMusic(
+            file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
+            volume=0.2,
+        ),
+        RemixAction_EditWithAgent(
+            prompt="Replace the closing title card with \"Book a demo today\"",
+        )
+    ],
 )
 
 ```
@@ -331,7 +363,7 @@ Creates a project from an uploaded PDF or PowerPoint file and generates an AI-na
 <dd>
 
 ```python
-from videogen import VideoGenApi
+from videogen import VideoGenApi, RemixAction_AddTransitions, RemixAction_SetBackgroundMusic
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -340,7 +372,17 @@ client = VideoGenApi(
 )
 
 client.workflows.slideshow_to_video(
-    file_id="fileId",
+    file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
+    remix_actions=[
+        RemixAction_AddTransitions(
+            section_transition="DYNAMIC",
+            asset_transition="FADE",
+        ),
+        RemixAction_SetBackgroundMusic(
+            file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
+            volume=0.2,
+        )
+    ],
 )
 
 ```
@@ -477,7 +519,7 @@ Creates a project from an ordered list of scenes and generates one section per s
 <dd>
 
 ```python
-from videogen import VideoGenApi, GenerateStoryboardScene
+from videogen import VideoGenApi, GenerateStoryboardScene, SceneGeneration
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -488,9 +530,22 @@ client = VideoGenApi(
 client.workflows.storyboard_to_video(
     scenes=[
         GenerateStoryboardScene(
-            prompt="prompt",
+            prompt="A sunrise over a calm mountain lake, mist on the water.",
+        ),
+        GenerateStoryboardScene(
+            prompt="A hiker reaching the summit, arms raised in triumph.",
+            generation=SceneGeneration(
+                type="AI_VIDEO",
+                ai_style="cinematic film look with dramatic lighting and shallow depth of field",
+            ),
+            duration_seconds=6,
         )
     ],
+    default_generation=SceneGeneration(
+        type="AI_IMAGE",
+        ai_style="loose watercolor illustration with visible brushstrokes and soft color bleeds",
+    ),
+    default_duration_seconds=5,
 )
 
 ```
@@ -626,7 +681,7 @@ client = VideoGenApi(
 )
 
 client.workflows.get_workflow_run(
-    workflow_run_id="workflowRunId",
+    workflow_run_id="vg_work_ccm3abc123defcm3xyz789ghi",
 )
 
 ```
@@ -854,7 +909,7 @@ client = VideoGenApi(
 )
 
 client.projects.get_project(
-    project_id="projectId",
+    project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
 )
 
 ```
@@ -927,7 +982,8 @@ client = VideoGenApi(
 )
 
 client.projects.export_project(
-    project_id="projectId",
+    project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
+    quality="FULL_HIGH",
 )
 
 ```
@@ -1008,8 +1064,8 @@ client = VideoGenApi(
 )
 
 client.projects.get_project_export(
-    project_id="projectId",
-    export_id="exportId",
+    project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
+    export_id="2a1b3c4d-5e6f-7890-ab12-cdef34567890",
 )
 
 ```
@@ -1256,8 +1312,8 @@ client = VideoGenApi(
 )
 
 client.tools.generate_image(
-    prompt="A serene Japanese garden with cherry blossoms at golden hour",
-    quality="LOW",
+    prompt="A serene mountain landscape at sunrise with vibrant colors and mist",
+    quality="STANDARD",
 )
 
 ```
@@ -1378,6 +1434,9 @@ client = VideoGenApi(
 )
 
 client.tools.generate_video_clip(
+    prompt="A serene mountain landscape at sunrise with a flowing river and birds flying",
+    generate_audio=True,
+    duration_seconds=6,
     quality="STANDARD",
 )
 
@@ -1531,7 +1590,8 @@ client = VideoGenApi(
 )
 
 client.tools.text_to_speech(
-    tts_text="ttsText",
+    tts_text="Welcome to VideoGen, your AI-powered video creation assistant.",
+    voice_id="vg_voic_7t1wdka3tmk",
 )
 
 ```
@@ -1556,7 +1616,7 @@ client.tools.text_to_speech(
 <dl>
 <dd>
 
-**voice_id:** `typing.Optional[str]` — Voice id from `GET /v1/resources/tts-voices`. A default voice is used when null. Only voices with `supportsDirectToolExecution` set to true are accepted.
+**voice_id:** `str` — Voice id from `GET /v1/resources/tts-voices`. Only voices with `supportsDirectToolExecution` set to true are accepted.
     
 </dd>
 </dl>
@@ -1660,7 +1720,7 @@ client = VideoGenApi(
 )
 
 client.tools.generate_sound_effect(
-    prompt="prompt",
+    prompt="Create a short, high-quality thunderclap sound effect with a deep rumble and sharp crack",
 )
 
 ```
@@ -1765,7 +1825,7 @@ client = VideoGenApi(
 )
 
 client.tools.generate_music(
-    prompt="prompt",
+    prompt="Calm ambient piano with soft pads for a product demo intro",
 )
 
 ```
@@ -1854,8 +1914,8 @@ client = VideoGenApi(
 )
 
 client.tools.generate_avatar(
-    avatar_presenter_id="avatarPresenterId",
-    audio_storage_file_id="audioStorageFileId",
+    avatar_presenter_id="vg_pres_a1ua8slxzfi",
+    audio_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
 )
 
 ```
@@ -1960,7 +2020,7 @@ client = VideoGenApi(
 )
 
 client.tools.vectorize_image(
-    image_storage_file_id="imageStorageFileId",
+    image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
 )
 
 ```
@@ -2033,7 +2093,7 @@ client = VideoGenApi(
 )
 
 client.tools.remove_image_background(
-    image_storage_file_id="imageStorageFileId",
+    image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
 )
 
 ```
@@ -2106,7 +2166,7 @@ client = VideoGenApi(
 )
 
 client.tools.remove_video_background(
-    video_storage_file_id="videoStorageFileId",
+    video_storage_file_id="vg_file_jzosm31OGi-bPE1eb3qLnA",
 )
 
 ```
@@ -2179,7 +2239,7 @@ client = VideoGenApi(
 )
 
 client.tools.upscale_image(
-    image_storage_file_id="imageStorageFileId",
+    image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
 )
 
 ```
@@ -2252,7 +2312,7 @@ client = VideoGenApi(
 )
 
 client.tools.upscale_video(
-    video_storage_file_id="videoStorageFileId",
+    video_storage_file_id="vg_file_jzosm31OGi-bPE1eb3qLnA",
 )
 
 ```
@@ -2325,7 +2385,7 @@ client = VideoGenApi(
 )
 
 client.tools.image3d_effect(
-    image_storage_file_id="imageStorageFileId",
+    image_storage_file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
 )
 
 ```
@@ -2398,7 +2458,7 @@ client = VideoGenApi(
 )
 
 client.tools.cancel_tool_execution(
-    tool_execution_id="toolExecutionId",
+    tool_execution_id="vg_tool_ccm3abc123defcm3xyz789ghi",
 )
 
 ```
@@ -2471,7 +2531,7 @@ client = VideoGenApi(
 )
 
 client.tools.get_tool_execution_info(
-    tool_execution_id="toolExecutionId",
+    tool_execution_id="vg_tool_ccm3abc123defcm3xyz789ghi",
 )
 
 ```
@@ -2624,7 +2684,7 @@ client = VideoGenApi(
 )
 
 client.files.search_files(
-    query="query",
+    query="sunset over mountains",
 )
 
 ```
@@ -2713,7 +2773,7 @@ client = VideoGenApi(
 )
 
 client.files.get_file(
-    file_id="fileId",
+    file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
 )
 
 ```
@@ -2786,7 +2846,8 @@ client = VideoGenApi(
 )
 
 client.files.create_file_upload(
-    display_name="displayName",
+    type="VIDEO",
+    display_name="My Campaign Video",
 )
 
 ```
@@ -2875,7 +2936,7 @@ client = VideoGenApi(
 )
 
 client.files.hydrate_file(
-    file_id="fileId",
+    file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
 )
 
 ```
@@ -3021,7 +3082,7 @@ client = VideoGenApi(
 )
 
 client.files.enable_public_preview(
-    file_id="fileId",
+    file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
 )
 
 ```
@@ -3094,7 +3155,7 @@ client = VideoGenApi(
 )
 
 client.files.disable_public_preview(
-    file_id="fileId",
+    file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
 )
 
 ```
@@ -3255,8 +3316,9 @@ client = VideoGenApi(
 )
 
 client.entities.create_entity(
-    entity_type="ACTOR",
-    name="name",
+    entity_type="VISUAL_STYLE",
+    name="Pastel watercolor",
+    description="Soft pastel watercolor look for lifestyle clips.",
 )
 
 ```
@@ -3345,7 +3407,7 @@ client = VideoGenApi(
 )
 
 client.entities.get_entity(
-    entity_id="entityId",
+    entity_id="vg_enti_a1b2c3d4e5f6",
 )
 
 ```
@@ -3418,7 +3480,9 @@ client = VideoGenApi(
 )
 
 client.entities.update_entity(
-    entity_id="entityId",
+    entity_id="vg_enti_a1b2c3d4e5f6",
+    name="Maya the presenter",
+    description="Friendly on-camera host for product explainers and demos.",
 )
 
 ```
@@ -3507,7 +3571,7 @@ client = VideoGenApi(
 )
 
 client.entities.archive_entity(
-    entity_id="entityId",
+    entity_id="vg_enti_a1b2c3d4e5f6",
 )
 
 ```
@@ -3580,8 +3644,10 @@ client = VideoGenApi(
 )
 
 client.entities.add_entity_reference(
-    entity_id="entityId",
-    file_id="fileId",
+    entity_id="vg_enti_a1b2c3d4e5f6",
+    file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
+    description="Side profile, studio lighting.",
+    is_default=False,
 )
 
 ```
@@ -3678,8 +3744,8 @@ client = VideoGenApi(
 )
 
 client.entities.remove_entity_reference(
-    entity_id="entityId",
-    file_id="fileId",
+    entity_id="vg_enti_a1b2c3d4e5f6",
+    file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
 )
 
 ```
@@ -3737,7 +3803,7 @@ client.entities.remove_entity_reference(
 <dl>
 <dd>
 
-Generate text from a prompt using a general-purpose language model. Choose a quality tier with `model` (`LOW`, `STANDARD`, or `HIGH`). Synchronous — the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
+Generate text from a prompt using a general-purpose language model. Choose a quality tier with `quality` (`LOW`, `STANDARD`, `HIGH`, or `MAX`). Synchronous: the response includes the generated text. Useful for drafting scripts, titles, descriptions, and other short copy before generating a video.
 </dd>
 </dl>
 </dd>
@@ -3761,7 +3827,9 @@ client = VideoGenApi(
 )
 
 client.text.generate_text(
-    prompt="Write a 30-second upbeat video script about why the sky is blue.",
+    prompt="Write a concise title for a video about staying hydrated.",
+    quality="STANDARD",
+    max_output_tokens=32,
 )
 
 ```
@@ -3794,7 +3862,7 @@ client.text.generate_text(
 <dl>
 <dd>
 
-**model:** `typing.Optional[GenerateTextRequestModel]` — Model quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is highest quality. Defaults to `STANDARD`.
+**quality:** `typing.Optional[GenerateTextRequestQuality]` — Generation quality tier. `LOW` is fastest and cheapest; `STANDARD` balances quality and cost; `HIGH` is higher quality; `MAX` is highest quality. Defaults to `STANDARD`.
     
 </dd>
 </dl>
@@ -4121,9 +4189,10 @@ client = VideoGenApi(
 )
 
 client.webhooks.create_webhook_endpoint(
-    url="url",
+    url="https://webhooks.myapp.com/videogen",
     events=[
-        "tool_execution.succeeded"
+        "tool_execution.succeeded",
+        "tool_execution.failed"
     ],
 )
 

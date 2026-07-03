@@ -8,9 +8,11 @@ from ..types.aspect_ratio import AspectRatio
 from ..types.generate_storyboard_scene import GenerateStoryboardScene
 from ..types.remix_action import RemixAction
 from ..types.scene_generation import SceneGeneration
+from ..types.script_to_video_request_quality import ScriptToVideoRequestQuality
 from ..types.start_workflow_run_response import StartWorkflowRunResponse
 from ..types.storyboard_to_video_request_quality import StoryboardToVideoRequestQuality
 from ..types.visual_pacing import VisualPacing
+from ..types.voiceover_to_video_request_quality import VoiceoverToVideoRequestQuality
 from ..types.workflow_caption_style import WorkflowCaptionStyle
 from ..types.workflow_run import WorkflowRun
 from ..types.workflow_visual_style import WorkflowVisualStyle
@@ -42,6 +44,7 @@ class WorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[ScriptToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         voice_id: typing.Optional[str] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -64,6 +67,9 @@ class WorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[ScriptToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -96,16 +102,44 @@ class WorkflowsClient:
 
         Examples
         --------
-        from videogen import VideoGenApi, WorkflowVisualStyle
+        from videogen import (
+            RemixAction_EnableCaptions,
+            RemixAction_SetBackgroundMusic,
+            VideoGenApi,
+            WorkflowCaptionStyle,
+            WorkflowRgbColor,
+            WorkflowVisualStyle,
+        )
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.workflows.script_to_video(
-            script="script",
+            script="Staying hydrated keeps your body and mind running at their best. Drinking enough water boosts your energy, focus, and mood. Keep a water bottle nearby and sip throughout the day.",
             visual_style=WorkflowVisualStyle(
-                type="STOCK",
+                type="AI_IMAGE",
+                ai_style="loose watercolor illustration with visible brushstrokes and soft color bleeds",
             ),
+            visual_pacing="MEDIUM",
+            quality="HIGH",
+            remix_actions=[
+                RemixAction_EnableCaptions(
+                    caption_style=WorkflowCaptionStyle(
+                        font_name="Inter",
+                        font_weight=700,
+                        text_color=WorkflowRgbColor(
+                            red=255,
+                            green=255,
+                            blue=255,
+                        ),
+                        vertical_alignment="BOTTOM",
+                    ),
+                ),
+                RemixAction_SetBackgroundMusic(
+                    file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
+                    volume=0.25,
+                ),
+            ],
         )
         """
         _response = self._raw_client.script_to_video(
@@ -113,6 +147,7 @@ class WorkflowsClient:
             visual_style=visual_style,
             aspect_ratio=aspect_ratio,
             visual_pacing=visual_pacing,
+            quality=quality,
             language=language,
             voice_id=voice_id,
             voice_speed=voice_speed,
@@ -131,6 +166,7 @@ class WorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[ScriptToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         voice_id: typing.Optional[str] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -153,6 +189,9 @@ class WorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[ScriptToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -202,6 +241,7 @@ class WorkflowsClient:
             visual_style=visual_style,
             aspect_ratio=aspect_ratio,
             visual_pacing=visual_pacing,
+            quality=quality,
             language=language,
             voice_id=voice_id,
             voice_speed=voice_speed,
@@ -220,6 +260,7 @@ class WorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[VoiceoverToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
         logo_file_id: typing.Optional[str] = OMIT,
@@ -240,6 +281,9 @@ class WorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[VoiceoverToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -266,16 +310,32 @@ class WorkflowsClient:
 
         Examples
         --------
-        from videogen import VideoGenApi, WorkflowVisualStyle
+        from videogen import (
+            RemixAction_EditWithAgent,
+            RemixAction_SetBackgroundMusic,
+            VideoGenApi,
+            WorkflowVisualStyle,
+        )
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.workflows.voiceover_to_video(
-            file_id="fileId",
+            file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
             visual_style=WorkflowVisualStyle(
-                type="STOCK",
+                type="AI_IMAGE",
+                ai_style="warm cinematic photography with soft natural lighting and shallow depth of field",
             ),
+            quality="HIGH",
+            remix_actions=[
+                RemixAction_SetBackgroundMusic(
+                    file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
+                    volume=0.2,
+                ),
+                RemixAction_EditWithAgent(
+                    prompt='Replace the closing title card with "Book a demo today"',
+                ),
+            ],
         )
         """
         _response = self._raw_client.voiceover_to_video(
@@ -283,6 +343,7 @@ class WorkflowsClient:
             visual_style=visual_style,
             aspect_ratio=aspect_ratio,
             visual_pacing=visual_pacing,
+            quality=quality,
             language=language,
             caption_style=caption_style,
             logo_file_id=logo_file_id,
@@ -299,6 +360,7 @@ class WorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[VoiceoverToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
         logo_file_id: typing.Optional[str] = OMIT,
@@ -319,6 +381,9 @@ class WorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[VoiceoverToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -362,6 +427,7 @@ class WorkflowsClient:
             visual_style=visual_style,
             aspect_ratio=aspect_ratio,
             visual_pacing=visual_pacing,
+            quality=quality,
             language=language,
             caption_style=caption_style,
             logo_file_id=logo_file_id,
@@ -430,13 +496,27 @@ class WorkflowsClient:
 
         Examples
         --------
-        from videogen import VideoGenApi
+        from videogen import (
+            RemixAction_AddTransitions,
+            RemixAction_SetBackgroundMusic,
+            VideoGenApi,
+        )
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.workflows.slideshow_to_video(
-            file_id="fileId",
+            file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
+            remix_actions=[
+                RemixAction_AddTransitions(
+                    section_transition="DYNAMIC",
+                    asset_transition="FADE",
+                ),
+                RemixAction_SetBackgroundMusic(
+                    file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
+                    volume=0.2,
+                ),
+            ],
         )
         """
         _response = self._raw_client.slideshow_to_video(
@@ -580,16 +660,29 @@ class WorkflowsClient:
 
         Examples
         --------
-        from videogen import GenerateStoryboardScene, VideoGenApi
+        from videogen import GenerateStoryboardScene, SceneGeneration, VideoGenApi
 
         client = VideoGenApi(
             token="YOUR_TOKEN",
         )
         client.workflows.storyboard_to_video(
+            default_generation=SceneGeneration(
+                type="AI_IMAGE",
+                ai_style="loose watercolor illustration with visible brushstrokes and soft color bleeds",
+            ),
+            default_duration_seconds=5,
             scenes=[
                 GenerateStoryboardScene(
-                    prompt="prompt",
-                )
+                    prompt="A sunrise over a calm mountain lake, mist on the water.",
+                ),
+                GenerateStoryboardScene(
+                    prompt="A hiker reaching the summit, arms raised in triumph.",
+                    generation=SceneGeneration(
+                        type="AI_VIDEO",
+                        ai_style="cinematic film look with dramatic lighting and shallow depth of field",
+                    ),
+                    duration_seconds=6,
+                ),
             ],
         )
         """
@@ -696,7 +789,7 @@ class WorkflowsClient:
             token="YOUR_TOKEN",
         )
         client.workflows.get_workflow_run(
-            workflow_run_id="workflowRunId",
+            workflow_run_id="vg_work_ccm3abc123defcm3xyz789ghi",
         )
         """
         _response = self._raw_client.get_workflow_run(workflow_run_id, request_options=request_options)
@@ -756,6 +849,7 @@ class AsyncWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[ScriptToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         voice_id: typing.Optional[str] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -778,6 +872,9 @@ class AsyncWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[ScriptToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -812,7 +909,14 @@ class AsyncWorkflowsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, WorkflowVisualStyle
+        from videogen import (
+            AsyncVideoGenApi,
+            RemixAction_EnableCaptions,
+            RemixAction_SetBackgroundMusic,
+            WorkflowCaptionStyle,
+            WorkflowRgbColor,
+            WorkflowVisualStyle,
+        )
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -821,10 +925,31 @@ class AsyncWorkflowsClient:
 
         async def main() -> None:
             await client.workflows.script_to_video(
-                script="script",
+                script="Staying hydrated keeps your body and mind running at their best. Drinking enough water boosts your energy, focus, and mood. Keep a water bottle nearby and sip throughout the day.",
                 visual_style=WorkflowVisualStyle(
-                    type="STOCK",
+                    type="AI_IMAGE",
+                    ai_style="loose watercolor illustration with visible brushstrokes and soft color bleeds",
                 ),
+                visual_pacing="MEDIUM",
+                quality="HIGH",
+                remix_actions=[
+                    RemixAction_EnableCaptions(
+                        caption_style=WorkflowCaptionStyle(
+                            font_name="Inter",
+                            font_weight=700,
+                            text_color=WorkflowRgbColor(
+                                red=255,
+                                green=255,
+                                blue=255,
+                            ),
+                            vertical_alignment="BOTTOM",
+                        ),
+                    ),
+                    RemixAction_SetBackgroundMusic(
+                        file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
+                        volume=0.25,
+                    ),
+                ],
             )
 
 
@@ -835,6 +960,7 @@ class AsyncWorkflowsClient:
             visual_style=visual_style,
             aspect_ratio=aspect_ratio,
             visual_pacing=visual_pacing,
+            quality=quality,
             language=language,
             voice_id=voice_id,
             voice_speed=voice_speed,
@@ -853,6 +979,7 @@ class AsyncWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[ScriptToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         voice_id: typing.Optional[str] = OMIT,
         voice_speed: typing.Optional[float] = OMIT,
@@ -875,6 +1002,9 @@ class AsyncWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[ScriptToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -932,6 +1062,7 @@ class AsyncWorkflowsClient:
             visual_style=visual_style,
             aspect_ratio=aspect_ratio,
             visual_pacing=visual_pacing,
+            quality=quality,
             language=language,
             voice_id=voice_id,
             voice_speed=voice_speed,
@@ -950,6 +1081,7 @@ class AsyncWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[VoiceoverToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
         logo_file_id: typing.Optional[str] = OMIT,
@@ -970,6 +1102,9 @@ class AsyncWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[VoiceoverToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -998,7 +1133,12 @@ class AsyncWorkflowsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, WorkflowVisualStyle
+        from videogen import (
+            AsyncVideoGenApi,
+            RemixAction_EditWithAgent,
+            RemixAction_SetBackgroundMusic,
+            WorkflowVisualStyle,
+        )
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -1007,10 +1147,21 @@ class AsyncWorkflowsClient:
 
         async def main() -> None:
             await client.workflows.voiceover_to_video(
-                file_id="fileId",
+                file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
                 visual_style=WorkflowVisualStyle(
-                    type="STOCK",
+                    type="AI_IMAGE",
+                    ai_style="warm cinematic photography with soft natural lighting and shallow depth of field",
                 ),
+                quality="HIGH",
+                remix_actions=[
+                    RemixAction_SetBackgroundMusic(
+                        file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
+                        volume=0.2,
+                    ),
+                    RemixAction_EditWithAgent(
+                        prompt='Replace the closing title card with "Book a demo today"',
+                    ),
+                ],
             )
 
 
@@ -1021,6 +1172,7 @@ class AsyncWorkflowsClient:
             visual_style=visual_style,
             aspect_ratio=aspect_ratio,
             visual_pacing=visual_pacing,
+            quality=quality,
             language=language,
             caption_style=caption_style,
             logo_file_id=logo_file_id,
@@ -1037,6 +1189,7 @@ class AsyncWorkflowsClient:
         visual_style: WorkflowVisualStyle,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         visual_pacing: typing.Optional[VisualPacing] = OMIT,
+        quality: typing.Optional[VoiceoverToVideoRequestQuality] = OMIT,
         language: typing.Optional[str] = OMIT,
         caption_style: typing.Optional[WorkflowCaptionStyle] = OMIT,
         logo_file_id: typing.Optional[str] = OMIT,
@@ -1057,6 +1210,9 @@ class AsyncWorkflowsClient:
         aspect_ratio : typing.Optional[AspectRatio]
 
         visual_pacing : typing.Optional[VisualPacing]
+
+        quality : typing.Optional[VoiceoverToVideoRequestQuality]
+            Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
 
         language : typing.Optional[str]
             Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
@@ -1108,6 +1264,7 @@ class AsyncWorkflowsClient:
             visual_style=visual_style,
             aspect_ratio=aspect_ratio,
             visual_pacing=visual_pacing,
+            quality=quality,
             language=language,
             caption_style=caption_style,
             logo_file_id=logo_file_id,
@@ -1178,7 +1335,11 @@ class AsyncWorkflowsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi
+        from videogen import (
+            AsyncVideoGenApi,
+            RemixAction_AddTransitions,
+            RemixAction_SetBackgroundMusic,
+        )
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -1187,7 +1348,17 @@ class AsyncWorkflowsClient:
 
         async def main() -> None:
             await client.workflows.slideshow_to_video(
-                file_id="fileId",
+                file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
+                remix_actions=[
+                    RemixAction_AddTransitions(
+                        section_transition="DYNAMIC",
+                        asset_transition="FADE",
+                    ),
+                    RemixAction_SetBackgroundMusic(
+                        file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
+                        volume=0.2,
+                    ),
+                ],
             )
 
 
@@ -1344,7 +1515,7 @@ class AsyncWorkflowsClient:
         --------
         import asyncio
 
-        from videogen import AsyncVideoGenApi, GenerateStoryboardScene
+        from videogen import AsyncVideoGenApi, GenerateStoryboardScene, SceneGeneration
 
         client = AsyncVideoGenApi(
             token="YOUR_TOKEN",
@@ -1353,10 +1524,23 @@ class AsyncWorkflowsClient:
 
         async def main() -> None:
             await client.workflows.storyboard_to_video(
+                default_generation=SceneGeneration(
+                    type="AI_IMAGE",
+                    ai_style="loose watercolor illustration with visible brushstrokes and soft color bleeds",
+                ),
+                default_duration_seconds=5,
                 scenes=[
                     GenerateStoryboardScene(
-                        prompt="prompt",
-                    )
+                        prompt="A sunrise over a calm mountain lake, mist on the water.",
+                    ),
+                    GenerateStoryboardScene(
+                        prompt="A hiker reaching the summit, arms raised in triumph.",
+                        generation=SceneGeneration(
+                            type="AI_VIDEO",
+                            ai_style="cinematic film look with dramatic lighting and shallow depth of field",
+                        ),
+                        duration_seconds=6,
+                    ),
                 ],
             )
 
@@ -1479,7 +1663,7 @@ class AsyncWorkflowsClient:
 
         async def main() -> None:
             await client.workflows.get_workflow_run(
-                workflow_run_id="workflowRunId",
+                workflow_run_id="vg_work_ccm3abc123defcm3xyz789ghi",
             )
 
 

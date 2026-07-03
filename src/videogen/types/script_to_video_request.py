@@ -8,6 +8,7 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
 from .aspect_ratio import AspectRatio
 from .remix_action import RemixAction
+from .script_to_video_request_quality import ScriptToVideoRequestQuality
 from .visual_pacing import VisualPacing
 from .workflow_visual_style import WorkflowVisualStyle
 
@@ -27,6 +28,11 @@ class ScriptToVideoRequest(UniversalBaseModel):
     visual_pacing: typing_extensions.Annotated[
         typing.Optional[VisualPacing], FieldMetadata(alias="visualPacing"), pydantic.Field(alias="visualPacing")
     ] = None
+    quality: typing.Optional[ScriptToVideoRequestQuality] = pydantic.Field(default=None)
+    """
+    Image generation quality tier for AI-generated visuals. LOW is fastest and cheapest; STANDARD balances quality and cost; HIGH is highest quality. Only applies when `visualStyle.type` is AI_IMAGE or ENTITY; STOCK pulls existing footage and is unaffected. Defaults to STANDARD.
+    """
+
     language: typing.Optional[str] = pydantic.Field(default=None)
     """
     Output language as a BCP-47 code (e.g. `en`, `es`, `fr`). Defaults to English.
