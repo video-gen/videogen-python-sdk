@@ -16,7 +16,11 @@ class ProjectResponse(UniversalBaseModel):
     Simplified project metadata.
     """
 
-    project_id: typing_extensions.Annotated[str, FieldMetadata(alias="projectId"), pydantic.Field(alias="projectId")]
+    project_id: typing_extensions.Annotated[
+        str,
+        FieldMetadata(alias="projectId"),
+        pydantic.Field(alias="projectId", description="Opaque project id (e.g. `vg_proj_...`)."),
+    ]
     title: str
     aspect_ratio: typing_extensions.Annotated[
         AspectRatio, FieldMetadata(alias="aspectRatio"), pydantic.Field(alias="aspectRatio")

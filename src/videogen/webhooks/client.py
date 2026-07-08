@@ -120,7 +120,7 @@ class WebhooksClient:
         Parameters
         ----------
         endpoint_id : str
-            The webhook endpoint id returned by `POST /v1/webhooks/endpoints`.
+            The webhook endpoint id (e.g. `ep_...`) returned by `POST /v1/webhooks/endpoints`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -137,7 +137,7 @@ class WebhooksClient:
             token="YOUR_TOKEN",
         )
         client.webhooks.delete_webhook_endpoint(
-            endpoint_id="endpointId",
+            endpoint_id="ep_28KVX7vT9mQ2sL4nR6pB1cD0fG",
         )
         """
         _response = self._raw_client.delete_webhook_endpoint(endpoint_id, request_options=request_options)
@@ -269,7 +269,7 @@ class AsyncWebhooksClient:
         Parameters
         ----------
         endpoint_id : str
-            The webhook endpoint id returned by `POST /v1/webhooks/endpoints`.
+            The webhook endpoint id (e.g. `ep_...`) returned by `POST /v1/webhooks/endpoints`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -291,7 +291,7 @@ class AsyncWebhooksClient:
 
         async def main() -> None:
             await client.webhooks.delete_webhook_endpoint(
-                endpoint_id="endpointId",
+                endpoint_id="ep_28KVX7vT9mQ2sL4nR6pB1cD0fG",
             )
 
 

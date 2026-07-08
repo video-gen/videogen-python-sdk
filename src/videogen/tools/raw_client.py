@@ -15,6 +15,7 @@ from ..types.aspect_ratio import AspectRatio
 from ..types.executed_tool import ExecutedTool
 from ..types.pronunciation_replacement import PronunciationReplacement
 from ..types.start_tool_execution_response import StartToolExecutionResponse
+from ..types.tool_execution_list_response import ToolExecutionListResponse
 from ..types.watermark_mode import WatermarkMode
 from .types.generate_image_request_quality import GenerateImageRequestQuality
 from .types.generate_video_clip_request_quality import GenerateVideoClipRequestQuality
@@ -927,6 +928,65 @@ class RawToolsClient:
                     StartToolExecutionResponse,
                     parse_obj_as(
                         type_=StartToolExecutionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def list_tool_executions(
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        self_only: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> HttpResponse[ToolExecutionListResponse]:
+        """
+        List tool executions started via the API, most recently created first. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all executions for the team are returned. Cursor-paginated; see the [Pagination](/pagination) guide.
+
+        Parameters
+        ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
+
+        self_only : typing.Optional[bool]
+            When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[ToolExecutionListResponse]
+            Paginated list of tool executions.
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/tools/executions",
+            method="GET",
+            params={
+                "limit": limit,
+                "cursor": cursor,
+                "selfOnly": self_only,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ToolExecutionListResponse,
+                    parse_obj_as(
+                        type_=ToolExecutionListResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -1887,6 +1947,65 @@ class AsyncRawToolsClient:
                     StartToolExecutionResponse,
                     parse_obj_as(
                         type_=StartToolExecutionResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def list_tool_executions(
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        self_only: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> AsyncHttpResponse[ToolExecutionListResponse]:
+        """
+        List tool executions started via the API, most recently created first. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all executions for the team are returned. Cursor-paginated; see the [Pagination](/pagination) guide.
+
+        Parameters
+        ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
+
+        self_only : typing.Optional[bool]
+            When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[ToolExecutionListResponse]
+            Paginated list of tool executions.
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/tools/executions",
+            method="GET",
+            params={
+                "limit": limit,
+                "cursor": cursor,
+                "selfOnly": self_only,
+            },
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    ToolExecutionListResponse,
+                    parse_obj_as(
+                        type_=ToolExecutionListResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

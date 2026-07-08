@@ -27,7 +27,7 @@ class Entity(UniversalBaseModel):
         FieldMetadata(alias="entityType"),
         pydantic.Field(
             alias="entityType",
-            description="ACTOR features a consistent character; VISUAL_STYLE guides the look of generated images.",
+            description="ACTOR features a consistent character; PRODUCT features a consistent product or object; VISUAL_STYLE guides the look of generated images.",
         ),
     ]
     name: str = pydantic.Field()

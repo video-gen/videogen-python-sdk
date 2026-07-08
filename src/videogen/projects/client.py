@@ -54,7 +54,7 @@ class ProjectsClient:
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         self_only : typing.Optional[bool]
-            When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
+            When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
 
         include_ui_projects : typing.Optional[bool]
             When true, includes dashboard-created projects in addition to API-created projects. When false (default), returns only API-created projects.
@@ -112,7 +112,7 @@ class ProjectsClient:
             token="YOUR_TOKEN",
         )
         client.projects.get_project(
-            project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
+            project_id="vg_proj_9dTk3mQ1rZ7xP4vN2sB6wc",
         )
         """
         _response = self._raw_client.get_project(project_id, request_options=request_options)
@@ -151,7 +151,7 @@ class ProjectsClient:
             token="YOUR_TOKEN",
         )
         client.projects.export_project(
-            project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
+            project_id="vg_proj_9dTk3mQ1rZ7xP4vN2sB6wc",
             quality="FULL_HIGH",
         )
         """
@@ -170,7 +170,7 @@ class ProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         export_id : str
-            The export id returned by `POST /v1/projects/{projectId}/export`.
+            The export id (e.g. `vg_expo_...`) returned by `POST /v1/projects/{projectId}/export`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -188,8 +188,8 @@ class ProjectsClient:
             token="YOUR_TOKEN",
         )
         client.projects.get_project_export(
-            project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
-            export_id="2a1b3c4d-5e6f-7890-ab12-cdef34567890",
+            project_id="vg_proj_9dTk3mQ1rZ7xP4vN2sB6wc",
+            export_id="vg_expo_4bHn8pR2sY5xM1vL3tC7wd",
         )
         """
         _response = self._raw_client.get_project_export(project_id, export_id, request_options=request_options)
@@ -315,7 +315,7 @@ class AsyncProjectsClient:
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         self_only : typing.Optional[bool]
-            When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
+            When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
 
         include_ui_projects : typing.Optional[bool]
             When true, includes dashboard-created projects in addition to API-created projects. When false (default), returns only API-created projects.
@@ -386,7 +386,7 @@ class AsyncProjectsClient:
 
         async def main() -> None:
             await client.projects.get_project(
-                project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
+                project_id="vg_proj_9dTk3mQ1rZ7xP4vN2sB6wc",
             )
 
 
@@ -433,7 +433,7 @@ class AsyncProjectsClient:
 
         async def main() -> None:
             await client.projects.export_project(
-                project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
+                project_id="vg_proj_9dTk3mQ1rZ7xP4vN2sB6wc",
                 quality="FULL_HIGH",
             )
 
@@ -455,7 +455,7 @@ class AsyncProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         export_id : str
-            The export id returned by `POST /v1/projects/{projectId}/export`.
+            The export id (e.g. `vg_expo_...`) returned by `POST /v1/projects/{projectId}/export`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -478,8 +478,8 @@ class AsyncProjectsClient:
 
         async def main() -> None:
             await client.projects.get_project_export(
-                project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
-                export_id="2a1b3c4d-5e6f-7890-ab12-cdef34567890",
+                project_id="vg_proj_9dTk3mQ1rZ7xP4vN2sB6wc",
+                export_id="vg_expo_4bHn8pR2sY5xM1vL3tC7wd",
             )
 
 

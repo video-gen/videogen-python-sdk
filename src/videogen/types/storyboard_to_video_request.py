@@ -8,6 +8,7 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
 from .aspect_ratio import AspectRatio
 from .generate_storyboard_scene import GenerateStoryboardScene
+from .remix_action import RemixAction
 from .scene_generation import SceneGeneration
 from .storyboard_to_video_request_quality import StoryboardToVideoRequestQuality
 
@@ -48,6 +49,14 @@ class StoryboardToVideoRequest(UniversalBaseModel):
         pydantic.Field(
             alias="workflowAgentContext",
             description="Optional storyboard-wide production notes for the AI that builds the video (e.g. recurring characters or props, a consistent setting, or overall staging guidance). Applies across every scene; per-scene direction goes in each scene's `prompt`.",
+        ),
+    ] = None
+    remix_actions: typing_extensions.Annotated[
+        typing.Optional[typing.List[RemixAction]],
+        FieldMetadata(alias="remixActions"),
+        pydantic.Field(
+            alias="remixActions",
+            description="Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. `ENABLE_CAPTIONS` shows and styles captions, `SET_BACKGROUND_MUSIC` sets a music track, `ADD_TRANSITIONS` stamps transitions between scenes, and `SET_LOGO` overlays a logo. `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.",
         ),
     ] = None
 

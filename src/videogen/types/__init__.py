@@ -33,9 +33,12 @@ if typing.TYPE_CHECKING:
     from .get_files_response import GetFilesResponse
     from .image_asset_request import ImageAssetRequest
     from .image_quality import ImageQuality
+    from .language import Language
+    from .language_list_response import LanguageListResponse
     from .list_entities_response import ListEntitiesResponse
     from .list_projects_response import ListProjectsResponse
     from .list_remix_actions_response import ListRemixActionsResponse
+    from .me_response import MeResponse
     from .project_export import ProjectExport
     from .project_export_status import ProjectExportStatus
     from .project_response import ProjectResponse
@@ -44,29 +47,42 @@ if typing.TYPE_CHECKING:
     from .remix_action import (
         RemixAction,
         RemixAction_AddTransitions,
+        RemixAction_ChangeNarrator,
         RemixAction_CleanUpTranscript,
         RemixAction_ConvertImagesToVideos,
         RemixAction_DisableCaptions,
         RemixAction_EditWithAgent,
         RemixAction_EnableCaptions,
+        RemixAction_GenerateMusic,
+        RemixAction_RegenerateImages,
         RemixAction_ResizeProject,
         RemixAction_SetBackgroundMusic,
         RemixAction_SetLogo,
+        RemixAction_ShuffleStockVisuals,
+        RemixAction_TranslateProject,
+        RemixAction_UpscaleAssets,
     )
     from .remix_action_add_transitions import RemixActionAddTransitions
+    from .remix_action_change_narrator import RemixActionChangeNarrator
     from .remix_action_clean_up_transcript import RemixActionCleanUpTranscript
     from .remix_action_convert_images_to_videos import RemixActionConvertImagesToVideos
     from .remix_action_disable_captions import RemixActionDisableCaptions
     from .remix_action_edit_with_agent import RemixActionEditWithAgent
     from .remix_action_edit_with_agent_mode import RemixActionEditWithAgentMode
     from .remix_action_enable_captions import RemixActionEnableCaptions
+    from .remix_action_generate_music import RemixActionGenerateMusic
+    from .remix_action_regenerate_images import RemixActionRegenerateImages
+    from .remix_action_regenerate_images_model_mode import RemixActionRegenerateImagesModelMode
     from .remix_action_resize_project import RemixActionResizeProject
     from .remix_action_run import RemixActionRun
     from .remix_action_set_background_music import RemixActionSetBackgroundMusic
     from .remix_action_set_logo import RemixActionSetLogo
     from .remix_action_set_logo_position import RemixActionSetLogoPosition
+    from .remix_action_shuffle_stock_visuals import RemixActionShuffleStockVisuals
     from .remix_action_status import RemixActionStatus
+    from .remix_action_translate_project import RemixActionTranslateProject
     from .remix_action_type import RemixActionType
+    from .remix_action_upscale_assets import RemixActionUpscaleAssets
     from .remix_project_response import RemixProjectResponse
     from .remix_transition_style import RemixTransitionStyle
     from .scene_generation import SceneGeneration
@@ -83,6 +99,7 @@ if typing.TYPE_CHECKING:
     from .storage_file_type import StorageFileType
     from .storyboard_to_video_request import StoryboardToVideoRequest
     from .storyboard_to_video_request_quality import StoryboardToVideoRequestQuality
+    from .tool_execution_list_response import ToolExecutionListResponse
     from .tool_execution_webhook_event_name import ToolExecutionWebhookEventName
     from .tool_execution_webhook_payload import ToolExecutionWebhookPayload
     from .tool_success_result import ToolSuccessResult
@@ -106,6 +123,7 @@ if typing.TYPE_CHECKING:
     from .workflow_caption_style_vertical_alignment import WorkflowCaptionStyleVerticalAlignment
     from .workflow_rgb_color import WorkflowRgbColor
     from .workflow_run import WorkflowRun
+    from .workflow_run_list_response import WorkflowRunListResponse
     from .workflow_run_status import WorkflowRunStatus
     from .workflow_run_webhook_event_name import WorkflowRunWebhookEventName
     from .workflow_run_webhook_payload import WorkflowRunWebhookPayload
@@ -140,9 +158,12 @@ _dynamic_imports: typing.Dict[str, str] = {
     "GetFilesResponse": ".get_files_response",
     "ImageAssetRequest": ".image_asset_request",
     "ImageQuality": ".image_quality",
+    "Language": ".language",
+    "LanguageListResponse": ".language_list_response",
     "ListEntitiesResponse": ".list_entities_response",
     "ListProjectsResponse": ".list_projects_response",
     "ListRemixActionsResponse": ".list_remix_actions_response",
+    "MeResponse": ".me_response",
     "ProjectExport": ".project_export",
     "ProjectExportStatus": ".project_export_status",
     "ProjectResponse": ".project_response",
@@ -150,28 +171,41 @@ _dynamic_imports: typing.Dict[str, str] = {
     "PronunciationReplacement": ".pronunciation_replacement",
     "RemixAction": ".remix_action",
     "RemixActionAddTransitions": ".remix_action_add_transitions",
+    "RemixActionChangeNarrator": ".remix_action_change_narrator",
     "RemixActionCleanUpTranscript": ".remix_action_clean_up_transcript",
     "RemixActionConvertImagesToVideos": ".remix_action_convert_images_to_videos",
     "RemixActionDisableCaptions": ".remix_action_disable_captions",
     "RemixActionEditWithAgent": ".remix_action_edit_with_agent",
     "RemixActionEditWithAgentMode": ".remix_action_edit_with_agent_mode",
     "RemixActionEnableCaptions": ".remix_action_enable_captions",
+    "RemixActionGenerateMusic": ".remix_action_generate_music",
+    "RemixActionRegenerateImages": ".remix_action_regenerate_images",
+    "RemixActionRegenerateImagesModelMode": ".remix_action_regenerate_images_model_mode",
     "RemixActionResizeProject": ".remix_action_resize_project",
     "RemixActionRun": ".remix_action_run",
     "RemixActionSetBackgroundMusic": ".remix_action_set_background_music",
     "RemixActionSetLogo": ".remix_action_set_logo",
     "RemixActionSetLogoPosition": ".remix_action_set_logo_position",
+    "RemixActionShuffleStockVisuals": ".remix_action_shuffle_stock_visuals",
     "RemixActionStatus": ".remix_action_status",
+    "RemixActionTranslateProject": ".remix_action_translate_project",
     "RemixActionType": ".remix_action_type",
+    "RemixActionUpscaleAssets": ".remix_action_upscale_assets",
     "RemixAction_AddTransitions": ".remix_action",
+    "RemixAction_ChangeNarrator": ".remix_action",
     "RemixAction_CleanUpTranscript": ".remix_action",
     "RemixAction_ConvertImagesToVideos": ".remix_action",
     "RemixAction_DisableCaptions": ".remix_action",
     "RemixAction_EditWithAgent": ".remix_action",
     "RemixAction_EnableCaptions": ".remix_action",
+    "RemixAction_GenerateMusic": ".remix_action",
+    "RemixAction_RegenerateImages": ".remix_action",
     "RemixAction_ResizeProject": ".remix_action",
     "RemixAction_SetBackgroundMusic": ".remix_action",
     "RemixAction_SetLogo": ".remix_action",
+    "RemixAction_ShuffleStockVisuals": ".remix_action",
+    "RemixAction_TranslateProject": ".remix_action",
+    "RemixAction_UpscaleAssets": ".remix_action",
     "RemixProjectResponse": ".remix_project_response",
     "RemixTransitionStyle": ".remix_transition_style",
     "SceneGeneration": ".scene_generation",
@@ -188,6 +222,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "StorageFileType": ".storage_file_type",
     "StoryboardToVideoRequest": ".storyboard_to_video_request",
     "StoryboardToVideoRequestQuality": ".storyboard_to_video_request_quality",
+    "ToolExecutionListResponse": ".tool_execution_list_response",
     "ToolExecutionWebhookEventName": ".tool_execution_webhook_event_name",
     "ToolExecutionWebhookPayload": ".tool_execution_webhook_payload",
     "ToolSuccessResult": ".tool_success_result",
@@ -211,6 +246,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "WorkflowCaptionStyleVerticalAlignment": ".workflow_caption_style_vertical_alignment",
     "WorkflowRgbColor": ".workflow_rgb_color",
     "WorkflowRun": ".workflow_run",
+    "WorkflowRunListResponse": ".workflow_run_list_response",
     "WorkflowRunStatus": ".workflow_run_status",
     "WorkflowRunWebhookEventName": ".workflow_run_webhook_event_name",
     "WorkflowRunWebhookPayload": ".workflow_run_webhook_payload",
@@ -269,9 +305,12 @@ __all__ = [
     "GetFilesResponse",
     "ImageAssetRequest",
     "ImageQuality",
+    "Language",
+    "LanguageListResponse",
     "ListEntitiesResponse",
     "ListProjectsResponse",
     "ListRemixActionsResponse",
+    "MeResponse",
     "ProjectExport",
     "ProjectExportStatus",
     "ProjectResponse",
@@ -279,28 +318,41 @@ __all__ = [
     "PronunciationReplacement",
     "RemixAction",
     "RemixActionAddTransitions",
+    "RemixActionChangeNarrator",
     "RemixActionCleanUpTranscript",
     "RemixActionConvertImagesToVideos",
     "RemixActionDisableCaptions",
     "RemixActionEditWithAgent",
     "RemixActionEditWithAgentMode",
     "RemixActionEnableCaptions",
+    "RemixActionGenerateMusic",
+    "RemixActionRegenerateImages",
+    "RemixActionRegenerateImagesModelMode",
     "RemixActionResizeProject",
     "RemixActionRun",
     "RemixActionSetBackgroundMusic",
     "RemixActionSetLogo",
     "RemixActionSetLogoPosition",
+    "RemixActionShuffleStockVisuals",
     "RemixActionStatus",
+    "RemixActionTranslateProject",
     "RemixActionType",
+    "RemixActionUpscaleAssets",
     "RemixAction_AddTransitions",
+    "RemixAction_ChangeNarrator",
     "RemixAction_CleanUpTranscript",
     "RemixAction_ConvertImagesToVideos",
     "RemixAction_DisableCaptions",
     "RemixAction_EditWithAgent",
     "RemixAction_EnableCaptions",
+    "RemixAction_GenerateMusic",
+    "RemixAction_RegenerateImages",
     "RemixAction_ResizeProject",
     "RemixAction_SetBackgroundMusic",
     "RemixAction_SetLogo",
+    "RemixAction_ShuffleStockVisuals",
+    "RemixAction_TranslateProject",
+    "RemixAction_UpscaleAssets",
     "RemixProjectResponse",
     "RemixTransitionStyle",
     "SceneGeneration",
@@ -317,6 +369,7 @@ __all__ = [
     "StorageFileType",
     "StoryboardToVideoRequest",
     "StoryboardToVideoRequestQuality",
+    "ToolExecutionListResponse",
     "ToolExecutionWebhookEventName",
     "ToolExecutionWebhookPayload",
     "ToolSuccessResult",
@@ -340,6 +393,7 @@ __all__ = [
     "WorkflowCaptionStyleVerticalAlignment",
     "WorkflowRgbColor",
     "WorkflowRun",
+    "WorkflowRunListResponse",
     "WorkflowRunStatus",
     "WorkflowRunWebhookEventName",
     "WorkflowRunWebhookPayload",

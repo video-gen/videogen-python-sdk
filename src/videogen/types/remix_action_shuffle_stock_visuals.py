@@ -3,20 +3,13 @@
 import typing
 
 import pydantic
-import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from ..core.serialization import FieldMetadata
 
 
-class ExportProjectResponse(UniversalBaseModel):
-    export_id: typing_extensions.Annotated[
-        str,
-        FieldMetadata(alias="exportId"),
-        pydantic.Field(
-            alias="exportId",
-            description="Opaque export id (e.g. `vg_expo_...`). Poll `GET /v1/projects/{projectId}/exports/{exportId}` or subscribe to webhooks for completion.",
-        ),
-    ]
+class RemixActionShuffleStockVisuals(UniversalBaseModel):
+    """
+    Replace every stock (library) visual in the project with a fresh alternative from the same search, replacing each in place. Runs asynchronously: each stock asset's original search is re-run, excluding the currently-shown result. If the project has no shuffleable stock visuals, the action is skipped and completes successfully without changing anything.
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

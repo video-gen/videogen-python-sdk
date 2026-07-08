@@ -14,12 +14,14 @@ class ProjectExport(UniversalBaseModel):
     export_id: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="exportId"),
-        pydantic.Field(alias="exportId", description="Opaque export id matching the original request."),
+        pydantic.Field(
+            alias="exportId", description="Opaque export id (e.g. `vg_expo_...`) matching the original request."
+        ),
     ]
     project_id: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="projectId"),
-        pydantic.Field(alias="projectId", description="Id of the exported project."),
+        pydantic.Field(alias="projectId", description="Id of the exported project (e.g. `vg_proj_...`)."),
     ]
     status: ProjectExportStatus
     progress_percentage: typing_extensions.Annotated[

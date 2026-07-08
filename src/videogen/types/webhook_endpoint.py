@@ -10,7 +10,11 @@ from .webhook_event_name import WebhookEventName
 
 
 class WebhookEndpoint(UniversalBaseModel):
-    endpoint_id: typing_extensions.Annotated[str, FieldMetadata(alias="endpointId"), pydantic.Field(alias="endpointId")]
+    endpoint_id: typing_extensions.Annotated[
+        str,
+        FieldMetadata(alias="endpointId"),
+        pydantic.Field(alias="endpointId", description="Webhook endpoint id (e.g. `ep_...`)."),
+    ]
     url: str
     events: typing.List[WebhookEventName]
     description: typing.Optional[str] = None

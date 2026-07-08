@@ -22,7 +22,9 @@ class RemixActionRun(UniversalBaseModel):
     project_id: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="projectId"),
-        pydantic.Field(alias="projectId", description="Id of the project this remix action edits."),
+        pydantic.Field(
+            alias="projectId", description="Id of the project this remix action edits (e.g. `vg_proj_...`)."
+        ),
     ]
     project_url: typing_extensions.Annotated[
         str,

@@ -27,7 +27,7 @@ Creates a project and generates a narrated video from a prompt or script. Return
 <dd>
 
 ```python
-from videogen import VideoGenApi, WorkflowVisualStyle, RemixAction_EnableCaptions, WorkflowCaptionStyle, WorkflowRgbColor, RemixAction_SetBackgroundMusic
+from videogen import VideoGenApi, WorkflowVisualStyle, RemixAction_EnableCaptions, RemixAction_ConvertImagesToVideos
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -44,21 +44,11 @@ client.workflows.script_to_video(
     visual_pacing="MEDIUM",
     quality="HIGH",
     remix_actions=[
-        RemixAction_EnableCaptions(
-            caption_style=WorkflowCaptionStyle(
-                font_name="Inter",
-                font_weight=700,
-                text_color=WorkflowRgbColor(
-                    red=255,
-                    green=255,
-                    blue=255,
-                ),
-                vertical_alignment="BOTTOM",
-            ),
-        ),
-        RemixAction_SetBackgroundMusic(
-            file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
-            volume=0.25,
+        RemixAction_EnableCaptions(),
+        RemixAction_ConvertImagesToVideos(
+            motion_prompt="slow cinematic push-in",
+            mute_output_videos=True,
+            quality="HIGH",
         )
     ],
 )
@@ -200,7 +190,7 @@ Creates a project from an uploaded voiceover file and generates a video with mat
 <dd>
 
 ```python
-from videogen import VideoGenApi, WorkflowVisualStyle, RemixAction_SetBackgroundMusic, RemixAction_EditWithAgent
+from videogen import VideoGenApi, WorkflowVisualStyle, RemixAction_ConvertImagesToVideos, RemixAction_EditWithAgent
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -216,9 +206,10 @@ client.workflows.voiceover_to_video(
     ),
     quality="HIGH",
     remix_actions=[
-        RemixAction_SetBackgroundMusic(
-            file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
-            volume=0.2,
+        RemixAction_ConvertImagesToVideos(
+            motion_prompt="gentle parallax drift",
+            mute_output_videos=True,
+            quality="HIGH",
         ),
         RemixAction_EditWithAgent(
             prompt="Replace the closing title card with \"Book a demo today\"",
@@ -363,7 +354,7 @@ Creates a project from an uploaded PDF or PowerPoint file and generates an AI-na
 <dd>
 
 ```python
-from videogen import VideoGenApi, RemixAction_AddTransitions, RemixAction_SetBackgroundMusic
+from videogen import VideoGenApi, RemixAction_AddTransitions, RemixAction_ConvertImagesToVideos
 from videogen.environment import VideoGenApiEnvironment
 
 client = VideoGenApi(
@@ -378,9 +369,10 @@ client.workflows.slideshow_to_video(
             section_transition="DYNAMIC",
             asset_transition="FADE",
         ),
-        RemixAction_SetBackgroundMusic(
-            file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
-            volume=0.2,
+        RemixAction_ConvertImagesToVideos(
+            motion_prompt="subtle zoom with soft easing",
+            mute_output_videos=True,
+            quality="HIGH",
         )
     ],
 )
@@ -659,6 +651,93 @@ client.workflows.generate_scenes_from_storyboard(
 </dl>
 </details>
 
+<details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">list_workflow_runs</a>(...) -> WorkflowRunListResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List workflow runs started via the API, most recently created first. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all runs for the team are returned. Cursor-paginated; see the [Pagination](/pagination) guide.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.workflows.list_workflow_runs()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**self_only:** `typing.Optional[bool]` — When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.workflows.<a href="src/videogen/workflows/client.py">get_workflow_run</a>(...) -> WorkflowRun</code></summary>
 <dl>
 <dd>
@@ -845,7 +924,7 @@ client.projects.list_projects()
 <dl>
 <dd>
 
-**self_only:** `typing.Optional[bool]` — When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
+**self_only:** `typing.Optional[bool]` — When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
     
 </dd>
 </dl>
@@ -909,7 +988,7 @@ client = VideoGenApi(
 )
 
 client.projects.get_project(
-    project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
+    project_id="vg_proj_9dTk3mQ1rZ7xP4vN2sB6wc",
 )
 
 ```
@@ -982,7 +1061,7 @@ client = VideoGenApi(
 )
 
 client.projects.export_project(
-    project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
+    project_id="vg_proj_9dTk3mQ1rZ7xP4vN2sB6wc",
     quality="FULL_HIGH",
 )
 
@@ -1064,8 +1143,8 @@ client = VideoGenApi(
 )
 
 client.projects.get_project_export(
-    project_id="1f0a2b3c-4d5e-6789-ab12-cdef34567890",
-    export_id="2a1b3c4d-5e6f-7890-ab12-cdef34567890",
+    project_id="vg_proj_9dTk3mQ1rZ7xP4vN2sB6wc",
+    export_id="vg_expo_4bHn8pR2sY5xM1vL3tC7wd",
 )
 
 ```
@@ -1090,7 +1169,7 @@ client.projects.get_project_export(
 <dl>
 <dd>
 
-**export_id:** `str` — The export id returned by `POST /v1/projects/{projectId}/export`.
+**export_id:** `str` — The export id (e.g. `vg_expo_...`) returned by `POST /v1/projects/{projectId}/export`.
     
 </dd>
 </dl>
@@ -2495,6 +2574,93 @@ client.tools.cancel_tool_execution(
 </dl>
 </details>
 
+<details><summary><code>client.tools.<a href="src/videogen/tools/client.py">list_tool_executions</a>(...) -> ToolExecutionListResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List tool executions started via the API, most recently created first. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all executions for the team are returned. Cursor-paginated; see the [Pagination](/pagination) guide.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.tools.list_tool_executions()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**limit:** `typing.Optional[int]` — Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**cursor:** `typing.Optional[str]` — Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**self_only:** `typing.Optional[bool]` — When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.tools.<a href="src/videogen/tools/client.py">get_tool_execution_info</a>(...) -> ExecutedTool</code></summary>
 <dl>
 <dd>
@@ -3335,7 +3501,7 @@ client.entities.create_entity(
 <dl>
 <dd>
 
-**entity_type:** `CreateEntityRequestEntityType` — ACTOR features a consistent character; VISUAL_STYLE guides the look of generated images.
+**entity_type:** `CreateEntityRequestEntityType` — ACTOR features a consistent character; PRODUCT features a consistent product or object; VISUAL_STYLE guides the look of generated images.
     
 </dd>
 </dl>
@@ -4073,6 +4239,69 @@ client.resources.list_tts_voices()
 </dl>
 </details>
 
+<details><summary><code>client.resources.<a href="src/videogen/resources/client.py">list_languages</a>() -> LanguageListResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List the languages a project can be translated into. Pass a `languageCode` from the response to the `TRANSLATE_PROJECT` remix action. Returns the full catalogue in a single response (not paginated).
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.resources.list_languages()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Webhooks
 <details><summary><code>client.webhooks.<a href="src/videogen/webhooks/client.py">list_webhook_endpoints</a>(...) -> WebhookEndpointListResponse</code></summary>
 <dl>
@@ -4282,7 +4511,7 @@ client = VideoGenApi(
 )
 
 client.webhooks.delete_webhook_endpoint(
-    endpoint_id="endpointId",
+    endpoint_id="ep_28KVX7vT9mQ2sL4nR6pB1cD0fG",
 )
 
 ```
@@ -4299,10 +4528,74 @@ client.webhooks.delete_webhook_endpoint(
 <dl>
 <dd>
 
-**endpoint_id:** `str` — The webhook endpoint id returned by `POST /v1/webhooks/endpoints`.
+**endpoint_id:** `str` — The webhook endpoint id (e.g. `ep_...`) returned by `POST /v1/webhooks/endpoints`.
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Account
+<details><summary><code>client.account.<a href="src/videogen/account/client.py">get_me</a>() -> MeResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Return the account and team behind the API key making the request. Takes no parameters. Call it as a connection test to confirm a key is valid and to discover the `teamId` and account `email` a key belongs to.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.account.get_me()
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
 
 <dl>
 <dd>

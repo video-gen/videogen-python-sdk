@@ -98,7 +98,7 @@ class RawEntitiesClient:
         Parameters
         ----------
         entity_type : CreateEntityRequestEntityType
-            ACTOR features a consistent character; VISUAL_STYLE guides the look of generated images.
+            ACTOR features a consistent character; PRODUCT features a consistent product or object; VISUAL_STYLE guides the look of generated images.
 
         name : str
             Display name.
@@ -493,7 +493,7 @@ class AsyncRawEntitiesClient:
         Parameters
         ----------
         entity_type : CreateEntityRequestEntityType
-            ACTOR features a consistent character; VISUAL_STYLE guides the look of generated images.
+            ACTOR features a consistent character; PRODUCT features a consistent product or object; VISUAL_STYLE guides the look of generated images.
 
         name : str
             Display name.

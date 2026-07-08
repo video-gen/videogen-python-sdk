@@ -2,4 +2,4 @@
 
 import typing
 
-EntityEntityType = typing.Union[typing.Literal["ACTOR", "VISUAL_STYLE"], typing.Any]
+EntityEntityType = typing.Union[typing.Literal["ACTOR", "PRODUCT", "VISUAL_STYLE"], typing.Any]

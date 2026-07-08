@@ -71,7 +71,7 @@ class VoiceoverToVideoRequest(UniversalBaseModel):
         FieldMetadata(alias="remixActions"),
         pydantic.Field(
             alias="remixActions",
-            description="Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.",
+            description="Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.",
         ),
     ] = None
 

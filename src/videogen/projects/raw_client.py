@@ -50,7 +50,7 @@ class RawProjectsClient:
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         self_only : typing.Optional[bool]
-            When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
+            When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
 
         include_ui_projects : typing.Optional[bool]
             When true, includes dashboard-created projects in addition to API-created projects. When false (default), returns only API-created projects.
@@ -204,7 +204,7 @@ class RawProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         export_id : str
-            The export id returned by `POST /v1/projects/{projectId}/export`.
+            The export id (e.g. `vg_expo_...`) returned by `POST /v1/projects/{projectId}/export`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -371,7 +371,7 @@ class AsyncRawProjectsClient:
             Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
 
         self_only : typing.Optional[bool]
-            When true, returns only projects created by the API key's owner. When false (default), returns all projects accessible to the team.
+            When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
 
         include_ui_projects : typing.Optional[bool]
             When true, includes dashboard-created projects in addition to API-created projects. When false (default), returns only API-created projects.
@@ -525,7 +525,7 @@ class AsyncRawProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         export_id : str
-            The export id returned by `POST /v1/projects/{projectId}/export`.
+            The export id (e.g. `vg_expo_...`) returned by `POST /v1/projects/{projectId}/export`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

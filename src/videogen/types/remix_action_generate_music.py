@@ -3,20 +3,18 @@
 import typing
 
 import pydantic
-import typing_extensions
 from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
-from ..core.serialization import FieldMetadata
 
 
-class ExportProjectResponse(UniversalBaseModel):
-    export_id: typing_extensions.Annotated[
-        str,
-        FieldMetadata(alias="exportId"),
-        pydantic.Field(
-            alias="exportId",
-            description="Opaque export id (e.g. `vg_expo_...`). Poll `GET /v1/projects/{projectId}/exports/{exportId}` or subscribe to webhooks for completion.",
-        ),
-    ]
+class RemixActionGenerateMusic(UniversalBaseModel):
+    """
+    Generate a background music track from a text prompt and set it as the project's background music, replacing any existing track. Runs asynchronously.
+    """
+
+    prompt: str = pydantic.Field()
+    """
+    Describe the music to generate (e.g. "upbeat corporate background music with a driving beat").
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

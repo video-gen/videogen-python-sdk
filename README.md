@@ -41,7 +41,7 @@ A full reference for this library is available [here](https://github.com/video-g
 Instantiate and use the client with the following:
 
 ```python
-from videogen import VideoGenApi, WorkflowVisualStyle, RemixAction_EnableCaptions, WorkflowCaptionStyle, WorkflowRgbColor, RemixAction_SetBackgroundMusic
+from videogen import VideoGenApi, WorkflowVisualStyle, RemixAction_EnableCaptions, RemixAction_ConvertImagesToVideos
 
 client = VideoGenApi(
     token="<token>",
@@ -56,21 +56,11 @@ client.workflows.script_to_video(
     visual_pacing="MEDIUM",
     quality="HIGH",
     remix_actions=[
-        RemixAction_EnableCaptions(
-            caption_style=WorkflowCaptionStyle(
-                font_name="Inter",
-                font_weight=700,
-                text_color=WorkflowRgbColor(
-                    red=255,
-                    green=255,
-                    blue=255,
-                ),
-                vertical_alignment="BOTTOM",
-            ),
-        ),
-        RemixAction_SetBackgroundMusic(
-            file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
-            volume=0.25,
+        RemixAction_EnableCaptions(),
+        RemixAction_ConvertImagesToVideos(
+            motion_prompt="slow cinematic push-in",
+            mute_output_videos=True,
+            quality="HIGH",
         )
     ],
 )
@@ -113,21 +103,11 @@ async def main() -> None:
         visual_pacing="MEDIUM",
         quality="HIGH",
         remix_actions=[
-            RemixAction_EnableCaptions(
-                caption_style=WorkflowCaptionStyle(
-                    font_name="Inter",
-                    font_weight=700,
-                    text_color=WorkflowRgbColor(
-                        red=255,
-                        green=255,
-                        blue=255,
-                    ),
-                    vertical_alignment="BOTTOM",
-                ),
-            ),
-            RemixAction_SetBackgroundMusic(
-                file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
-                volume=0.25,
+            RemixAction_EnableCaptions(),
+            RemixAction_ConvertImagesToVideos(
+                motion_prompt="slow cinematic push-in",
+                mute_output_videos=True,
+                quality="HIGH",
             )
         ],
     )

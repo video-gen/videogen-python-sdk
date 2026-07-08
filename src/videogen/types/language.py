@@ -8,15 +8,23 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2, UniversalBaseModel
 from ..core.serialization import FieldMetadata
 
 
-class ExportProjectResponse(UniversalBaseModel):
-    export_id: typing_extensions.Annotated[
+class Language(UniversalBaseModel):
+    """
+    A language a project can be translated into.
+    """
+
+    language_code: typing_extensions.Annotated[
         str,
-        FieldMetadata(alias="exportId"),
+        FieldMetadata(alias="languageCode"),
         pydantic.Field(
-            alias="exportId",
-            description="Opaque export id (e.g. `vg_expo_...`). Poll `GET /v1/projects/{projectId}/exports/{exportId}` or subscribe to webhooks for completion.",
+            alias="languageCode",
+            description="The language code to pass to a `TRANSLATE_PROJECT` remix action (e.g. `es`, `fr`, `ja`).",
         ),
     ]
+    name: str = pydantic.Field()
+    """
+    Human-readable English name of the language (e.g. `Spanish`).
+    """
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

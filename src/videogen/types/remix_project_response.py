@@ -17,7 +17,8 @@ class RemixProjectResponse(UniversalBaseModel):
         str,
         FieldMetadata(alias="projectId"),
         pydantic.Field(
-            alias="projectId", description="Id of the edited project (the duplicate when `saveAsNewProject` was true)."
+            alias="projectId",
+            description="Id of the edited project (e.g. `vg_proj_...`; the duplicate when `saveAsNewProject` was true).",
         ),
     ]
     project_url: typing_extensions.Annotated[

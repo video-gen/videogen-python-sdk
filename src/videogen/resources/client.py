@@ -5,6 +5,7 @@ import typing
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from ..types.avatar_presenter_list_response import AvatarPresenterListResponse
+from ..types.language_list_response import LanguageListResponse
 from ..types.tts_voice_list_response import TtsVoiceListResponse
 from .raw_client import AsyncRawResourcesClient, RawResourcesClient
 
@@ -113,6 +114,32 @@ class ResourcesClient:
             include_deprecated_voices=include_deprecated_voices,
             request_options=request_options,
         )
+        return _response.data
+
+    def list_languages(self, *, request_options: typing.Optional[RequestOptions] = None) -> LanguageListResponse:
+        """
+        List the languages a project can be translated into. Pass a `languageCode` from the response to the `TRANSLATE_PROJECT` remix action. Returns the full catalogue in a single response (not paginated).
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        LanguageListResponse
+            List of supported languages. Pass a `languageCode` to a `TRANSLATE_PROJECT` remix action.
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.resources.list_languages()
+        """
+        _response = self._raw_client.list_languages(request_options=request_options)
         return _response.data
 
 
@@ -236,4 +263,38 @@ class AsyncResourcesClient:
             include_deprecated_voices=include_deprecated_voices,
             request_options=request_options,
         )
+        return _response.data
+
+    async def list_languages(self, *, request_options: typing.Optional[RequestOptions] = None) -> LanguageListResponse:
+        """
+        List the languages a project can be translated into. Pass a `languageCode` from the response to the `TRANSLATE_PROJECT` remix action. Returns the full catalogue in a single response (not paginated).
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        LanguageListResponse
+            List of supported languages. Pass a `languageCode` to a `TRANSLATE_PROJECT` remix action.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.resources.list_languages()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_languages(request_options=request_options)
         return _response.data

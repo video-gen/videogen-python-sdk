@@ -147,7 +147,7 @@ class RawWebhooksClient:
         Parameters
         ----------
         endpoint_id : str
-            The webhook endpoint id returned by `POST /v1/webhooks/endpoints`.
+            The webhook endpoint id (e.g. `ep_...`) returned by `POST /v1/webhooks/endpoints`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -302,7 +302,7 @@ class AsyncRawWebhooksClient:
         Parameters
         ----------
         endpoint_id : str
-            The webhook endpoint id returned by `POST /v1/webhooks/endpoints`.
+            The webhook endpoint id (e.g. `ep_...`) returned by `POST /v1/webhooks/endpoints`.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.

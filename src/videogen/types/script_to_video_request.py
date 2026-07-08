@@ -82,7 +82,7 @@ class ScriptToVideoRequest(UniversalBaseModel):
         FieldMetadata(alias="remixActions"),
         pydantic.Field(
             alias="remixActions",
-            description="Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `SET_BACKGROUND_MUSIC` to add a music bed, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.",
+            description="Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.",
         ),
     ] = None
 

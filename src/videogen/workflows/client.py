@@ -15,6 +15,7 @@ from ..types.visual_pacing import VisualPacing
 from ..types.voiceover_to_video_request_quality import VoiceoverToVideoRequestQuality
 from ..types.workflow_caption_style import WorkflowCaptionStyle
 from ..types.workflow_run import WorkflowRun
+from ..types.workflow_run_list_response import WorkflowRunListResponse
 from ..types.workflow_visual_style import WorkflowVisualStyle
 from .raw_client import AsyncRawWorkflowsClient, RawWorkflowsClient
 
@@ -90,7 +91,7 @@ class WorkflowsClient:
             Optional production notes for the AI that builds the video — visual direction that should not appear in the spoken narration (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; keep the narration itself in `script`.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `SET_BACKGROUND_MUSIC` to add a music bed, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -103,11 +104,9 @@ class WorkflowsClient:
         Examples
         --------
         from videogen import (
+            RemixAction_ConvertImagesToVideos,
             RemixAction_EnableCaptions,
-            RemixAction_SetBackgroundMusic,
             VideoGenApi,
-            WorkflowCaptionStyle,
-            WorkflowRgbColor,
             WorkflowVisualStyle,
         )
 
@@ -123,21 +122,11 @@ class WorkflowsClient:
             visual_pacing="MEDIUM",
             quality="HIGH",
             remix_actions=[
-                RemixAction_EnableCaptions(
-                    caption_style=WorkflowCaptionStyle(
-                        font_name="Inter",
-                        font_weight=700,
-                        text_color=WorkflowRgbColor(
-                            red=255,
-                            green=255,
-                            blue=255,
-                        ),
-                        vertical_alignment="BOTTOM",
-                    ),
-                ),
-                RemixAction_SetBackgroundMusic(
-                    file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
-                    volume=0.25,
+                RemixAction_EnableCaptions(),
+                RemixAction_ConvertImagesToVideos(
+                    motion_prompt="slow cinematic push-in",
+                    mute_output_videos=True,
+                    quality="HIGH",
                 ),
             ],
         )
@@ -212,7 +201,7 @@ class WorkflowsClient:
             Optional production notes for the AI that builds the video — visual direction that should not appear in the spoken narration (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; keep the narration itself in `script`.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `SET_BACKGROUND_MUSIC` to add a music bed, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -298,7 +287,7 @@ class WorkflowsClient:
             Optional production notes for the AI that builds the video — visual direction for how to illustrate the voiceover (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; does not change the uploaded voiceover audio or its transcript.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -311,8 +300,8 @@ class WorkflowsClient:
         Examples
         --------
         from videogen import (
+            RemixAction_ConvertImagesToVideos,
             RemixAction_EditWithAgent,
-            RemixAction_SetBackgroundMusic,
             VideoGenApi,
             WorkflowVisualStyle,
         )
@@ -328,9 +317,10 @@ class WorkflowsClient:
             ),
             quality="HIGH",
             remix_actions=[
-                RemixAction_SetBackgroundMusic(
-                    file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
-                    volume=0.2,
+                RemixAction_ConvertImagesToVideos(
+                    motion_prompt="gentle parallax drift",
+                    mute_output_videos=True,
+                    quality="HIGH",
                 ),
                 RemixAction_EditWithAgent(
                     prompt='Replace the closing title card with "Book a demo today"',
@@ -398,7 +388,7 @@ class WorkflowsClient:
             Optional production notes for the AI that builds the video — visual direction for how to illustrate the voiceover (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; does not change the uploaded voiceover audio or its transcript.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -484,7 +474,7 @@ class WorkflowsClient:
             Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -498,7 +488,7 @@ class WorkflowsClient:
         --------
         from videogen import (
             RemixAction_AddTransitions,
-            RemixAction_SetBackgroundMusic,
+            RemixAction_ConvertImagesToVideos,
             VideoGenApi,
         )
 
@@ -512,9 +502,10 @@ class WorkflowsClient:
                     section_transition="DYNAMIC",
                     asset_transition="FADE",
                 ),
-                RemixAction_SetBackgroundMusic(
-                    file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
-                    volume=0.2,
+                RemixAction_ConvertImagesToVideos(
+                    motion_prompt="subtle zoom with soft easing",
+                    mute_output_videos=True,
+                    quality="HIGH",
                 ),
             ],
         )
@@ -581,7 +572,7 @@ class WorkflowsClient:
             Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -626,6 +617,7 @@ class WorkflowsClient:
         quality: typing.Optional[StoryboardToVideoRequestQuality] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         workflow_agent_context: typing.Optional[str] = OMIT,
+        remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
         """
@@ -649,6 +641,9 @@ class WorkflowsClient:
 
         workflow_agent_context : typing.Optional[str]
             Optional storyboard-wide production notes for the AI that builds the video (e.g. recurring characters or props, a consistent setting, or overall staging guidance). Applies across every scene; per-scene direction goes in each scene's `prompt`.
+
+        remix_actions : typing.Optional[typing.Sequence[RemixAction]]
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. `ENABLE_CAPTIONS` shows and styles captions, `SET_BACKGROUND_MUSIC` sets a music track, `ADD_TRANSITIONS` stamps transitions between scenes, and `SET_LOGO` overlays a logo. `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -693,6 +688,7 @@ class WorkflowsClient:
             quality=quality,
             aspect_ratio=aspect_ratio,
             workflow_agent_context=workflow_agent_context,
+            remix_actions=remix_actions,
             request_options=request_options,
         )
         return _response.data
@@ -706,6 +702,7 @@ class WorkflowsClient:
         quality: typing.Optional[StoryboardToVideoRequestQuality] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         workflow_agent_context: typing.Optional[str] = OMIT,
+        remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
         """
@@ -729,6 +726,9 @@ class WorkflowsClient:
 
         workflow_agent_context : typing.Optional[str]
             Optional storyboard-wide production notes for the AI that builds the video (e.g. recurring characters or props, a consistent setting, or overall staging guidance). Applies across every scene; per-scene direction goes in each scene's `prompt`.
+
+        remix_actions : typing.Optional[typing.Sequence[RemixAction]]
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. `ENABLE_CAPTIONS` shows and styles captions, `SET_BACKGROUND_MUSIC` sets a music track, `ADD_TRANSITIONS` stamps transitions between scenes, and `SET_LOGO` overlays a logo. `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -760,7 +760,52 @@ class WorkflowsClient:
             quality=quality,
             aspect_ratio=aspect_ratio,
             workflow_agent_context=workflow_agent_context,
+            remix_actions=remix_actions,
             request_options=request_options,
+        )
+        return _response.data
+
+    def list_workflow_runs(
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        self_only: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> WorkflowRunListResponse:
+        """
+        List workflow runs started via the API, most recently created first. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all runs for the team are returned. Cursor-paginated; see the [Pagination](/pagination) guide.
+
+        Parameters
+        ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
+
+        self_only : typing.Optional[bool]
+            When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        WorkflowRunListResponse
+            Paginated list of workflow runs.
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.workflows.list_workflow_runs()
+        """
+        _response = self._raw_client.list_workflow_runs(
+            limit=limit, cursor=cursor, self_only=self_only, request_options=request_options
         )
         return _response.data
 
@@ -895,7 +940,7 @@ class AsyncWorkflowsClient:
             Optional production notes for the AI that builds the video — visual direction that should not appear in the spoken narration (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; keep the narration itself in `script`.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `SET_BACKGROUND_MUSIC` to add a music bed, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -911,10 +956,8 @@ class AsyncWorkflowsClient:
 
         from videogen import (
             AsyncVideoGenApi,
+            RemixAction_ConvertImagesToVideos,
             RemixAction_EnableCaptions,
-            RemixAction_SetBackgroundMusic,
-            WorkflowCaptionStyle,
-            WorkflowRgbColor,
             WorkflowVisualStyle,
         )
 
@@ -933,21 +976,11 @@ class AsyncWorkflowsClient:
                 visual_pacing="MEDIUM",
                 quality="HIGH",
                 remix_actions=[
-                    RemixAction_EnableCaptions(
-                        caption_style=WorkflowCaptionStyle(
-                            font_name="Inter",
-                            font_weight=700,
-                            text_color=WorkflowRgbColor(
-                                red=255,
-                                green=255,
-                                blue=255,
-                            ),
-                            vertical_alignment="BOTTOM",
-                        ),
-                    ),
-                    RemixAction_SetBackgroundMusic(
-                        file_id="vg_file_obLD1OX2eJCrEs0071Z4kA",
-                        volume=0.25,
+                    RemixAction_EnableCaptions(),
+                    RemixAction_ConvertImagesToVideos(
+                        motion_prompt="slow cinematic push-in",
+                        mute_output_videos=True,
+                        quality="HIGH",
                     ),
                 ],
             )
@@ -1025,7 +1058,7 @@ class AsyncWorkflowsClient:
             Optional production notes for the AI that builds the video — visual direction that should not appear in the spoken narration (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; keep the narration itself in `script`.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `SET_BACKGROUND_MUSIC` to add a music bed, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Recommended for script-to-video: `ENABLE_CAPTIONS` to show and style captions, `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections, and `SET_LOGO` to overlay a logo (this workflow has no native caption-style or logo fields). `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1119,7 +1152,7 @@ class AsyncWorkflowsClient:
             Optional production notes for the AI that builds the video — visual direction for how to illustrate the voiceover (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; does not change the uploaded voiceover audio or its transcript.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1135,8 +1168,8 @@ class AsyncWorkflowsClient:
 
         from videogen import (
             AsyncVideoGenApi,
+            RemixAction_ConvertImagesToVideos,
             RemixAction_EditWithAgent,
-            RemixAction_SetBackgroundMusic,
             WorkflowVisualStyle,
         )
 
@@ -1154,9 +1187,10 @@ class AsyncWorkflowsClient:
                 ),
                 quality="HIGH",
                 remix_actions=[
-                    RemixAction_SetBackgroundMusic(
-                        file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
-                        volume=0.2,
+                    RemixAction_ConvertImagesToVideos(
+                        motion_prompt="gentle parallax drift",
+                        mute_output_videos=True,
+                        quality="HIGH",
                     ),
                     RemixAction_EditWithAgent(
                         prompt='Replace the closing title card with "Book a demo today"',
@@ -1227,7 +1261,7 @@ class AsyncWorkflowsClient:
             Optional production notes for the AI that builds the video — visual direction for how to illustrate the voiceover (e.g. on-screen code or text to display, specific b-roll to feature, or scene-by-scene staging). Never spoken; does not change the uploaded voiceover audio or its transcript.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1321,7 +1355,7 @@ class AsyncWorkflowsClient:
             Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1338,7 +1372,7 @@ class AsyncWorkflowsClient:
         from videogen import (
             AsyncVideoGenApi,
             RemixAction_AddTransitions,
-            RemixAction_SetBackgroundMusic,
+            RemixAction_ConvertImagesToVideos,
         )
 
         client = AsyncVideoGenApi(
@@ -1354,9 +1388,10 @@ class AsyncWorkflowsClient:
                         section_transition="DYNAMIC",
                         asset_transition="FADE",
                     ),
-                    RemixAction_SetBackgroundMusic(
-                        file_id="vg_file_mot8bV5POiscDeHyo7TF1g",
-                        volume=0.2,
+                    RemixAction_ConvertImagesToVideos(
+                        motion_prompt="subtle zoom with soft easing",
+                        mute_output_videos=True,
+                        quality="HIGH",
                     ),
                 ],
             )
@@ -1426,7 +1461,7 @@ class AsyncWorkflowsClient:
             Optional file id of an uploaded logo image to overlay on the video (e.g. `vg_file_...`). Upload the image first via `POST /v1/files/upload`. Only image files are accepted.
 
         remix_actions : typing.Optional[typing.Sequence[RemixAction]]
-            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `SET_BACKGROUND_MUSIC` for a music bed, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. Captions and a logo are set with the `captionStyle` and `logoFileId` request fields above; recommended remix actions here are `CONVERT_IMAGES_TO_VIDEOS` to animate still images into clips, `ADD_TRANSITIONS` to stamp transitions between sections and assets, and `EDIT_WITH_AGENT` for open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1479,6 +1514,7 @@ class AsyncWorkflowsClient:
         quality: typing.Optional[StoryboardToVideoRequestQuality] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         workflow_agent_context: typing.Optional[str] = OMIT,
+        remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
         """
@@ -1502,6 +1538,9 @@ class AsyncWorkflowsClient:
 
         workflow_agent_context : typing.Optional[str]
             Optional storyboard-wide production notes for the AI that builds the video (e.g. recurring characters or props, a consistent setting, or overall staging guidance). Applies across every scene; per-scene direction goes in each scene's `prompt`.
+
+        remix_actions : typing.Optional[typing.Sequence[RemixAction]]
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. `ENABLE_CAPTIONS` shows and styles captions, `SET_BACKGROUND_MUSIC` sets a music track, `ADD_TRANSITIONS` stamps transitions between scenes, and `SET_LOGO` overlays a logo. `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1554,6 +1593,7 @@ class AsyncWorkflowsClient:
             quality=quality,
             aspect_ratio=aspect_ratio,
             workflow_agent_context=workflow_agent_context,
+            remix_actions=remix_actions,
             request_options=request_options,
         )
         return _response.data
@@ -1567,6 +1607,7 @@ class AsyncWorkflowsClient:
         quality: typing.Optional[StoryboardToVideoRequestQuality] = OMIT,
         aspect_ratio: typing.Optional[AspectRatio] = OMIT,
         workflow_agent_context: typing.Optional[str] = OMIT,
+        remix_actions: typing.Optional[typing.Sequence[RemixAction]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartWorkflowRunResponse:
         """
@@ -1590,6 +1631,9 @@ class AsyncWorkflowsClient:
 
         workflow_agent_context : typing.Optional[str]
             Optional storyboard-wide production notes for the AI that builds the video (e.g. recurring characters or props, a consistent setting, or overall staging guidance). Applies across every scene; per-scene direction goes in each scene's `prompt`.
+
+        remix_actions : typing.Optional[typing.Sequence[RemixAction]]
+            Optional edits applied to the project after the video is built, in order. Each action runs asynchronously; the response returns one remix action id per action. `ENABLE_CAPTIONS` shows and styles captions, `SET_BACKGROUND_MUSIC` sets a music track, `ADD_TRANSITIONS` stamps transitions between scenes, and `SET_LOGO` overlays a logo. `EDIT_WITH_AGENT` applies open-ended natural-language edits. See the [Remix actions](/remix-actions) guide.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -1629,7 +1673,60 @@ class AsyncWorkflowsClient:
             quality=quality,
             aspect_ratio=aspect_ratio,
             workflow_agent_context=workflow_agent_context,
+            remix_actions=remix_actions,
             request_options=request_options,
+        )
+        return _response.data
+
+    async def list_workflow_runs(
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        self_only: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> WorkflowRunListResponse:
+        """
+        List workflow runs started via the API, most recently created first. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all runs for the team are returned. Cursor-paginated; see the [Pagination](/pagination) guide.
+
+        Parameters
+        ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
+
+        self_only : typing.Optional[bool]
+            When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        WorkflowRunListResponse
+            Paginated list of workflow runs.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.workflows.list_workflow_runs()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_workflow_runs(
+            limit=limit, cursor=cursor, self_only=self_only, request_options=request_options
         )
         return _response.data
 

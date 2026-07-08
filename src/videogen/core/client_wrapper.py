@@ -33,12 +33,12 @@ class BaseClientWrapper:
         import platform
 
         headers: typing.Dict[str, str] = {
-            "User-Agent": "videogen/1.1.6",
+            "User-Agent": "videogen/1.1.7",
             "X-Fern-Language": "Python",
             "X-Fern-Runtime": f"python/{platform.python_version()}",
             "X-Fern-Platform": f"{platform.system().lower()}/{platform.release()}",
             "X-Fern-SDK-Name": "videogen",
-            "X-Fern-SDK-Version": "1.1.6",
+            "X-Fern-SDK-Version": "1.1.7",
             **(self.get_custom_headers() or {}),
         }
         headers["Authorization"] = f"Bearer {self._get_token()}"

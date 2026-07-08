@@ -10,6 +10,7 @@ from ..core.parse_error import ParsingError
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..types.avatar_presenter_list_response import AvatarPresenterListResponse
+from ..types.language_list_response import LanguageListResponse
 from ..types.tts_voice_list_response import TtsVoiceListResponse
 from pydantic import ValidationError
 
@@ -136,6 +137,46 @@ class RawResourcesClient:
             )
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
+    def list_languages(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[LanguageListResponse]:
+        """
+        List the languages a project can be translated into. Pass a `languageCode` from the response to the `TRANSLATE_PROJECT` remix action. Returns the full catalogue in a single response (not paginated).
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[LanguageListResponse]
+            List of supported languages. Pass a `languageCode` to a `TRANSLATE_PROJECT` remix action.
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            "v1/resources/languages",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    LanguageListResponse,
+                    parse_obj_as(
+                        type_=LanguageListResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
 
 class AsyncRawResourcesClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
@@ -246,6 +287,46 @@ class AsyncRawResourcesClient:
                     TtsVoiceListResponse,
                     parse_obj_as(
                         type_=TtsVoiceListResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        except ValidationError as e:
+            raise ParsingError(
+                status_code=_response.status_code, headers=dict(_response.headers), body=_response.json(), cause=e
+            )
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def list_languages(
+        self, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[LanguageListResponse]:
+        """
+        List the languages a project can be translated into. Pass a `languageCode` from the response to the `TRANSLATE_PROJECT` remix action. Returns the full catalogue in a single response (not paginated).
+
+        Parameters
+        ----------
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[LanguageListResponse]
+            List of supported languages. Pass a `languageCode` to a `TRANSLATE_PROJECT` remix action.
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            "v1/resources/languages",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    LanguageListResponse,
+                    parse_obj_as(
+                        type_=LanguageListResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

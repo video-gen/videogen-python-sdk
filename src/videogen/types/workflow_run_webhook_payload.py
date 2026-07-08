@@ -36,7 +36,9 @@ class WorkflowRunWebhookPayload(UniversalBaseModel):
     project_id: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="projectId"),
-        pydantic.Field(alias="projectId", description="Id of the project created for this workflow run."),
+        pydantic.Field(
+            alias="projectId", description="Id of the project created for this workflow run (e.g. `vg_proj_...`)."
+        ),
     ]
     project_url: typing_extensions.Annotated[
         str,

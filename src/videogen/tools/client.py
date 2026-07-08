@@ -8,6 +8,7 @@ from ..types.aspect_ratio import AspectRatio
 from ..types.executed_tool import ExecutedTool
 from ..types.pronunciation_replacement import PronunciationReplacement
 from ..types.start_tool_execution_response import StartToolExecutionResponse
+from ..types.tool_execution_list_response import ToolExecutionListResponse
 from ..types.watermark_mode import WatermarkMode
 from .raw_client import AsyncRawToolsClient, RawToolsClient
 from .types.generate_image_request_quality import GenerateImageRequestQuality
@@ -780,6 +781,50 @@ class ToolsClient:
         )
         """
         _response = self._raw_client.cancel_tool_execution(tool_execution_id, request_options=request_options)
+        return _response.data
+
+    def list_tool_executions(
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        self_only: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ToolExecutionListResponse:
+        """
+        List tool executions started via the API, most recently created first. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all executions for the team are returned. Cursor-paginated; see the [Pagination](/pagination) guide.
+
+        Parameters
+        ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
+
+        self_only : typing.Optional[bool]
+            When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolExecutionListResponse
+            Paginated list of tool executions.
+
+        Examples
+        --------
+        from videogen import VideoGenApi
+
+        client = VideoGenApi(
+            token="YOUR_TOKEN",
+        )
+        client.tools.list_tool_executions()
+        """
+        _response = self._raw_client.list_tool_executions(
+            limit=limit, cursor=cursor, self_only=self_only, request_options=request_options
+        )
         return _response.data
 
     def get_tool_execution_info(
@@ -1683,6 +1728,58 @@ class AsyncToolsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.cancel_tool_execution(tool_execution_id, request_options=request_options)
+        return _response.data
+
+    async def list_tool_executions(
+        self,
+        *,
+        limit: typing.Optional[int] = None,
+        cursor: typing.Optional[str] = None,
+        self_only: typing.Optional[bool] = None,
+        request_options: typing.Optional[RequestOptions] = None,
+    ) -> ToolExecutionListResponse:
+        """
+        List tool executions started via the API, most recently created first. Use `selfOnly=true` to restrict results to the calling API key's user; otherwise all executions for the team are returned. Cursor-paginated; see the [Pagination](/pagination) guide.
+
+        Parameters
+        ----------
+        limit : typing.Optional[int]
+            Maximum number of items to return in the page. Defaults to 50; capped at 200. See [Pagination](/pagination).
+
+        cursor : typing.Optional[str]
+            Opaque pagination cursor returned as `nextCursor` by the previous page. Omit on the first request. Cursors are tied to the endpoint that produced them and must be passed unmodified. See [Pagination](/pagination).
+
+        self_only : typing.Optional[bool]
+            When true, returns only items created by the API key's owner. When false (default), returns all items accessible to the team.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        ToolExecutionListResponse
+            Paginated list of tool executions.
+
+        Examples
+        --------
+        import asyncio
+
+        from videogen import AsyncVideoGenApi
+
+        client = AsyncVideoGenApi(
+            token="YOUR_TOKEN",
+        )
+
+
+        async def main() -> None:
+            await client.tools.list_tool_executions()
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.list_tool_executions(
+            limit=limit, cursor=cursor, self_only=self_only, request_options=request_options
+        )
         return _response.data
 
     async def get_tool_execution_info(

@@ -10,6 +10,7 @@ from .core.logging import LogConfig, Logger
 from .environment import VideoGenApiEnvironment
 
 if typing.TYPE_CHECKING:
+    from .account.client import AccountClient, AsyncAccountClient
     from .entities.client import AsyncEntitiesClient, EntitiesClient
     from .files.client import AsyncFilesClient, FilesClient
     from .projects.client import AsyncProjectsClient, ProjectsClient
@@ -112,6 +113,7 @@ class VideoGenApi:
         self._text: typing.Optional[TextClient] = None
         self._resources: typing.Optional[ResourcesClient] = None
         self._webhooks: typing.Optional[WebhooksClient] = None
+        self._account: typing.Optional[AccountClient] = None
 
     @property
     def workflows(self):
@@ -176,6 +178,14 @@ class VideoGenApi:
 
             self._webhooks = WebhooksClient(client_wrapper=self._client_wrapper)
         return self._webhooks
+
+    @property
+    def account(self):
+        if self._account is None:
+            from .account.client import AccountClient  # noqa: E402
+
+            self._account = AccountClient(client_wrapper=self._client_wrapper)
+        return self._account
 
 
 def _make_default_async_client(
@@ -291,6 +301,7 @@ class AsyncVideoGenApi:
         self._text: typing.Optional[AsyncTextClient] = None
         self._resources: typing.Optional[AsyncResourcesClient] = None
         self._webhooks: typing.Optional[AsyncWebhooksClient] = None
+        self._account: typing.Optional[AsyncAccountClient] = None
 
     @property
     def workflows(self):
@@ -355,6 +366,14 @@ class AsyncVideoGenApi:
 
             self._webhooks = AsyncWebhooksClient(client_wrapper=self._client_wrapper)
         return self._webhooks
+
+    @property
+    def account(self):
+        if self._account is None:
+            from .account.client import AsyncAccountClient  # noqa: E402
+
+            self._account = AsyncAccountClient(client_wrapper=self._client_wrapper)
+        return self._account
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: VideoGenApiEnvironment) -> str:
