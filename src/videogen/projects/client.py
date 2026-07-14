@@ -4,6 +4,7 @@ import typing
 
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
+from ..types.export_delivery_destination import ExportDeliveryDestination
 from ..types.export_project_quality import ExportProjectQuality
 from ..types.export_project_response import ExportProjectResponse
 from ..types.list_projects_response import ListProjectsResponse
@@ -123,6 +124,7 @@ class ProjectsClient:
         project_id: str,
         *,
         quality: typing.Optional[ExportProjectQuality] = OMIT,
+        delivery_destinations: typing.Optional[typing.Sequence[ExportDeliveryDestination]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ExportProjectResponse:
         """
@@ -134,6 +136,9 @@ class ProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         quality : typing.Optional[ExportProjectQuality]
+
+        delivery_destinations : typing.Optional[typing.Sequence[ExportDeliveryDestination]]
+            Destinations to deliver the finished export to when it completes, in addition to any delivery destinations already saved for the team. Each destination references a connected integration.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -155,7 +160,9 @@ class ProjectsClient:
             quality="FULL_HIGH",
         )
         """
-        _response = self._raw_client.export_project(project_id, quality=quality, request_options=request_options)
+        _response = self._raw_client.export_project(
+            project_id, quality=quality, delivery_destinations=delivery_destinations, request_options=request_options
+        )
         return _response.data
 
     def get_project_export(
@@ -400,6 +407,7 @@ class AsyncProjectsClient:
         project_id: str,
         *,
         quality: typing.Optional[ExportProjectQuality] = OMIT,
+        delivery_destinations: typing.Optional[typing.Sequence[ExportDeliveryDestination]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> ExportProjectResponse:
         """
@@ -411,6 +419,9 @@ class AsyncProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         quality : typing.Optional[ExportProjectQuality]
+
+        delivery_destinations : typing.Optional[typing.Sequence[ExportDeliveryDestination]]
+            Destinations to deliver the finished export to when it completes, in addition to any delivery destinations already saved for the team. Each destination references a connected integration.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -440,7 +451,9 @@ class AsyncProjectsClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.export_project(project_id, quality=quality, request_options=request_options)
+        _response = await self._raw_client.export_project(
+            project_id, quality=quality, delivery_destinations=delivery_destinations, request_options=request_options
+        )
         return _response.data
 
     async def get_project_export(

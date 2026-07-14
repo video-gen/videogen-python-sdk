@@ -2,4 +2,4 @@
 
 import typing
 
-StorageFileType = typing.Union[typing.Literal["IMAGE", "VIDEO", "AUDIO", "PDF", "SLIDESHOW"], typing.Any]
+StorageFileType = typing.Union[typing.Literal["IMAGE", "VIDEO", "AUDIO", "PDF", "SLIDESHOW", "TEXT"], typing.Any]

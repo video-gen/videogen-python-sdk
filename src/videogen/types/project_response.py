@@ -36,7 +36,14 @@ class ProjectResponse(UniversalBaseModel):
     updated_at: typing_extensions.Annotated[
         dt.datetime, FieldMetadata(alias="updatedAt"), pydantic.Field(alias="updatedAt")
     ]
-    project_url: typing_extensions.Annotated[str, FieldMetadata(alias="projectUrl"), pydantic.Field(alias="projectUrl")]
+    project_url: typing_extensions.Annotated[
+        str,
+        FieldMetadata(alias="projectUrl"),
+        pydantic.Field(
+            alias="projectUrl",
+            description="Deep link to open this project in the VideoGen web editor. Not required for an API-only integration: store `projectId` and use the Projects API (export, remix, metadata). Use `projectUrl` when a person should open the project in the app to review or edit it manually. The project is visible only to members of your team and any project collaborators, the same access model as a project created in the dashboard.",
+        ),
+    ]
 
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2

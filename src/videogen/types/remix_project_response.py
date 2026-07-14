@@ -24,7 +24,10 @@ class RemixProjectResponse(UniversalBaseModel):
     project_url: typing_extensions.Annotated[
         str,
         FieldMetadata(alias="projectUrl"),
-        pydantic.Field(alias="projectUrl", description="URL to view the project in the VideoGen app."),
+        pydantic.Field(
+            alias="projectUrl",
+            description="Deep link to open this project in the VideoGen web editor. Not required for an API-only integration: store `projectId` and use the Projects API (export, remix, metadata). Use `projectUrl` when a person should open the project in the app to review or edit it manually. The project is visible only to members of your team and any project collaborators, the same access model as a project created in the dashboard.",
+        ),
     ]
     remix_action_ids: typing_extensions.Annotated[
         typing.List[str],

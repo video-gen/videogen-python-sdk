@@ -11,6 +11,7 @@ from .environment import VideoGenApiEnvironment
 
 if typing.TYPE_CHECKING:
     from .account.client import AccountClient, AsyncAccountClient
+    from .assistant.client import AssistantClient, AsyncAssistantClient
     from .entities.client import AsyncEntitiesClient, EntitiesClient
     from .files.client import AsyncFilesClient, FilesClient
     from .projects.client import AsyncProjectsClient, ProjectsClient
@@ -110,6 +111,7 @@ class VideoGenApi:
         self._tools: typing.Optional[ToolsClient] = None
         self._files: typing.Optional[FilesClient] = None
         self._entities: typing.Optional[EntitiesClient] = None
+        self._assistant: typing.Optional[AssistantClient] = None
         self._text: typing.Optional[TextClient] = None
         self._resources: typing.Optional[ResourcesClient] = None
         self._webhooks: typing.Optional[WebhooksClient] = None
@@ -154,6 +156,14 @@ class VideoGenApi:
 
             self._entities = EntitiesClient(client_wrapper=self._client_wrapper)
         return self._entities
+
+    @property
+    def assistant(self):
+        if self._assistant is None:
+            from .assistant.client import AssistantClient  # noqa: E402
+
+            self._assistant = AssistantClient(client_wrapper=self._client_wrapper)
+        return self._assistant
 
     @property
     def text(self):
@@ -298,6 +308,7 @@ class AsyncVideoGenApi:
         self._tools: typing.Optional[AsyncToolsClient] = None
         self._files: typing.Optional[AsyncFilesClient] = None
         self._entities: typing.Optional[AsyncEntitiesClient] = None
+        self._assistant: typing.Optional[AsyncAssistantClient] = None
         self._text: typing.Optional[AsyncTextClient] = None
         self._resources: typing.Optional[AsyncResourcesClient] = None
         self._webhooks: typing.Optional[AsyncWebhooksClient] = None
@@ -342,6 +353,14 @@ class AsyncVideoGenApi:
 
             self._entities = AsyncEntitiesClient(client_wrapper=self._client_wrapper)
         return self._entities
+
+    @property
+    def assistant(self):
+        if self._assistant is None:
+            from .assistant.client import AsyncAssistantClient  # noqa: E402
+
+            self._assistant = AsyncAssistantClient(client_wrapper=self._client_wrapper)
+        return self._assistant
 
     @property
     def text(self):

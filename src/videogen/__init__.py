@@ -10,6 +10,11 @@ if typing.TYPE_CHECKING:
         ApiError,
         ApiErrorRequirement,
         AspectRatio,
+        AssistantAction,
+        AssistantActionKind,
+        AssistantTurnResponse,
+        AssistantTurnStatus,
+        AssistantWorkflowSuggestion,
         AvatarPresenter,
         AvatarPresenterDisplayableGender,
         AvatarPresenterListResponse,
@@ -20,6 +25,8 @@ if typing.TYPE_CHECKING:
         EntityReference,
         ExecutedTool,
         ExecutedToolStatus,
+        ExportDeliveryDestination,
+        ExportDeliveryDestinationType,
         ExportProjectQuality,
         ExportProjectResponse,
         FileAnalysisMetadata,
@@ -130,8 +137,9 @@ if typing.TYPE_CHECKING:
         WorkflowVisualStyle,
         WorkflowVisualStyleType,
     )
-    from . import account, entities, files, projects, resources, text, tools, webhooks, workflows
+    from . import account, assistant, entities, files, projects, resources, text, tools, webhooks, workflows
     from ._default_clients import DefaultAioHttpClient, DefaultAsyncHttpxClient
+    from .assistant import ActOnAssistantActionRequestDecision
     from .async_download_file import async_download_file
     from .async_get_hydrated_file import async_get_hydrated_file
     from .async_poll_executed_tool import async_poll_executed_tool
@@ -164,9 +172,15 @@ if typing.TYPE_CHECKING:
     from .verify_webhook_signature import WebhookEvent, verify_webhook_signature
     from .version import __version__
 _dynamic_imports: typing.Dict[str, str] = {
+    "ActOnAssistantActionRequestDecision": ".assistant",
     "ApiError": ".types",
     "ApiErrorRequirement": ".types",
     "AspectRatio": ".types",
+    "AssistantAction": ".types",
+    "AssistantActionKind": ".types",
+    "AssistantTurnResponse": ".types",
+    "AssistantTurnStatus": ".types",
+    "AssistantWorkflowSuggestion": ".types",
     "AsyncVideoGenApi": ".client",
     "AvatarPresenter": ".types",
     "AvatarPresenterDisplayableGender": ".types",
@@ -182,6 +196,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "EntityReference": ".types",
     "ExecutedTool": ".types",
     "ExecutedToolStatus": ".types",
+    "ExportDeliveryDestination": ".types",
+    "ExportDeliveryDestinationType": ".types",
     "ExportProjectQuality": ".types",
     "ExportProjectResponse": ".types",
     "FileAnalysisMetadata": ".types",
@@ -301,6 +317,7 @@ _dynamic_imports: typing.Dict[str, str] = {
     "WorkflowVisualStyleType": ".types",
     "__version__": ".version",
     "account": ".account",
+    "assistant": ".assistant",
     "async_download_file": ".async_download_file",
     "async_get_hydrated_file": ".async_get_hydrated_file",
     "async_poll_executed_tool": ".async_poll_executed_tool",
@@ -353,9 +370,15 @@ def __dir__():
 
 
 __all__ = [
+    "ActOnAssistantActionRequestDecision",
     "ApiError",
     "ApiErrorRequirement",
     "AspectRatio",
+    "AssistantAction",
+    "AssistantActionKind",
+    "AssistantTurnResponse",
+    "AssistantTurnStatus",
+    "AssistantWorkflowSuggestion",
     "AsyncVideoGenApi",
     "AvatarPresenter",
     "AvatarPresenterDisplayableGender",
@@ -371,6 +394,8 @@ __all__ = [
     "EntityReference",
     "ExecutedTool",
     "ExecutedToolStatus",
+    "ExportDeliveryDestination",
+    "ExportDeliveryDestinationType",
     "ExportProjectQuality",
     "ExportProjectResponse",
     "FileAnalysisMetadata",
@@ -490,6 +515,7 @@ __all__ = [
     "WorkflowVisualStyleType",
     "__version__",
     "account",
+    "assistant",
     "async_download_file",
     "async_get_hydrated_file",
     "async_poll_executed_tool",

@@ -1095,6 +1095,14 @@ client.projects.export_project(
 <dl>
 <dd>
 
+**delivery_destinations:** `typing.Optional[typing.List[ExportDeliveryDestination]]` — Destinations to deliver the finished export to when it completes, in addition to any delivery destinations already saved for the team. Each destination references a connected integration.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -3937,6 +3945,268 @@ client.entities.remove_entity_reference(
 <dd>
 
 **file_id:** `str` — The file id (e.g. `vg_file_...`) of the reference to remove.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Assistant
+<details><summary><code>client.assistant.<a href="src/videogen/assistant/client.py">start_assistant_chat</a>(...) -> AssistantTurnResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates a new project and sends the first message to the VideoGen AI assistant, exactly like typing into the assistant on a new project in the app. Synchronous: the response includes the assistant's reply, any workflow suggestions it offered, and a `projectUrl` to open the project in the app. Continue the conversation with `POST /v1/assistant/chats/{projectId}/messages`.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.assistant.start_assistant_chat(
+    message="A 30-second explainer about our new pricing tiers",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**message:** `str` — The first message to send to the assistant, exactly as a person would type it into the assistant on a new project.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**force_workflow_suggestion:** `typing.Optional[bool]` — When true, the assistant always responds with at least one workflow suggestion (the fastest way to get a starting point). When false, the assistant decides whether to suggest a workflow or just reply.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**auto_generate:** `typing.Optional[bool]` — When true, the assistant picks the best workflow for the message and immediately starts generating, skipping the suggestion step. The response's `status` is `generating` and `generation` carries the run to poll. When false, nothing generates until you act on a suggestion or plan.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.assistant.<a href="src/videogen/assistant/client.py">send_assistant_message</a>(...) -> AssistantTurnResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Sends a follow-up message to the assistant in an existing project chat started with `POST /v1/assistant/chats`. Synchronous: the response includes the assistant's reply and any actions it offered.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.assistant.send_assistant_message(
+    project_id="projectId",
+    message="Make it more upbeat and add captions",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**project_id:** `str` — The project id (e.g. `vg_proj_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**message:** `str` — The message to send to the assistant in this project chat.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.assistant.<a href="src/videogen/assistant/client.py">act_on_assistant_action</a>(...) -> AssistantTurnResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Acts on an actionable widget the assistant offered on a prior turn. Reference the action by its `assistantActionId` from a prior `AssistantTurnResponse`. Today this accepts a workflow suggestion: `APPROVE` (the default) applies the suggested workflow and immediately starts generating — the response's `status` is `generating` and `generation` carries the run to poll — while `REJECT` returns the offering turn unchanged. Every other action has `requiresApp` set to true and can only be completed in the web app; open `projectUrl` instead.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from videogen import VideoGenApi
+from videogen.environment import VideoGenApiEnvironment
+
+client = VideoGenApi(
+    token="<token>",
+    environment=VideoGenApiEnvironment.PRODUCTION,
+)
+
+client.assistant.act_on_assistant_action(
+    project_id="projectId",
+    assistant_action_id="assistantActionId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**project_id:** `str` — The project id (e.g. `vg_proj_...`).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**assistant_action_id:** `str` — The `assistantActionId` of the action to act on, from a prior `AssistantTurnResponse`.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**decision:** `typing.Optional[ActOnAssistantActionRequestDecision]` — Whether to approve (apply) or reject the action. Defaults to `APPROVE`.
     
 </dd>
 </dl>

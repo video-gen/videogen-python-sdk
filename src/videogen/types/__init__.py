@@ -9,6 +9,11 @@ if typing.TYPE_CHECKING:
     from .api_error import ApiError
     from .api_error_requirement import ApiErrorRequirement
     from .aspect_ratio import AspectRatio
+    from .assistant_action import AssistantAction
+    from .assistant_action_kind import AssistantActionKind
+    from .assistant_turn_response import AssistantTurnResponse
+    from .assistant_turn_status import AssistantTurnStatus
+    from .assistant_workflow_suggestion import AssistantWorkflowSuggestion
     from .avatar_presenter import AvatarPresenter
     from .avatar_presenter_displayable_gender import AvatarPresenterDisplayableGender
     from .avatar_presenter_list_response import AvatarPresenterListResponse
@@ -19,6 +24,8 @@ if typing.TYPE_CHECKING:
     from .entity_reference import EntityReference
     from .executed_tool import ExecutedTool
     from .executed_tool_status import ExecutedToolStatus
+    from .export_delivery_destination import ExportDeliveryDestination
+    from .export_delivery_destination_type import ExportDeliveryDestinationType
     from .export_project_quality import ExportProjectQuality
     from .export_project_response import ExportProjectResponse
     from .file_analysis_metadata import FileAnalysisMetadata
@@ -134,6 +141,11 @@ _dynamic_imports: typing.Dict[str, str] = {
     "ApiError": ".api_error",
     "ApiErrorRequirement": ".api_error_requirement",
     "AspectRatio": ".aspect_ratio",
+    "AssistantAction": ".assistant_action",
+    "AssistantActionKind": ".assistant_action_kind",
+    "AssistantTurnResponse": ".assistant_turn_response",
+    "AssistantTurnStatus": ".assistant_turn_status",
+    "AssistantWorkflowSuggestion": ".assistant_workflow_suggestion",
     "AvatarPresenter": ".avatar_presenter",
     "AvatarPresenterDisplayableGender": ".avatar_presenter_displayable_gender",
     "AvatarPresenterListResponse": ".avatar_presenter_list_response",
@@ -144,6 +156,8 @@ _dynamic_imports: typing.Dict[str, str] = {
     "EntityReference": ".entity_reference",
     "ExecutedTool": ".executed_tool",
     "ExecutedToolStatus": ".executed_tool_status",
+    "ExportDeliveryDestination": ".export_delivery_destination",
+    "ExportDeliveryDestinationType": ".export_delivery_destination_type",
     "ExportProjectQuality": ".export_project_quality",
     "ExportProjectResponse": ".export_project_response",
     "FileAnalysisMetadata": ".file_analysis_metadata",
@@ -281,6 +295,11 @@ __all__ = [
     "ApiError",
     "ApiErrorRequirement",
     "AspectRatio",
+    "AssistantAction",
+    "AssistantActionKind",
+    "AssistantTurnResponse",
+    "AssistantTurnStatus",
+    "AssistantWorkflowSuggestion",
     "AvatarPresenter",
     "AvatarPresenterDisplayableGender",
     "AvatarPresenterListResponse",
@@ -291,6 +310,8 @@ __all__ = [
     "EntityReference",
     "ExecutedTool",
     "ExecutedToolStatus",
+    "ExportDeliveryDestination",
+    "ExportDeliveryDestinationType",
     "ExportProjectQuality",
     "ExportProjectResponse",
     "FileAnalysisMetadata",

@@ -11,6 +11,7 @@ from ..core.parse_error import ParsingError
 from ..core.pydantic_utilities import parse_obj_as
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
+from ..types.export_delivery_destination import ExportDeliveryDestination
 from ..types.export_project_quality import ExportProjectQuality
 from ..types.export_project_response import ExportProjectResponse
 from ..types.list_projects_response import ListProjectsResponse
@@ -141,6 +142,7 @@ class RawProjectsClient:
         project_id: str,
         *,
         quality: typing.Optional[ExportProjectQuality] = OMIT,
+        delivery_destinations: typing.Optional[typing.Sequence[ExportDeliveryDestination]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[ExportProjectResponse]:
         """
@@ -152,6 +154,9 @@ class RawProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         quality : typing.Optional[ExportProjectQuality]
+
+        delivery_destinations : typing.Optional[typing.Sequence[ExportDeliveryDestination]]
+            Destinations to deliver the finished export to when it completes, in addition to any delivery destinations already saved for the team. Each destination references a connected integration.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -166,6 +171,11 @@ class RawProjectsClient:
             method="POST",
             json={
                 "quality": quality,
+                "deliveryDestinations": convert_and_respect_annotation_metadata(
+                    object_=delivery_destinations,
+                    annotation=typing.Sequence[ExportDeliveryDestination],
+                    direction="write",
+                ),
             },
             headers={
                 "content-type": "application/json",
@@ -462,6 +472,7 @@ class AsyncRawProjectsClient:
         project_id: str,
         *,
         quality: typing.Optional[ExportProjectQuality] = OMIT,
+        delivery_destinations: typing.Optional[typing.Sequence[ExportDeliveryDestination]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[ExportProjectResponse]:
         """
@@ -473,6 +484,9 @@ class AsyncRawProjectsClient:
             The project id (e.g. `vg_proj_...`).
 
         quality : typing.Optional[ExportProjectQuality]
+
+        delivery_destinations : typing.Optional[typing.Sequence[ExportDeliveryDestination]]
+            Destinations to deliver the finished export to when it completes, in addition to any delivery destinations already saved for the team. Each destination references a connected integration.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -487,6 +501,11 @@ class AsyncRawProjectsClient:
             method="POST",
             json={
                 "quality": quality,
+                "deliveryDestinations": convert_and_respect_annotation_metadata(
+                    object_=delivery_destinations,
+                    annotation=typing.Sequence[ExportDeliveryDestination],
+                    direction="write",
+                ),
             },
             headers={
                 "content-type": "application/json",
