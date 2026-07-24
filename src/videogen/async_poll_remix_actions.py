@@ -27,6 +27,7 @@ async def async_poll_remix_actions(
         ensure_within_timeout(started_at=started_at, timeout_ms=timeout_ms)
         listing = await client.projects.list_project_remix_actions(
             project_id=project_id,
+            limit=200,
             cancel_event=cancel_event,
         )
         actions = listing.get("remix_actions") or []

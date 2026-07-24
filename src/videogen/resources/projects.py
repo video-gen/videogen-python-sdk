@@ -105,7 +105,7 @@ class ProjectsResource:
         path_values, query_values, body, cancel_event = split_request_args(
             kwargs,
             path_params=['projectId'],
-            query_params=[],
+            query_params=['limit', 'cursor'],
         )
         for required in ['projectId']:
             if required not in path_values:
@@ -240,7 +240,7 @@ class ProjectsResource:
         path_values, query_values, body, cancel_event = split_request_args(
             kwargs,
             path_params=['projectId'],
-            query_params=[],
+            query_params=['limit', 'cursor'],
         )
         for required in ['projectId']:
             if required not in path_values:
@@ -404,7 +404,7 @@ class AsyncProjectsResource:
         path_values, query_values, body, cancel_event = split_request_args(
             kwargs,
             path_params=['projectId'],
-            query_params=[],
+            query_params=['limit', 'cursor'],
         )
         for required in ['projectId']:
             if required not in path_values:
@@ -539,7 +539,7 @@ class AsyncProjectsResource:
         path_values, query_values, body, cancel_event = split_request_args(
             kwargs,
             path_params=['projectId'],
-            query_params=[],
+            query_params=['limit', 'cursor'],
         )
         for required in ['projectId']:
             if required not in path_values:

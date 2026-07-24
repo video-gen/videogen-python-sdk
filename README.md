@@ -72,6 +72,7 @@ Every public REST operation is a thin method (see `@sdk-operation` markers). Con
 
 | Helper | Purpose |
 | --- | --- |
+| `poll_assistant_message` / `async_poll_assistant_message` | Poll an assistant message to a terminal status |
 | `poll_executed_tool` / `async_poll_executed_tool` | Poll a tool execution to a terminal status |
 | `poll_workflow_run` / `async_poll_workflow_run` | Poll a workflow run |
 | `poll_project_export` / `async_poll_project_export` | Poll a project export |
@@ -83,7 +84,7 @@ Every public REST operation is a thin method (see `@sdk-operation` markers). Con
 | `create_public_preview` / `async_create_public_preview` | Enable + poll public preview |
 | `verify_webhook_signature` | Verify Standard Webhooks and return the event dict |
 
-`*AndWait` wrappers on `tools`, `workflows`, and `projects` start work and poll to completion.
+`*_and_wait` wrappers on `tools`, `workflows`, `projects`, and `assistant` start work and poll to completion.
 
 ## Cancellation
 

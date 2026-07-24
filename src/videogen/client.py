@@ -8,6 +8,7 @@ from ._http import DEFAULT_CLIENT_ID, AsyncHttpClient, SyncHttpClient
 from .async_create_public_preview import async_create_public_preview
 from .async_download_file import async_download_file
 from .async_get_hydrated_file import async_get_hydrated_file
+from .async_poll_assistant_message import async_poll_assistant_message
 from .async_poll_executed_tool import async_poll_executed_tool
 from .async_poll_project_export import async_poll_project_export
 from .async_poll_public_preview import async_poll_public_preview
@@ -18,6 +19,7 @@ from .async_upload_file import async_upload_file
 from .create_public_preview import create_public_preview
 from .download_file import download_file
 from .get_hydrated_file import get_hydrated_file
+from .poll_assistant_message import poll_assistant_message
 from .poll_executed_tool import poll_executed_tool
 from .poll_project_export import poll_project_export
 from .poll_public_preview import poll_public_preview
@@ -26,6 +28,7 @@ from .poll_timeline_interchange import poll_timeline_interchange
 from .poll_workflow_run import poll_workflow_run
 from .resources.account import AccountResource, AsyncAccountResource
 from .resources.assistant import AssistantResource, AsyncAssistantResource
+from .resources.entities import AsyncEntitiesResource, EntitiesResource
 from .resources.files import AsyncFilesResource, FilesResource
 from .resources.projects import AsyncProjectsResource, ProjectsResource
 from .resources.resources import AsyncResourcesResource, ResourcesResource
@@ -61,6 +64,7 @@ class VideoGen:
         self.projects = ProjectsResource(self)
         self.tools = ToolsResource(self)
         self.files = FilesResource(self)
+        self.entities = EntitiesResource(self)
         self.assistant = AssistantResource(self)
         self.text = TextResource(self)
         self.resources = ResourcesResource(self)
@@ -95,6 +99,9 @@ class VideoGen:
 
     def poll_executed_tool(self, tool_execution_id: str, **kwargs: Any) -> dict:
         return poll_executed_tool(self, tool_execution_id, **kwargs)
+
+    def poll_assistant_message(self, message_id: str, **kwargs: Any) -> dict:
+        return poll_assistant_message(self, message_id, **kwargs)
 
     def poll_workflow_run(self, workflow_run_id: str, **kwargs: Any) -> dict:
         return poll_workflow_run(self, workflow_run_id, **kwargs)
@@ -151,6 +158,7 @@ class AsyncVideoGen:
         self.projects = AsyncProjectsResource(self)
         self.tools = AsyncToolsResource(self)
         self.files = AsyncFilesResource(self)
+        self.entities = AsyncEntitiesResource(self)
         self.assistant = AsyncAssistantResource(self)
         self.text = AsyncTextResource(self)
         self.resources = AsyncResourcesResource(self)
@@ -185,6 +193,9 @@ class AsyncVideoGen:
 
     async def poll_executed_tool(self, tool_execution_id: str, **kwargs: Any) -> dict:
         return await async_poll_executed_tool(self, tool_execution_id, **kwargs)
+
+    async def poll_assistant_message(self, message_id: str, **kwargs: Any) -> dict:
+        return await async_poll_assistant_message(self, message_id, **kwargs)
 
     async def poll_workflow_run(self, workflow_run_id: str, **kwargs: Any) -> dict:
         return await async_poll_workflow_run(self, workflow_run_id, **kwargs)

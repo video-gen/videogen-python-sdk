@@ -7,6 +7,7 @@ Response JSON objects are converted recursively to snake_case keys.
 from .async_create_public_preview import async_create_public_preview
 from .async_download_file import async_download_file
 from .async_get_hydrated_file import async_get_hydrated_file
+from .async_poll_assistant_message import async_poll_assistant_message
 from .async_poll_executed_tool import async_poll_executed_tool
 from .async_poll_project_export import async_poll_project_export
 from .async_poll_public_preview import async_poll_public_preview
@@ -19,6 +20,7 @@ from .create_public_preview import create_public_preview
 from .download_file import download_file
 from .errors import PollCancelledError, VideoGenError
 from .get_hydrated_file import get_hydrated_file
+from .poll_assistant_message import poll_assistant_message
 from .poll_executed_tool import poll_executed_tool
 from .poll_project_export import poll_project_export
 from .poll_public_preview import poll_public_preview
@@ -36,6 +38,7 @@ __all__ = [
     "async_create_public_preview",
     "async_download_file",
     "async_get_hydrated_file",
+    "async_poll_assistant_message",
     "async_poll_executed_tool",
     "async_poll_project_export",
     "async_poll_public_preview",
@@ -46,6 +49,7 @@ __all__ = [
     "create_public_preview",
     "download_file",
     "get_hydrated_file",
+    "poll_assistant_message",
     "poll_executed_tool",
     "poll_project_export",
     "poll_public_preview",
