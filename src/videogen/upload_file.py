@@ -1,64 +1,77 @@
 from __future__ import annotations
 
 import time
-from typing import BinaryIO, Optional, TYPE_CHECKING
+from typing import Any, BinaryIO, Optional, Union
 
 import httpx
 
-if TYPE_CHECKING:
-    from .client import VideoGenApi
-    from .types.storage_file import StorageFile
+from .poll_helpers import ensure_within_timeout, poll_raise_if_cancelled, poll_sleep
+
+
+def _read_bytes(data: Union[bytes, bytearray, BinaryIO]) -> bytes:
+    if isinstance(data, (bytes, bytearray)):
+        return bytes(data)
+    return data.read()
+
+
+def _file_has_ready_source(file_obj: dict) -> bool:
+    for key in ("download_source", "preview_source", "thumbnail_source", "hls_source"):
+        source = file_obj.get(key)
+        if isinstance(source, dict) and source.get("status") == "ready":
+            return True
+    return False
 
 
 def upload_file(
-    client: VideoGenApi,
-    file: BinaryIO,
+    client: Any,
+    data: Union[bytes, bytearray, BinaryIO],
     *,
-    display_name: str,
     type: Optional[str] = None,
-    temporary: bool = False,
-    poll_interval_ms: int = 2000,
-    timeout_ms: int = 3_600_000,
-) -> StorageFile:
-    """Upload a file to VideoGen.
-
-    1. Creates a pending file via ``create_file_upload``
-    2. PUTs the raw bytes to the returned presigned URL
-    3. Polls until the file is processed, then returns the hydrated file
+    display_name: Optional[str] = None,
+    temporary: Optional[bool] = None,
+    is_temporary: Optional[bool] = None,
+    content_type: Optional[str] = None,
+    poll_interval_ms: int = 1500,
+    timeout_ms: Optional[int] = 3_600_000,
+    cancel_event: Any = None,
+) -> dict:
+    """Create an upload URL, PUT bytes, and poll until a source is ready.
 
     Args:
-        type: Optional file type (IMAGE, VIDEO, AUDIO). If omitted, auto-detected.
+        type: Optional file type (IMAGE, VIDEO, AUDIO, PDF, SLIDESHOW, LOTTIE).
+            If omitted, auto-detected. Lottie animations (Bodymovin JSON) must
+            set LOTTIE explicitly.
         timeout_ms: Maximum time in ms to wait for processing. Defaults to
             3_600_000 (1 hour).
     """
-    upload_response = client.files.create_file_upload(
-        display_name=display_name,
-        is_temporary=temporary,
-        type=type,
-    )
+    if display_name is None:
+        display_name = "upload"
+    body: dict[str, Any] = {"display_name": display_name}
+    if type is not None:
+        body["type"] = type
+    temp = is_temporary if is_temporary is not None else temporary
+    if temp is not None:
+        body["is_temporary"] = temp
 
-    data = file.read()
-    put_response = httpx.put(upload_response.upload_url, content=data)
-    put_response.raise_for_status()
+    created = client.files.create_file_upload(**body, cancel_event=cancel_event)
+    file_id = created["file_id"]
+    upload_url = created["upload_url"]
+    payload = _read_bytes(data)
 
-    deadline = time.monotonic() + timeout_ms / 1000
-
-    while time.monotonic() < deadline:
-        current = client.files.hydrate_file(file_id=upload_response.file_id)
-
-        download = getattr(current, "download_source", None)
-        preview = getattr(current, "preview_source", None)
-
-        has_ready = (
-            (download is not None and getattr(download, "status", None) == "ready")
-            or (preview is not None and getattr(preview, "status", None) == "ready")
+    headers = {}
+    if content_type:
+        headers["Content-Type"] = content_type
+    put_response = httpx.put(upload_url, content=payload, headers=headers, timeout=120.0)
+    if put_response.status_code >= 400:
+        raise RuntimeError(
+            f"Upload PUT failed with status {put_response.status_code}: {put_response.text}"
         )
 
-        if has_ready:
-            return current
-
-        time.sleep(poll_interval_ms / 1000)
-
-    raise TimeoutError(
-        f"File {upload_response.file_id} was not processed within {timeout_ms}ms."
-    )
+    started_at = time.monotonic()
+    while True:
+        poll_raise_if_cancelled(cancel_event)
+        ensure_within_timeout(started_at=started_at, timeout_ms=timeout_ms)
+        file_obj = client.files.get_file(file_id=file_id, cancel_event=cancel_event)
+        if isinstance(file_obj, dict) and _file_has_ready_source(file_obj):
+            return file_obj
+        poll_sleep(poll_interval_ms, cancel_event)

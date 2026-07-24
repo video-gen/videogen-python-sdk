@@ -1,43 +1,41 @@
-import asyncio
-from typing import Optional
+from __future__ import annotations
 
-from .client import AsyncVideoGenApi
-from .poll_helpers import _async_poll_raise_if_cancelled, _async_poll_sleep
-from .types.workflow_run import WorkflowRun
+import time
+from typing import Any, Callable, Optional
 
-_TERMINAL_STATUSES = frozenset({"succeeded", "failed", "cancelled"})
+from .poll_helpers import (
+    TERMINAL_STATUSES,
+    async_poll_sleep,
+    ensure_within_timeout,
+    poll_raise_if_cancelled,
+    raise_if_failed,
+)
 
 
 async def async_poll_workflow_run(
-    client: AsyncVideoGenApi,
+    client: Any,
     workflow_run_id: str,
     *,
     poll_interval_ms: int = 1500,
-    timeout_ms: int = 3_600_000,
-    cancel_event: Optional[asyncio.Event] = None,
-) -> WorkflowRun:
-    """Polls ``get_workflow_run`` until status is ``succeeded``, ``failed``, or ``cancelled``.
-
-    Args:
-        timeout_ms: Maximum time in ms to wait for a terminal state. Defaults to
-            3_600_000 (1 hour).
-        cancel_event: When set, polling stops early with ``PollCancelledError``.
-    """
-    loop = asyncio.get_running_loop()
-    deadline = loop.time() + timeout_ms / 1000
-
-    while loop.time() < deadline:
-        await _async_poll_raise_if_cancelled(cancel_event)
-
-        workflow_run = await client.workflows.get_workflow_run(
+    timeout_ms: Optional[int] = 3_600_000,
+    throw_on_failure: bool = True,
+    on_progress: Optional[Callable[[float], None]] = None,
+    cancel_event: Any = None,
+) -> dict:
+    """Async twin of `poll_workflow_run`."""
+    started_at = time.monotonic()
+    while True:
+        poll_raise_if_cancelled(cancel_event)
+        ensure_within_timeout(started_at=started_at, timeout_ms=timeout_ms)
+        run = await client.workflows.get_workflow_run(
             workflow_run_id=workflow_run_id,
+            cancel_event=cancel_event,
         )
-
-        if workflow_run.status in _TERMINAL_STATUSES:
-            return workflow_run
-
-        await _async_poll_sleep(poll_interval_ms, cancel_event)
-
-    raise TimeoutError(
-        f"Workflow run {workflow_run_id} did not reach a terminal state within {timeout_ms}ms."
-    )
+        if isinstance(run, dict):
+            progress = run.get("progress_percentage")
+            if on_progress is not None and isinstance(progress, (int, float)):
+                on_progress(float(progress))
+            if run.get("status") in TERMINAL_STATUSES:
+                raise_if_failed(run, throw_on_failure=throw_on_failure, kind="Workflow run")
+                return run
+        await async_poll_sleep(poll_interval_ms, cancel_event)

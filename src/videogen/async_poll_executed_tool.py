@@ -1,43 +1,36 @@
-import asyncio
-from typing import Optional
+from __future__ import annotations
 
-from .client import AsyncVideoGenApi
-from .poll_helpers import _async_poll_raise_if_cancelled, _async_poll_sleep
-from .types.executed_tool import ExecutedTool
+import time
+from typing import Any, Optional
 
-_TERMINAL_STATUSES = frozenset({"succeeded", "failed", "cancelled"})
+from .poll_helpers import (
+    TERMINAL_STATUSES,
+    async_poll_sleep,
+    ensure_within_timeout,
+    poll_raise_if_cancelled,
+    raise_if_failed,
+)
 
 
 async def async_poll_executed_tool(
-    client: AsyncVideoGenApi,
+    client: Any,
     tool_execution_id: str,
     *,
     poll_interval_ms: int = 1500,
-    timeout_ms: int = 3_600_000,
-    cancel_event: Optional[asyncio.Event] = None,
-) -> ExecutedTool:
-    """Polls ``get_tool_execution_info`` until status is ``succeeded``, ``failed``, or ``cancelled``.
-
-    Args:
-        timeout_ms: Maximum time in ms to wait for a terminal state. Defaults to
-            3_600_000 (1 hour).
-        cancel_event: When set, polling stops early with ``PollCancelledError``.
-    """
-    loop = asyncio.get_running_loop()
-    deadline = loop.time() + timeout_ms / 1000
-
-    while loop.time() < deadline:
-        await _async_poll_raise_if_cancelled(cancel_event)
-
+    timeout_ms: Optional[int] = 3_600_000,
+    throw_on_failure: bool = True,
+    cancel_event: Any = None,
+) -> dict:
+    """Async twin of `poll_executed_tool`."""
+    started_at = time.monotonic()
+    while True:
+        poll_raise_if_cancelled(cancel_event)
+        ensure_within_timeout(started_at=started_at, timeout_ms=timeout_ms)
         executed = await client.tools.get_tool_execution_info(
             tool_execution_id=tool_execution_id,
+            cancel_event=cancel_event,
         )
-
-        if executed.status in _TERMINAL_STATUSES:
+        if isinstance(executed, dict) and executed.get("status") in TERMINAL_STATUSES:
+            raise_if_failed(executed, throw_on_failure=throw_on_failure, kind="Tool execution")
             return executed
-
-        await _async_poll_sleep(poll_interval_ms, cancel_event)
-
-    raise TimeoutError(
-        f"Tool execution {tool_execution_id} did not reach a terminal state within {timeout_ms}ms."
-    )
+        await async_poll_sleep(poll_interval_ms, cancel_event)

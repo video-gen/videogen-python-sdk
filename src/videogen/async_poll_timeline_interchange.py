@@ -12,27 +12,27 @@ from .poll_helpers import (
 )
 
 
-async def async_poll_project_export(
+async def async_poll_timeline_interchange(
     client: Any,
-    project_id: str,
-    export_id: str,
+    interchange_job_id: str,
     *,
     poll_interval_ms: int = 1500,
     timeout_ms: Optional[int] = 3_600_000,
     throw_on_failure: bool = True,
     cancel_event: Any = None,
 ) -> dict:
-    """Async twin of `poll_project_export`."""
+    """Async twin of `poll_timeline_interchange`."""
     started_at = time.monotonic()
     while True:
         poll_raise_if_cancelled(cancel_event)
         ensure_within_timeout(started_at=started_at, timeout_ms=timeout_ms)
-        export = await client.projects.get_project_export(
-            project_id=project_id,
-            export_id=export_id,
+        interchange = await client.projects.get_timeline_interchange(
+            interchange_job_id=interchange_job_id,
             cancel_event=cancel_event,
         )
-        if isinstance(export, dict) and export.get("status") in TERMINAL_STATUSES:
-            raise_if_failed(export, throw_on_failure=throw_on_failure, kind="Project export")
-            return export
+        if isinstance(interchange, dict) and interchange.get("status") in TERMINAL_STATUSES:
+            raise_if_failed(
+                interchange, throw_on_failure=throw_on_failure, kind="Timeline interchange"
+            )
+            return interchange
         await async_poll_sleep(poll_interval_ms, cancel_event)

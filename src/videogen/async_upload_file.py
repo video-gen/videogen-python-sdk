@@ -1,65 +1,65 @@
 from __future__ import annotations
 
-import asyncio
-from typing import BinaryIO, Optional, TYPE_CHECKING
+import time
+from typing import Any, BinaryIO, Optional, Union
 
 import httpx
 
-if TYPE_CHECKING:
-    from .client import AsyncVideoGenApi
-    from .types.storage_file import StorageFile
+from .poll_helpers import async_poll_sleep, ensure_within_timeout, poll_raise_if_cancelled
+from .upload_file import _file_has_ready_source, _read_bytes
 
 
 async def async_upload_file(
-    client: AsyncVideoGenApi,
-    file: BinaryIO,
+    client: Any,
+    data: Union[bytes, bytearray, BinaryIO],
     *,
-    display_name: str,
     type: Optional[str] = None,
-    temporary: bool = False,
-    poll_interval_ms: int = 2000,
-    timeout_ms: int = 3_600_000,
-) -> StorageFile:
-    """Upload a file to VideoGen.
-
-    1. Creates a pending file via ``create_file_upload``
-    2. PUTs the raw bytes to the returned presigned URL
-    3. Polls until the file is processed, then returns the hydrated file
+    display_name: Optional[str] = None,
+    temporary: Optional[bool] = None,
+    is_temporary: Optional[bool] = None,
+    content_type: Optional[str] = None,
+    poll_interval_ms: int = 1500,
+    timeout_ms: Optional[int] = 3_600_000,
+    cancel_event: Any = None,
+) -> dict:
+    """Async twin of `upload_file`.
 
     Args:
-        type: Optional file type (IMAGE, VIDEO, AUDIO). If omitted, auto-detected.
+        type: Optional file type (IMAGE, VIDEO, AUDIO, PDF, SLIDESHOW, LOTTIE).
+            If omitted, auto-detected. Lottie animations (Bodymovin JSON) must
+            set LOTTIE explicitly.
         timeout_ms: Maximum time in ms to wait for processing. Defaults to
             3_600_000 (1 hour).
     """
-    upload_response = await client.files.create_file_upload(
-        display_name=display_name,
-        is_temporary=temporary,
-        type=type,
-    )
+    if display_name is None:
+        display_name = "upload"
+    body: dict[str, Any] = {"display_name": display_name}
+    if type is not None:
+        body["type"] = type
+    temp = is_temporary if is_temporary is not None else temporary
+    if temp is not None:
+        body["is_temporary"] = temp
 
-    data = file.read()
-    async with httpx.AsyncClient() as http:
-        put_response = await http.put(upload_response.upload_url, content=data)
-        put_response.raise_for_status()
+    created = await client.files.create_file_upload(**body, cancel_event=cancel_event)
+    file_id = created["file_id"]
+    upload_url = created["upload_url"]
+    payload = _read_bytes(data)
 
-    deadline = asyncio.get_event_loop().time() + timeout_ms / 1000
-
-    while asyncio.get_event_loop().time() < deadline:
-        current = await client.files.hydrate_file(file_id=upload_response.file_id)
-
-        download = getattr(current, "download_source", None)
-        preview = getattr(current, "preview_source", None)
-
-        has_ready = (
-            (download is not None and getattr(download, "status", None) == "ready")
-            or (preview is not None and getattr(preview, "status", None) == "ready")
+    headers = {}
+    if content_type:
+        headers["Content-Type"] = content_type
+    async with httpx.AsyncClient(timeout=120.0) as http:
+        put_response = await http.put(upload_url, content=payload, headers=headers)
+    if put_response.status_code >= 400:
+        raise RuntimeError(
+            f"Upload PUT failed with status {put_response.status_code}: {put_response.text}"
         )
 
-        if has_ready:
-            return current
-
-        await asyncio.sleep(poll_interval_ms / 1000)
-
-    raise TimeoutError(
-        f"File {upload_response.file_id} was not processed within {timeout_ms}ms."
-    )
+    started_at = time.monotonic()
+    while True:
+        poll_raise_if_cancelled(cancel_event)
+        ensure_within_timeout(started_at=started_at, timeout_ms=timeout_ms)
+        file_obj = await client.files.get_file(file_id=file_id, cancel_event=cancel_event)
+        if isinstance(file_obj, dict) and _file_has_ready_source(file_obj):
+            return file_obj
+        await async_poll_sleep(poll_interval_ms, cancel_event)

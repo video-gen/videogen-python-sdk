@@ -1,222 +1,94 @@
-# VideoGen Python Library
+# VideoGen Python SDK
 
-[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Fvideo-gen%2Fvideogen-python-sdk)
-[![pypi](https://img.shields.io/pypi/v/videogen)](https://pypi.python.org/pypi/videogen)
+Official Python client for the [VideoGen API](https://docs.videogen.io).
 
-Official client for the VideoGen API (`https://api.videogen.io`). Turn a script, voiceover, or slideshow into a finished video with a single call, or generate standalone media assets.
+Package: `videogen` (PyPI) · Import: `videogen` · Version: `2.0.0`
 
+## Install
 
-## Table of Contents
-
-- [Documentation](#documentation)
-- [Installation](#installation)
-- [Reference](#reference)
-- [Usage](#usage)
-- [Environments](#environments)
-- [Async Client](#async-client)
-- [Exception Handling](#exception-handling)
-- [Advanced](#advanced)
-  - [Access Raw Response Data](#access-raw-response-data)
-  - [Retries](#retries)
-  - [Timeouts](#timeouts)
-  - [Custom Client](#custom-client)
-- [Contributing](#contributing)
-
-## Documentation
-
-API reference documentation is available [here](https://docs.videogen.io).
-
-## Installation
-
-```sh
+```bash
 pip install videogen
 ```
 
-## Reference
+For local development from this repo:
 
-A full reference for this library is available [here](https://github.com/video-gen/videogen-python-sdk/blob/HEAD/./reference.md).
+```bash
+cd sdk-python
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
 
-## Usage
-
-Instantiate and use the client with the following:
+## Quick start
 
 ```python
-from videogen import VideoGenApi, WorkflowVisualStyle, RemixAction_EnableCaptions, RemixAction_ConvertImagesToVideos
+import os
+from videogen import VideoGen
 
-client = VideoGenApi(
-    token="<token>",
-)
+vg = VideoGen(api_key=os.environ["VIDEOGEN_API_KEY"])
 
-client.workflows.script_to_video(
-    script="Staying hydrated keeps your body and mind running at their best. Drinking enough water boosts your energy, focus, and mood. Keep a water bottle nearby and sip throughout the day.",
-    visual_style=WorkflowVisualStyle(
-        type="AI_IMAGE",
-        ai_style="loose watercolor illustration with visible brushstrokes and soft color bleeds",
-    ),
-    visual_pacing="MEDIUM",
+run = vg.workflows.script_to_video_and_wait(
+    script="Staying hydrated keeps your body and mind running at their best.",
+    visual_style={
+        "type": "AI_IMAGE",
+        "ai_style": "loose watercolor illustration with visible brushstrokes",
+    },
     quality="HIGH",
     remix_actions=[
-        RemixAction_EnableCaptions(),
-        RemixAction_ConvertImagesToVideos(
-            motion_prompt="slow cinematic push-in",
-            mute_output_videos=True,
-            quality="HIGH",
-        )
+        {"type": "ENABLE_CAPTIONS"},
+        {
+            "type": "CONVERT_IMAGES_TO_VIDEOS",
+            "motion_prompt": "slow cinematic push-in",
+            "mute_output_videos": True,
+            "quality": "HIGH",
+        },
     ],
 )
+print(run["status"], run.get("project_id"))
 ```
 
-## Environments
-
-This SDK allows you to configure different environments for API requests.
+Async twin:
 
 ```python
-from videogen import VideoGenApi
-from videogen.environment import VideoGenApiEnvironment
+from videogen import AsyncVideoGen
 
-client = VideoGenApi(
-    environment=VideoGenApiEnvironment.PRODUCTION,
-)
+vg = AsyncVideoGen(api_key=os.environ["VIDEOGEN_API_KEY"])
+run = await vg.workflows.script_to_video_and_wait(script="...")
 ```
 
-## Async Client
+Default base URL: `https://api.videogen.io`. Omit `api_key` to read `VIDEOGEN_API_KEY` from the environment.
 
-The SDK also exports an `async` client so that you can make non-blocking calls to our API. Note that if you are constructing an Async httpx client class to pass into this client, use `httpx.AsyncClient()` instead of `httpx.Client()` (e.g. for the `httpx_client` parameter of this client).
+## Naming and JSON
 
-```python
-import asyncio
+- **Methods:** snake_case (`script_to_video`, `get_tool_execution_info`).
+- **Requests:** pass snake_case kwargs (and nested dict keys). The client serializes body/query keys to camelCase for the wire.
+- **Responses:** JSON objects are converted recursively to snake_case keys so Python callers use idiomatic names (`tool_execution_id`, `workflow_run_id`, `has_more`).
 
-from videogen import AsyncVideoGenApi
+## Resources
 
-client = AsyncVideoGenApi(
-    token="<token>",
-)
+`account` · `workflows` · `projects` · `tools` · `files` · `assistant` · `text` · `resources` · `webhooks`
 
+Every public REST operation is a thin method (see `@sdk-operation` markers). Convenience helpers are exported as module functions and bound on the client:
 
-async def main() -> None:
-    await client.workflows.script_to_video(
-        script="Staying hydrated keeps your body and mind running at their best. Drinking enough water boosts your energy, focus, and mood. Keep a water bottle nearby and sip throughout the day.",
-        visual_style=WorkflowVisualStyle(
-            type="AI_IMAGE",
-            ai_style="loose watercolor illustration with visible brushstrokes and soft color bleeds",
-        ),
-        visual_pacing="MEDIUM",
-        quality="HIGH",
-        remix_actions=[
-            RemixAction_EnableCaptions(),
-            RemixAction_ConvertImagesToVideos(
-                motion_prompt="slow cinematic push-in",
-                mute_output_videos=True,
-                quality="HIGH",
-            )
-        ],
-    )
+| Helper | Purpose |
+| --- | --- |
+| `poll_executed_tool` / `async_poll_executed_tool` | Poll a tool execution to a terminal status |
+| `poll_workflow_run` / `async_poll_workflow_run` | Poll a workflow run |
+| `poll_project_export` / `async_poll_project_export` | Poll a project export |
+| `poll_remix_actions` / `async_poll_remix_actions` | Poll remix actions until all are terminal |
+| `poll_public_preview` / `async_poll_public_preview` | Poll until a public preview URL is ready |
+| `upload_file` / `async_upload_file` | Presign, PUT bytes, poll until the file is ready |
+| `get_hydrated_file` / `async_get_hydrated_file` | Hydrate signed source URLs |
+| `download_file` / `async_download_file` | Hydrate then download bytes (optional path) |
+| `create_public_preview` / `async_create_public_preview` | Enable + poll public preview |
+| `verify_webhook_signature` | Verify Standard Webhooks and return the event dict |
 
+`*AndWait` wrappers on `tools`, `workflows`, and `projects` start work and poll to completion.
 
-asyncio.run(main())
-```
+## Cancellation
 
-## Exception Handling
+Pass `cancel_event=threading.Event()` (sync) or `asyncio.Event()` (async) to poll helpers or thin `request` / resource methods. Setting the event raises `PollCancelledError`.
 
-When the API returns a non-success status code (4xx or 5xx response), a subclass of the following error
-will be thrown.
+## Errors
 
-```python
-from videogen.core.api_error import ApiError
-
-try:
-    client.workflows.script_to_video(...)
-except ApiError as e:
-    print(e.status_code)
-    print(e.body)
-```
-
-## Advanced
-
-### Access Raw Response Data
-
-The SDK provides access to raw response data, including headers, through the `.with_raw_response` property.
-The `.with_raw_response` property returns a "raw" client that can be used to access the `.headers` and `.data` attributes.
-
-```python
-from videogen import VideoGenApi
-
-client = VideoGenApi(...)
-response = client.workflows.with_raw_response.script_to_video(...)
-print(response.headers)  # access the response headers
-print(response.status_code)  # access the response status code
-print(response.data)  # access the underlying object
-```
-
-### Retries
-
-The SDK is instrumented with automatic retries with exponential backoff. A request will be retried as long
-as the request is deemed retryable and the number of retry attempts has not grown larger than the configured
-retry limit (default: 2).
-
-Which status codes are retried depends on the `retryStatusCodes` generator configuration:
-
-**`legacy`** (current default): retries on
-- [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
-- [409](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409) (Conflict)
-- [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
-- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) (All server errors, including 500)
-
-**`recommended`**: retries on
-- [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
-- [409](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409) (Conflict)
-- [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
-- [502](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502) (Bad Gateway)
-- [503](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) (Service Unavailable)
-- [504](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) (Gateway Timeout)
-
-Use the `max_retries` request option to configure this behavior.
-
-```python
-client.workflows.script_to_video(..., request_options={
-    "max_retries": 1
-})
-```
-
-### Timeouts
-
-The SDK defaults to a 60 second timeout. You can configure this with a timeout option at the client or request level.
-
-```python
-from videogen import VideoGenApi
-
-client = VideoGenApi(..., timeout=20.0)
-
-# Override timeout for a specific method
-client.workflows.script_to_video(..., request_options={
-    "timeout_in_seconds": 1
-})
-```
-
-### Custom Client
-
-You can override the `httpx` client to customize it for your use-case. Some common use-cases include support for proxies
-and transports.
-
-```python
-import httpx
-from videogen import VideoGenApi
-
-client = VideoGenApi(
-    ...,
-    httpx_client=httpx.Client(
-        proxy="http://my.test.proxy.example.com",
-        transport=httpx.HTTPTransport(local_address="0.0.0.0"),
-    ),
-)
-```
-
-## Contributing
-
-While we value open-source contributions to this SDK, this library is generated programmatically.
-Additions made directly to this library would have to be moved over to our generation code,
-otherwise they would be overwritten upon the next generated release. Feel free to open a PR as
-a proof of concept, but know that we will not be able to merge it as-is. We suggest opening
-an issue first to discuss with us!
-
-On the other hand, contributions to the README are always very welcome!
+`VideoGenError` exposes `status`, `body`, and `request_id` (from `x-request-id` when present).

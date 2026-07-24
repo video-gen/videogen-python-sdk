@@ -1,55 +1,39 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING
+from pathlib import Path
+from typing import Any, Optional, Union
 
 import httpx
-
-if TYPE_CHECKING:
-    from .client import VideoGenApi
 
 from .get_hydrated_file import get_hydrated_file
 
 
+def _pick_download_url(file_obj: dict) -> str:
+    for key in ("download_source", "preview_source", "static_public_preview_source"):
+        source = file_obj.get(key)
+        if isinstance(source, dict) and isinstance(source.get("url"), str) and source["url"]:
+            return source["url"]
+    raise RuntimeError("No downloadable URL found on hydrated file.")
+
+
 def download_file(
-    client: VideoGenApi,
+    client: Any,
     file_id: str,
-    output_path: Optional[str] = None,
-) -> Optional[httpx.Response]:
-    """Download a file by first hydrating it to get a fresh download URL.
-
-    If *output_path* is provided the file is streamed to disk and ``None``
-    is returned.  If *output_path* is omitted the raw ``httpx.Response``
-    (with streaming enabled) is returned so the caller can process it:
-
-    .. code-block:: python
-
-        response = download_file(client, file_id)
-        data = response.read()               # read all bytes
-        # -- or --
-        with open("out.mp4", "wb") as f:
-            for chunk in response.iter_bytes():
-                f.write(chunk)
-        response.close()
-    """
-    file = get_hydrated_file(client, file_id)
-
-    download = getattr(file, "download_source", None)
-    url = getattr(download, "url", None) if download is not None else None
-
-    if url is None:
-        status = getattr(download, "status", "unknown") if download is not None else "unknown"
+    *,
+    output_path: Optional[Union[str, Path]] = None,
+    cancel_event: Any = None,
+) -> bytes:
+    """Hydrate a file and download its bytes. Optionally write to `output_path`."""
+    file_obj = get_hydrated_file(client, file_id, cancel_event=cancel_event)
+    url = _pick_download_url(file_obj)
+    response = httpx.get(url, timeout=120.0, follow_redirects=True)
+    if response.status_code >= 400:
         raise RuntimeError(
-            f"File {file_id} has no download URL available (status: {status})."
+            f"Download failed with status {response.status_code}: {response.text}"
         )
-
+    content = response.content
     if output_path is not None:
-        with httpx.stream("GET", url) as response:
-            response.raise_for_status()
-            with open(output_path, "wb") as f:
-                for chunk in response.iter_bytes():
-                    f.write(chunk)
-        return None
-
-    response = httpx.get(url)
-    response.raise_for_status()
-    return response
+        path = Path(output_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(content)
+    return content

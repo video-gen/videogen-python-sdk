@@ -1,43 +1,36 @@
+from __future__ import annotations
+
 import time
-from threading import Event
-from typing import Optional
+from typing import Any, Optional
 
-from .client import VideoGenApi
-from .poll_helpers import _poll_raise_if_cancelled, _poll_sleep
-from .types.executed_tool import ExecutedTool
-
-_TERMINAL_STATUSES = frozenset({"succeeded", "failed", "cancelled"})
+from .poll_helpers import (
+    TERMINAL_STATUSES,
+    ensure_within_timeout,
+    poll_raise_if_cancelled,
+    poll_sleep,
+    raise_if_failed,
+)
 
 
 def poll_executed_tool(
-    client: VideoGenApi,
+    client: Any,
     tool_execution_id: str,
     *,
     poll_interval_ms: int = 1500,
-    timeout_ms: int = 3_600_000,
-    cancel_event: Optional[Event] = None,
-) -> ExecutedTool:
-    """Polls ``get_tool_execution_info`` until status is ``succeeded``, ``failed``, or ``cancelled``.
-
-    Args:
-        timeout_ms: Maximum time in ms to wait for a terminal state. Defaults to
-            3_600_000 (1 hour).
-        cancel_event: When set, polling stops early with ``PollCancelledError``.
-    """
-    deadline = time.monotonic() + timeout_ms / 1000
-
-    while time.monotonic() < deadline:
-        _poll_raise_if_cancelled(cancel_event)
-
+    timeout_ms: Optional[int] = 3_600_000,
+    throw_on_failure: bool = True,
+    cancel_event: Any = None,
+) -> dict:
+    """Poll `get_tool_execution_info` until succeeded / failed / cancelled."""
+    started_at = time.monotonic()
+    while True:
+        poll_raise_if_cancelled(cancel_event)
+        ensure_within_timeout(started_at=started_at, timeout_ms=timeout_ms)
         executed = client.tools.get_tool_execution_info(
             tool_execution_id=tool_execution_id,
+            cancel_event=cancel_event,
         )
-
-        if executed.status in _TERMINAL_STATUSES:
+        if isinstance(executed, dict) and executed.get("status") in TERMINAL_STATUSES:
+            raise_if_failed(executed, throw_on_failure=throw_on_failure, kind="Tool execution")
             return executed
-
-        _poll_sleep(poll_interval_ms, cancel_event)
-
-    raise TimeoutError(
-        f"Tool execution {tool_execution_id} did not reach a terminal state within {timeout_ms}ms."
-    )
+        poll_sleep(poll_interval_ms, cancel_event)

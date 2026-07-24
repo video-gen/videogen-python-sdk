@@ -1,29 +1,48 @@
-import time
-from typing import Optional
+from __future__ import annotations
 
-from .client import VideoGenApi
-from .types.storage_file import StorageFile
+import time
+from typing import Any
+
+
+_SOURCE_KEYS = (
+    "download_source",
+    "preview_source",
+    "thumbnail_source",
+    "hls_source",
+)
+
+
+def _needs_hydration(file: dict) -> bool:
+    now_seconds = int(time.time())
+    for key in _SOURCE_KEYS:
+        source = file.get(key)
+        if source is None:
+            continue
+        if source.get("status") == "pending":
+            return True
+        if source.get("status") == "ready":
+            if source.get("url") is None:
+                return True
+            expires_at = source.get("expires_at")
+            if expires_at is not None and expires_at <= now_seconds + 60:
+                return True
+
+    has_any_ready_url = False
+    for key in _SOURCE_KEYS:
+        source = file.get(key)
+        if source is not None and source.get("status") == "ready" and source.get("url") is not None:
+            has_any_ready_url = True
+            break
+    return not has_any_ready_url
 
 
 def get_hydrated_file(
-    client: VideoGenApi,
+    client: Any,
     file_id: str,
-) -> StorageFile:
-    """Fetch a file, hydrating it if source URLs are missing or expired."""
-    file = client.files.get_file(file_id=file_id)
-
-    download = getattr(file, "download_source", None)
-    needs_hydration = (
-        download is None
-        or getattr(download, "status", None) == "pending"
-        or (getattr(download, "status", None) == "ready" and getattr(download, "url", None) is None)
-        or (
-            getattr(download, "expires_at", None) is not None
-            and download.expires_at < int(time.time())
-        )
-    )
-
-    if not needs_hydration:
+    *,
+    cancel_event: Any = None,
+) -> dict:
+    file = client.files.get_file(file_id=file_id, cancel_event=cancel_event)
+    if not _needs_hydration(file):
         return file
-
-    return client.files.hydrate_file(file_id=file_id)
+    return client.files.hydrate_file(file_id=file_id, cancel_event=cancel_event)
