@@ -6,7 +6,7 @@ from typing import Any, BinaryIO, Optional, Union
 import httpx
 
 from .poll_helpers import async_poll_sleep, ensure_within_timeout, poll_raise_if_cancelled
-from .upload_file import _file_has_ready_source, _read_bytes
+from .upload_file import _file_has_failed_source, _file_has_ready_source, _read_bytes
 
 
 async def async_upload_file(
@@ -59,7 +59,11 @@ async def async_upload_file(
     while True:
         poll_raise_if_cancelled(cancel_event)
         ensure_within_timeout(started_at=started_at, timeout_ms=timeout_ms)
-        file_obj = await client.files.get_file(file_id=file_id, cancel_event=cancel_event)
+        # hydrate_file (not get_file): GET omits signed sources, so readiness
+        # never flips if we poll get_file alone.
+        file_obj = await client.files.hydrate_file(file_id=file_id, cancel_event=cancel_event)
         if isinstance(file_obj, dict) and _file_has_ready_source(file_obj):
             return file_obj
+        if isinstance(file_obj, dict) and _file_has_failed_source(file_obj):
+            raise RuntimeError("Uploaded file processing failed")
         await async_poll_sleep(poll_interval_ms, cancel_event)

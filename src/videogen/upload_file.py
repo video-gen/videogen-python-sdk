@@ -14,10 +14,26 @@ def _read_bytes(data: Union[bytes, bytearray, BinaryIO]) -> bytes:
     return data.read()
 
 
+_SOURCE_KEYS = (
+    "download_source",
+    "preview_source",
+    "thumbnail_source",
+    "hls_source",
+)
+
+
 def _file_has_ready_source(file_obj: dict) -> bool:
-    for key in ("download_source", "preview_source", "thumbnail_source", "hls_source"):
+    for key in _SOURCE_KEYS:
         source = file_obj.get(key)
         if isinstance(source, dict) and source.get("status") == "ready":
+            return True
+    return False
+
+
+def _file_has_failed_source(file_obj: dict) -> bool:
+    for key in _SOURCE_KEYS:
+        source = file_obj.get(key)
+        if isinstance(source, dict) and source.get("status") == "failed":
             return True
     return False
 
@@ -43,6 +59,15 @@ def upload_file(
             set LOTTIE explicitly.
         timeout_ms: Maximum time in ms to wait for processing. Defaults to
             3_600_000 (1 hour).
+
+    Note:
+        Polls ``hydrate_file`` (not ``get_file``). ``get_file`` omits signed
+        source URLs, so readiness is only visible after hydration.
+
+        A secondary source (hls / thumbnail) can be ``failed`` after a probe
+        error while ``download_source`` is already ``ready`` from R2. Any ready
+        source means the upload is usable; only fail when something failed and
+        nothing is ready.
     """
     if display_name is None:
         display_name = "upload"
@@ -71,7 +96,11 @@ def upload_file(
     while True:
         poll_raise_if_cancelled(cancel_event)
         ensure_within_timeout(started_at=started_at, timeout_ms=timeout_ms)
-        file_obj = client.files.get_file(file_id=file_id, cancel_event=cancel_event)
+        # hydrate_file (not get_file): GET omits signed sources, so readiness
+        # never flips if we poll get_file alone.
+        file_obj = client.files.hydrate_file(file_id=file_id, cancel_event=cancel_event)
         if isinstance(file_obj, dict) and _file_has_ready_source(file_obj):
             return file_obj
+        if isinstance(file_obj, dict) and _file_has_failed_source(file_obj):
+            raise RuntimeError("Uploaded file processing failed")
         poll_sleep(poll_interval_ms, cancel_event)
