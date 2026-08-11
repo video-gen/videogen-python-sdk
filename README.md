@@ -85,7 +85,7 @@ print(run["status"], run.get("project_id"))
 | Assistant | `vg.assistant` | `start_assistant_chat_and_wait`, `send_assistant_message_and_wait` |
 | Entities | `vg.entities` | `create_entity`, `list_entities`, `add_entity_reference` |
 | Text | `vg.text` | `generate_text` |
-| Catalog | `vg.resources` | `list_tts_voices`, `list_avatar_presenters`, `list_languages` |
+| Catalog | `vg.resources` | `list_tts_voices`, `list_languages` |
 | Webhooks | `vg.webhooks` + helper | `create_webhook_endpoint`, `verify_webhook_signature` |
 
 Prefer `*_and_wait` (or the matching `poll_*` / `async_poll_*` helper) for anything asynchronous. Thin REST methods match OpenAPI `operationId`s (snake_case).
@@ -138,6 +138,8 @@ print(execution["status"], preview)
 ```
 
 The same `*_and_wait` pattern exists for video clips, motion graphics, TTS, music, sound effects, avatar, upscale, background removal, and more under `vg.tools`.
+
+For avatar video, call `generate_avatar_and_wait` with `audio_file_id` and an ACTOR entity as `actor_entity_id`. You may set `avatar_quality` to `LOW`, `STANDARD`, `HIGH`, or `MAX`. Script-to-video, voiceover-to-video, slideshow-to-video, and `CHANGE_NARRATOR` accept the same optional actor fields.
 
 ## Files
 
