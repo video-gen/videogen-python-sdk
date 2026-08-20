@@ -46,6 +46,7 @@ def upload_file(
     display_name: Optional[str] = None,
     temporary: Optional[bool] = None,
     is_temporary: Optional[bool] = None,
+    hide_from_ui: Optional[bool] = None,
     content_type: Optional[str] = None,
     poll_interval_ms: int = 1500,
     timeout_ms: Optional[int] = 3_600_000,
@@ -57,6 +58,8 @@ def upload_file(
         type: Optional file type (IMAGE, VIDEO, AUDIO, PDF, SLIDESHOW, LOTTIE).
             If omitted, auto-detected. Lottie animations (Bodymovin JSON) must
             set LOTTIE explicitly.
+        hide_from_ui: When true, hide the file from the VideoGen Media page.
+            Defaults to false.
         timeout_ms: Maximum time in ms to wait for processing. Defaults to
             3_600_000 (1 hour).
 
@@ -71,12 +74,17 @@ def upload_file(
     """
     if display_name is None:
         display_name = "upload"
-    body: dict[str, Any] = {"display_name": display_name}
+    body: dict[str, Any] = {
+        "display_name": display_name,
+        "hide_from_ui": False if hide_from_ui is None else hide_from_ui,
+    }
     if type is not None:
         body["type"] = type
     temp = is_temporary if is_temporary is not None else temporary
     if temp is not None:
         body["is_temporary"] = temp
+    else:
+        body["is_temporary"] = False
 
     created = client.files.create_file_upload(**body, cancel_event=cancel_event)
     file_id = created["file_id"]
