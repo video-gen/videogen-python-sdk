@@ -27,9 +27,10 @@ run = vg.workflows.script_to_video_and_wait(
     script="Stay hydrated for better focus and energy.",
     visual_style={
         "type": "AI_IMAGE",
-        "ai_style": "loose watercolor illustration with visible brushstrokes",
+        "ai_style": "Loose watercolor illustration, visible brushstrokes, soft color bleeds, paper texture, muted palette. A clear uncluttered subject centered in the frame, occupying only the middle half of the image, with generous empty margins on all four sides, no background clutter.",
     },
     quality="HIGH",
+    auto_export=True,
     remix_actions=[
         {"type": "ENABLE_CAPTIONS"},
         {
@@ -40,7 +41,7 @@ run = vg.workflows.script_to_video_and_wait(
         },
     ],
 )
-print(run["status"], run.get("project_id"))
+print(run.download_url)
 ```
 
 Omit `api_key` to read `VIDEOGEN_API_KEY` from the environment.
@@ -57,9 +58,10 @@ run = await vg.workflows.script_to_video_and_wait(
     script="Stay hydrated for better focus and energy.",
     visual_style={
         "type": "AI_IMAGE",
-        "ai_style": "loose watercolor illustration with visible brushstrokes",
+        "ai_style": "Loose watercolor illustration, visible brushstrokes, soft color bleeds, paper texture, muted palette. A clear uncluttered subject centered in the frame, occupying only the middle half of the image, with generous empty margins on all four sides, no background clutter.",
     },
     quality="HIGH",
+    auto_export=True,
     remix_actions=[
         {"type": "ENABLE_CAPTIONS"},
         {
@@ -70,7 +72,7 @@ run = await vg.workflows.script_to_video_and_wait(
         },
     ],
 )
-print(run["status"], run.get("project_id"))
+print(run.download_url)
 ```
 
 ## What you can do
@@ -110,7 +112,7 @@ run = vg.workflows.prompt_to_video_clip_and_wait(
     prompt="A glass of water catching morning light on a kitchen counter, slow push-in",
     quality="HIGH",
 )
-print(run["status"], run.get("project_id"))
+print(run.download_url)
 ```
 
 Other workflow starters: `voiceover_to_video_and_wait` (uploaded audio `file_id`), `slideshow_to_video_and_wait` (deck `file_id`).
