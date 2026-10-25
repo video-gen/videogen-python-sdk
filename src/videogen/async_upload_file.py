@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+import warnings
 from typing import Any, BinaryIO, Optional, Union
 
 import httpx
@@ -29,16 +30,22 @@ async def async_upload_file(
         type: Optional file type (IMAGE, VIDEO, AUDIO, PDF, SLIDESHOW, LOTTIE).
             If omitted, auto-detected. Lottie animations (Bodymovin JSON) must
             set LOTTIE explicitly.
-        hide_from_ui: When true, hide the file from the VideoGen Media page.
-            Defaults to false.
+        hide_from_ui: Deprecated and ignored. Uploaded files always appear in
+            the VideoGen app. Passing a value emits a ``DeprecationWarning``.
         timeout_ms: Maximum time in ms to wait for processing. Defaults to
             3_600_000 (1 hour).
     """
+    if hide_from_ui is not None:
+        warnings.warn(
+            "async_upload_file(hide_from_ui=...) is deprecated and ignored. "
+            "Uploaded files always appear in the VideoGen app.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
     if display_name is None:
         display_name = "upload"
     body: dict[str, Any] = {
         "display_name": display_name,
-        "hide_from_ui": False if hide_from_ui is None else hide_from_ui,
     }
     if type is not None:
         body["type"] = type

@@ -30,6 +30,8 @@ async def async_poll_executed_tool(
             tool_execution_id=tool_execution_id,
             cancel_event=cancel_event,
         )
+        if isinstance(executed, dict) and executed.get("status") == "awaiting_approval":
+            return executed
         if isinstance(executed, dict) and executed.get("status") in TERMINAL_STATUSES:
             raise_if_failed(executed, throw_on_failure=throw_on_failure, kind="Tool execution")
             return executed

@@ -22,7 +22,7 @@ def poll_workflow_run(
     on_progress: Optional[Callable[[float], None]] = None,
     cancel_event: Any = None,
 ) -> dict:
-    """Poll `get_workflow_run` until succeeded / failed / cancelled."""
+    """Poll until succeeded / failed / cancelled or awaiting approval."""
     started_at = time.monotonic()
     while True:
         poll_raise_if_cancelled(cancel_event)
@@ -35,6 +35,8 @@ def poll_workflow_run(
             progress = run.get("progress_percentage")
             if on_progress is not None and isinstance(progress, (int, float)):
                 on_progress(float(progress))
+            if run.get("status") == "awaiting_approval":
+                return run
             if run.get("status") in TERMINAL_STATUSES:
                 raise_if_failed(run, throw_on_failure=throw_on_failure, kind="Workflow run")
                 return run

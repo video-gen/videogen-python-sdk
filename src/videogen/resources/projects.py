@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from typing import Any, TYPE_CHECKING
 
 from .._http import camel_to_snake, format_path, split_request_args
@@ -15,6 +16,18 @@ if TYPE_CHECKING:
     from ..client import AsyncVideoGen, VideoGen
 
 
+def _pop_deprecated_include_ui_projects(kwargs: dict[str, Any]) -> None:
+    # Unknown kwargs become the request body, so drop this before splitting.
+    values = [kwargs.pop(key, None) for key in ('include_ui_projects', 'includeUiProjects')]
+    if any(value is not None for value in values):
+        warnings.warn(
+            "list_projects(include_ui_projects=...) is deprecated and ignored. "
+            "The list always includes projects created in the VideoGen app.",
+            DeprecationWarning,
+            stacklevel=3,
+        )
+
+
 class ProjectsResource:
     def __init__(self, client: VideoGen) -> None:
         self._root = client
@@ -24,10 +37,11 @@ class ProjectsResource:
     def list_projects(self, *args: Any, **kwargs: Any) -> Any:
         if args:
             raise TypeError(f'list_projects() does not take positional arguments')
+        _pop_deprecated_include_ui_projects(kwargs)
         path_values, query_values, body, cancel_event = split_request_args(
             kwargs,
             path_params=[],
-            query_params=['limit', 'cursor', 'selfOnly', 'includeUiProjects'],
+            query_params=['limit', 'cursor', 'selfOnly'],
         )
         path = format_path('/v1/projects', path_values)
         return self._client.request(
@@ -323,10 +337,11 @@ class AsyncProjectsResource:
     async def list_projects(self, *args: Any, **kwargs: Any) -> Any:
         if args:
             raise TypeError(f'list_projects() does not take positional arguments')
+        _pop_deprecated_include_ui_projects(kwargs)
         path_values, query_values, body, cancel_event = split_request_args(
             kwargs,
             path_params=[],
-            query_params=['limit', 'cursor', 'selfOnly', 'includeUiProjects'],
+            query_params=['limit', 'cursor', 'selfOnly'],
         )
         path = format_path('/v1/projects', path_values)
         return await self._client.request(

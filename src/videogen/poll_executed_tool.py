@@ -21,7 +21,7 @@ def poll_executed_tool(
     throw_on_failure: bool = True,
     cancel_event: Any = None,
 ) -> dict:
-    """Poll `get_tool_execution_info` until succeeded / failed / cancelled."""
+    """Poll until succeeded / failed / cancelled or awaiting approval."""
     started_at = time.monotonic()
     while True:
         poll_raise_if_cancelled(cancel_event)
@@ -30,6 +30,8 @@ def poll_executed_tool(
             tool_execution_id=tool_execution_id,
             cancel_event=cancel_event,
         )
+        if isinstance(executed, dict) and executed.get("status") == "awaiting_approval":
+            return executed
         if isinstance(executed, dict) and executed.get("status") in TERMINAL_STATUSES:
             raise_if_failed(executed, throw_on_failure=throw_on_failure, kind="Tool execution")
             return executed

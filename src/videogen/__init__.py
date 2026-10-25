@@ -9,6 +9,7 @@ from .async_download_file import async_download_file
 from .async_get_hydrated_file import async_get_hydrated_file
 from .async_poll_assistant_message import async_poll_assistant_message
 from .async_poll_executed_tool import async_poll_executed_tool
+from .async_poll_file_url_import import async_poll_file_url_import
 from .async_poll_project_export import async_poll_project_export
 from .async_poll_public_preview import async_poll_public_preview
 from .async_poll_remix_actions import async_poll_remix_actions
@@ -22,6 +23,7 @@ from .errors import PollCancelledError, VideoGenError
 from .get_hydrated_file import get_hydrated_file
 from .poll_assistant_message import poll_assistant_message
 from .poll_executed_tool import poll_executed_tool
+from .poll_file_url_import import poll_file_url_import
 from .poll_project_export import poll_project_export
 from .poll_public_preview import poll_public_preview
 from .poll_remix_actions import poll_remix_actions
@@ -40,6 +42,7 @@ __all__ = [
     "async_get_hydrated_file",
     "async_poll_assistant_message",
     "async_poll_executed_tool",
+    "async_poll_file_url_import",
     "async_poll_project_export",
     "async_poll_public_preview",
     "async_poll_remix_actions",
@@ -51,6 +54,7 @@ __all__ = [
     "get_hydrated_file",
     "poll_assistant_message",
     "poll_executed_tool",
+    "poll_file_url_import",
     "poll_project_export",
     "poll_public_preview",
     "poll_remix_actions",

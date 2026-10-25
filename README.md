@@ -80,7 +80,7 @@ print(run.download_url)
 | Area | Client surface | Typical entry points |
 | --- | --- | --- |
 | Account | `vg.account` | `get_me` |
-| Workflows | `vg.workflows` | `script_to_video_and_wait`, `prompt_to_video_clip_and_wait`, `voiceover_to_video_and_wait`, `slideshow_to_video_and_wait` |
+| Workflows | `vg.workflows` | `script_to_video_and_wait`, `prompt_to_video_clip_and_wait`, `voiceover_to_video_and_wait`, `slideshow_to_video_and_wait`, `video_to_video_and_wait` |
 | Tools | `vg.tools` | `generate_image_and_wait`, `generate_video_clip_and_wait`, `text_to_speech_and_wait`, … |
 | Files | helpers on `vg` | `upload_file`, `download_file`, `create_public_preview` |
 | Projects | `vg.projects` | `export_and_wait`, `remix_and_wait`, `create_timeline_interchange_and_wait` |
@@ -115,7 +115,7 @@ run = vg.workflows.prompt_to_video_clip_and_wait(
 print(run.download_url)
 ```
 
-Other workflow starters: `voiceover_to_video_and_wait` (uploaded audio `file_id`), `slideshow_to_video_and_wait` (deck `file_id`).
+Other workflow starters: `voiceover_to_video_and_wait` (uploaded audio `file_id`), `slideshow_to_video_and_wait` (deck `file_id`), `video_to_video_and_wait` (restyles an uploaded `video_file_id` or a public `video_url` from a `prompt`).
 
 ## Tools
 
@@ -263,8 +263,8 @@ Exported as module functions and bound on the client:
 | Helper | Purpose |
 | --- | --- |
 | `poll_assistant_message` / `async_poll_assistant_message` | Poll an assistant message to a terminal status |
-| `poll_executed_tool` / `async_poll_executed_tool` | Poll a tool execution to a terminal status |
-| `poll_workflow_run` / `async_poll_workflow_run` | Poll a workflow run |
+| `poll_executed_tool` / `async_poll_executed_tool` | Poll a tool execution to a terminal status or `awaiting_approval` |
+| `poll_workflow_run` / `async_poll_workflow_run` | Poll a workflow run to a terminal status or `awaiting_approval` |
 | `poll_project_export` / `async_poll_project_export` | Poll a project export |
 | `poll_timeline_interchange` / `async_poll_timeline_interchange` | Poll a timeline interchange job |
 | `poll_remix_actions` / `async_poll_remix_actions` | Poll remix actions until all are terminal |
@@ -274,6 +274,8 @@ Exported as module functions and bound on the client:
 | `download_file` / `async_download_file` | Hydrate then download bytes (optional path) |
 | `create_public_preview` / `async_create_public_preview` | Enable + poll public preview |
 | `verify_webhook_signature` | Verify Standard Webhooks and return the event dict |
+
+Workflow and tool pollers, including their `*_and_wait` wrappers, return `awaiting_approval` unchanged without throwing, even with the default `throw_on_failure=True`. This status means the result needs approval; it does not mean the operation succeeded. Check `status` before using the result as a completed operation.
 
 Cancellation: pass `cancel_event=threading.Event()` (sync) or `asyncio.Event()` (async) to poll helpers and thin request methods. Setting the event raises `PollCancelledError`.
 
