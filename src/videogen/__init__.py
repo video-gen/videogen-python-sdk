@@ -12,6 +12,7 @@ from .async_poll_executed_tool import async_poll_executed_tool
 from .async_poll_file_url_import import async_poll_file_url_import
 from .async_poll_project_export import async_poll_project_export
 from .async_poll_public_preview import async_poll_public_preview
+from .async_poll_video_edits import async_poll_video_edits
 from .async_poll_remix_actions import async_poll_remix_actions
 from .async_poll_timeline_interchange import async_poll_timeline_interchange
 from .async_poll_workflow_run import async_poll_workflow_run
@@ -26,6 +27,7 @@ from .poll_executed_tool import poll_executed_tool
 from .poll_file_url_import import poll_file_url_import
 from .poll_project_export import poll_project_export
 from .poll_public_preview import poll_public_preview
+from .poll_video_edits import poll_video_edits
 from .poll_remix_actions import poll_remix_actions
 from .poll_timeline_interchange import poll_timeline_interchange
 from .poll_workflow_run import poll_workflow_run
@@ -45,6 +47,7 @@ __all__ = [
     "async_poll_file_url_import",
     "async_poll_project_export",
     "async_poll_public_preview",
+    "async_poll_video_edits",
     "async_poll_remix_actions",
     "async_poll_timeline_interchange",
     "async_poll_workflow_run",
@@ -57,6 +60,7 @@ __all__ = [
     "poll_file_url_import",
     "poll_project_export",
     "poll_public_preview",
+    "poll_video_edits",
     "poll_remix_actions",
     "poll_timeline_interchange",
     "poll_workflow_run",

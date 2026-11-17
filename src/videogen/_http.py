@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from urllib.parse import quote
+
 import json
 import os
 import re
@@ -121,6 +123,8 @@ class SyncHttpClient:
         body: Any = None,
         cancel_event: Any = None,
         raw_response: bool = False,
+        payment_token: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
     ) -> Any:
         _raise_if_cancelled(cancel_event)
 
@@ -130,6 +134,10 @@ class SyncHttpClient:
             "Accept": "application/json",
             "X-VideoGen-Client": self.client_id,
         }
+        if idempotency_key is not None:
+            headers["Idempotency-Key"] = idempotency_key
+        if payment_token is not None:
+            headers["Stripe-Shared-Payment-Token"] = payment_token
         params = to_wire_keys(dict(query)) if query else None
         if params is not None:
             params = {k: v for k, v in params.items() if v is not None}
@@ -162,6 +170,7 @@ class SyncHttpClient:
                 status=response.status_code,
                 body=to_python_keys(err_body) if isinstance(err_body, (dict, list)) else err_body,
                 request_id=request_id,
+                retry_after=response.headers.get("retry-after"),
             )
 
         if raw_response:
@@ -220,6 +229,8 @@ class AsyncHttpClient:
         body: Any = None,
         cancel_event: Any = None,
         raw_response: bool = False,
+        payment_token: Optional[str] = None,
+        idempotency_key: Optional[str] = None,
     ) -> Any:
         _raise_if_cancelled(cancel_event)
 
@@ -229,6 +240,10 @@ class AsyncHttpClient:
             "Accept": "application/json",
             "X-VideoGen-Client": self.client_id,
         }
+        if idempotency_key is not None:
+            headers["Idempotency-Key"] = idempotency_key
+        if payment_token is not None:
+            headers["Stripe-Shared-Payment-Token"] = payment_token
         params = to_wire_keys(dict(query)) if query else None
         if params is not None:
             params = {k: v for k, v in params.items() if v is not None}
@@ -261,6 +276,7 @@ class AsyncHttpClient:
                 status=response.status_code,
                 body=to_python_keys(err_body) if isinstance(err_body, (dict, list)) else err_body,
                 request_id=request_id,
+                retry_after=response.headers.get("retry-after"),
             )
 
         if raw_response:
@@ -318,5 +334,5 @@ def split_request_args(
 def format_path(path_template: str, path_values: Mapping[str, Any]) -> str:
     path = path_template
     for key, value in path_values.items():
-        path = path.replace("{" + key + "}", str(value))
+        path = path.replace("{" + key + "}", quote(str(value), safe=""))
     return path

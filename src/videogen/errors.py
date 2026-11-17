@@ -13,10 +13,13 @@ class VideoGenError(Exception):
         status: int,
         body: Any = None,
         request_id: Optional[str] = None,
+        retry_after: Optional[str] = None,
     ) -> None:
         super().__init__(message)
         self.status = status
         self.body = body
+        self.retry_after = retry_after
+        self.retryAfter = retry_after
         self.request_id = request_id
         # camelCase alias for cross-language parity with the TypeScript SDK
         self.requestId = request_id

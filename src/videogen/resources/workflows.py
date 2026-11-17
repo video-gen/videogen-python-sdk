@@ -106,6 +106,24 @@ class WorkflowsResource:
             cancel_event=cancel_event,
         )
 
+    # @sdk-operation translateVideo
+    def translate_video(self, *args: Any, **kwargs: Any) -> Any:
+        if args:
+            raise TypeError(f'translate_video() does not take positional arguments')
+        path_values, query_values, body, cancel_event = split_request_args(
+            kwargs,
+            path_params=[],
+            query_params=[],
+        )
+        path = format_path('/v1/workflows/translate-video', path_values)
+        return self._client.request(
+            method='POST',
+            path=path,
+            query=query_values or None,
+            body=body if body is not None else {},
+            cancel_event=cancel_event,
+        )
+
     # @sdk-operation listWorkflowRuns
     def list_workflow_runs(self, *args: Any, **kwargs: Any) -> Any:
         if args:
@@ -268,6 +286,24 @@ class WorkflowsResource:
             cancel_event=cancel_event,
         )
 
+    def translate_video_and_wait(self, *args: Any, **kwargs: Any) -> Any:
+        poll_interval_ms = kwargs.pop('poll_interval_ms', 1500)
+        timeout_ms = kwargs.pop('timeout_ms', 3_600_000)
+        throw_on_failure = kwargs.pop('throw_on_failure', True)
+        on_progress = kwargs.pop('on_progress', None)
+        cancel_event = kwargs.get('cancel_event')
+        started = self.translate_video(*args, **kwargs)
+        workflow_run_id = started['workflow_run_id']
+        return poll_workflow_run(
+            self._root,
+            workflow_run_id,
+            poll_interval_ms=poll_interval_ms,
+            timeout_ms=timeout_ms,
+            throw_on_failure=throw_on_failure,
+            on_progress=on_progress,
+            cancel_event=cancel_event,
+        )
+
 class AsyncWorkflowsResource:
     def __init__(self, client: AsyncVideoGen) -> None:
         self._root = client
@@ -355,6 +391,24 @@ class AsyncWorkflowsResource:
             query_params=[],
         )
         path = format_path('/v1/workflows/video-to-video', path_values)
+        return await self._client.request(
+            method='POST',
+            path=path,
+            query=query_values or None,
+            body=body if body is not None else {},
+            cancel_event=cancel_event,
+        )
+
+    # @sdk-operation translateVideo
+    async def translate_video(self, *args: Any, **kwargs: Any) -> Any:
+        if args:
+            raise TypeError(f'translate_video() does not take positional arguments')
+        path_values, query_values, body, cancel_event = split_request_args(
+            kwargs,
+            path_params=[],
+            query_params=[],
+        )
+        path = format_path('/v1/workflows/translate-video', path_values)
         return await self._client.request(
             method='POST',
             path=path,
@@ -514,6 +568,24 @@ class AsyncWorkflowsResource:
         on_progress = kwargs.pop('on_progress', None)
         cancel_event = kwargs.get('cancel_event')
         started = await self.video_to_video(*args, **kwargs)
+        workflow_run_id = started['workflow_run_id']
+        return await async_poll_workflow_run(
+            self._root,
+            workflow_run_id,
+            poll_interval_ms=poll_interval_ms,
+            timeout_ms=timeout_ms,
+            throw_on_failure=throw_on_failure,
+            on_progress=on_progress,
+            cancel_event=cancel_event,
+        )
+
+    async def translate_video_and_wait(self, *args: Any, **kwargs: Any) -> Any:
+        poll_interval_ms = kwargs.pop('poll_interval_ms', 1500)
+        timeout_ms = kwargs.pop('timeout_ms', 3_600_000)
+        throw_on_failure = kwargs.pop('throw_on_failure', True)
+        on_progress = kwargs.pop('on_progress', None)
+        cancel_event = kwargs.get('cancel_event')
+        started = await self.translate_video(*args, **kwargs)
         workflow_run_id = started['workflow_run_id']
         return await async_poll_workflow_run(
             self._root,

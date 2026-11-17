@@ -232,6 +232,24 @@ class ToolsResource:
             cancel_event=cancel_event,
         )
 
+    # @sdk-operation dubVideo
+    def dub_video(self, *args: Any, **kwargs: Any) -> Any:
+        if args:
+            raise TypeError(f'dub_video() does not take positional arguments')
+        path_values, query_values, body, cancel_event = split_request_args(
+            kwargs,
+            path_params=[],
+            query_params=[],
+        )
+        path = format_path('/v1/tools/dub-video', path_values)
+        return self._client.request(
+            method='POST',
+            path=path,
+            query=query_values or None,
+            body=body if body is not None else {},
+            cancel_event=cancel_event,
+        )
+
     # @sdk-operation image3dEffect
     def image3d_effect(self, *args: Any, **kwargs: Any) -> Any:
         if args:
@@ -514,6 +532,22 @@ class ToolsResource:
             cancel_event=cancel_event,
         )
 
+    def dub_video_and_wait(self, *args: Any, **kwargs: Any) -> Any:
+        poll_interval_ms = kwargs.pop('poll_interval_ms', 1500)
+        timeout_ms = kwargs.pop('timeout_ms', 3_600_000)
+        throw_on_failure = kwargs.pop('throw_on_failure', True)
+        cancel_event = kwargs.get('cancel_event')
+        started = self.dub_video(*args, **kwargs)
+        tool_execution_id = started['tool_execution_id']
+        return poll_executed_tool(
+            self._root,
+            tool_execution_id,
+            poll_interval_ms=poll_interval_ms,
+            timeout_ms=timeout_ms,
+            throw_on_failure=throw_on_failure,
+            cancel_event=cancel_event,
+        )
+
     def image3d_effect_and_wait(self, *args: Any, **kwargs: Any) -> Any:
         poll_interval_ms = kwargs.pop('poll_interval_ms', 1500)
         timeout_ms = kwargs.pop('timeout_ms', 3_600_000)
@@ -744,6 +778,24 @@ class AsyncToolsResource:
             query_params=[],
         )
         path = format_path('/v1/tools/upscale-video', path_values)
+        return await self._client.request(
+            method='POST',
+            path=path,
+            query=query_values or None,
+            body=body if body is not None else {},
+            cancel_event=cancel_event,
+        )
+
+    # @sdk-operation dubVideo
+    async def dub_video(self, *args: Any, **kwargs: Any) -> Any:
+        if args:
+            raise TypeError(f'dub_video() does not take positional arguments')
+        path_values, query_values, body, cancel_event = split_request_args(
+            kwargs,
+            path_params=[],
+            query_params=[],
+        )
+        path = format_path('/v1/tools/dub-video', path_values)
         return await self._client.request(
             method='POST',
             path=path,
@@ -1024,6 +1076,22 @@ class AsyncToolsResource:
         throw_on_failure = kwargs.pop('throw_on_failure', True)
         cancel_event = kwargs.get('cancel_event')
         started = await self.upscale_video(*args, **kwargs)
+        tool_execution_id = started['tool_execution_id']
+        return await async_poll_executed_tool(
+            self._root,
+            tool_execution_id,
+            poll_interval_ms=poll_interval_ms,
+            timeout_ms=timeout_ms,
+            throw_on_failure=throw_on_failure,
+            cancel_event=cancel_event,
+        )
+
+    async def dub_video_and_wait(self, *args: Any, **kwargs: Any) -> Any:
+        poll_interval_ms = kwargs.pop('poll_interval_ms', 1500)
+        timeout_ms = kwargs.pop('timeout_ms', 3_600_000)
+        throw_on_failure = kwargs.pop('throw_on_failure', True)
+        cancel_event = kwargs.get('cancel_event')
+        started = await self.dub_video(*args, **kwargs)
         tool_execution_id = started['tool_execution_id']
         return await async_poll_executed_tool(
             self._root,

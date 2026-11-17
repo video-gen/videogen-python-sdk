@@ -13,6 +13,7 @@ from .async_poll_executed_tool import async_poll_executed_tool
 from .async_poll_file_url_import import async_poll_file_url_import
 from .async_poll_project_export import async_poll_project_export
 from .async_poll_public_preview import async_poll_public_preview
+from .async_poll_video_edits import async_poll_video_edits
 from .async_poll_remix_actions import async_poll_remix_actions
 from .async_poll_timeline_interchange import async_poll_timeline_interchange
 from .async_poll_workflow_run import async_poll_workflow_run
@@ -25,11 +26,14 @@ from .poll_executed_tool import poll_executed_tool
 from .poll_file_url_import import poll_file_url_import
 from .poll_project_export import poll_project_export
 from .poll_public_preview import poll_public_preview
+from .poll_video_edits import poll_video_edits
 from .poll_remix_actions import poll_remix_actions
 from .poll_timeline_interchange import poll_timeline_interchange
 from .poll_workflow_run import poll_workflow_run
 from .resources.account import AccountResource, AsyncAccountResource
 from .resources.assistant import AssistantResource, AsyncAssistantResource
+from .resources.models import AsyncModelsResource, ModelsResource
+from .resources.billing import AsyncBillingResource, BillingResource
 from .resources.entities import AsyncEntitiesResource, EntitiesResource
 from .resources.files import AsyncFilesResource, FilesResource
 from .resources.projects import AsyncProjectsResource, ProjectsResource
@@ -62,6 +66,8 @@ class VideoGen:
             client_id=client_id,
         )
         self.account = AccountResource(self)
+        self.billing = BillingResource(self)
+        self.models = ModelsResource(self)
         self.workflows = WorkflowsResource(self)
         self.projects = ProjectsResource(self)
         self.tools = ToolsResource(self)
@@ -117,6 +123,9 @@ class VideoGen:
     def poll_file_url_import(self, file_import_id: str, **kwargs: Any) -> dict:
         return poll_file_url_import(self, file_import_id, **kwargs)
 
+    def poll_video_edits(self, project_id: str, **kwargs: Any) -> dict:
+        return poll_video_edits(self, project_id, **kwargs)
+
     def poll_remix_actions(self, project_id: str, **kwargs: Any) -> dict:
         return poll_remix_actions(self, project_id, **kwargs)
 
@@ -159,6 +168,8 @@ class AsyncVideoGen:
             client_id=client_id,
         )
         self.account = AsyncAccountResource(self)
+        self.billing = AsyncBillingResource(self)
+        self.models = AsyncModelsResource(self)
         self.workflows = AsyncWorkflowsResource(self)
         self.projects = AsyncProjectsResource(self)
         self.tools = AsyncToolsResource(self)
@@ -217,6 +228,9 @@ class AsyncVideoGen:
 
     async def poll_file_url_import(self, file_import_id: str, **kwargs: Any) -> dict:
         return await async_poll_file_url_import(self, file_import_id, **kwargs)
+
+    async def poll_video_edits(self, project_id: str, **kwargs: Any) -> dict:
+        return await async_poll_video_edits(self, project_id, **kwargs)
 
     async def poll_remix_actions(self, project_id: str, **kwargs: Any) -> dict:
         return await async_poll_remix_actions(self, project_id, **kwargs)

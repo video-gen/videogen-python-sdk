@@ -1,5 +1,7 @@
+from .models import AsyncModelsResource, ModelsResource
 from .account import AccountResource, AsyncAccountResource
 from .assistant import AssistantResource, AsyncAssistantResource
+from .billing import AsyncBillingResource, BillingResource
 from .entities import AsyncEntitiesResource, EntitiesResource
 from .files import AsyncFilesResource, FilesResource
 from .projects import AsyncProjectsResource, ProjectsResource
@@ -10,10 +12,13 @@ from .webhooks import AsyncWebhooksResource, WebhooksResource
 from .workflows import AsyncWorkflowsResource, WorkflowsResource
 
 __all__ = [
+    "AsyncModelsResource",
+    "ModelsResource",
     "AccountResource",
     "AssistantResource",
     "AsyncAccountResource",
     "AsyncAssistantResource",
+    "AsyncBillingResource",
     "AsyncEntitiesResource",
     "AsyncFilesResource",
     "AsyncProjectsResource",
@@ -22,6 +27,7 @@ __all__ = [
     "AsyncToolsResource",
     "AsyncWebhooksResource",
     "AsyncWorkflowsResource",
+    "BillingResource",
     "EntitiesResource",
     "FilesResource",
     "ProjectsResource",
